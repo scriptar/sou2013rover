@@ -1,12 +1,16 @@
 SOU 2013 Rover Capstone Project
 ========
 
-Being developed as a capstone project.
+The ultimate goal of the project is to build a microcontroller-powered rover capable of communication with a custom Android application through Bluetooth. The microcontroller will interpret and execute "reduced-LOGO" instructions supplied by the user and send sensor data back to the mobile device. 
+
+As a large amount of project-code will be executed on the resource-limited microcontroller, the code must be designed with efficiency as a priority. In addition, hardware and mobile application development is anticipated with the designing and construction of the rover chassis, the sensor suite, and the Android application that will establish the Bluetooth connection and send commands.
 
 
-###Related Links
-* Project Site - None Yet
-* Weekly Schedule - [LINK](https://docs.google.com/document/d/10AntHoKGiwYBDfSGn_gRJ8CPggNaeCKWxTX8juCFG84/edit)
-* Goals and Objectives - [LINK](https://docs.google.com/document/d/1xNZT5CR2bFffxArXV65LSy1r13RZWWRXBzv2VnmWPFs/edit)
-* Requirements Specification (REVISED) - [LINK](https://docs.google.com/document/d/1EYvfeaCHvwV8-D5moLPi35BU9sNxnp1GpA60oCdEmgs/edit)
-* Project Images - [LINK](https://docs.google.com/folder/d/0Bzl2vzrZm3IkNURIbDVTYmRTeEk/edit)
+###Project Documents
+* Original Capstone Proposal - [LINK](https://docs.google.com/document/d/1J1UL4j7Lf-yPiSUX2qTsDye92ttL9pprFgh3oZ34V80/edit?usp=sharing)
+* Requirements Specifications - [LINK](https://docs.google.com/document/d/1EYvfeaCHvwV8-D5moLPi35BU9sNxnp1GpA60oCdEmgs/edit)
+* Weekly Task Schedule - [LINK](https://docs.google.com/document/d/10AntHoKGiwYBDfSGn_gRJ8CPggNaeCKWxTX8juCFG84/edit)
+
+###Additional Links
+* Capstone Images - [LINK](https://docs.google.com/folder/d/0Bzl2vzrZm3IkNURIbDVTYmRTeEk/edit)
+* Current Reduced-Logo Command Set - [LINK](https://docs.google.com/document/d/1gFi20ar-1i4-kz14UMFK4BobkHcvZO1tLiEqi0gHT64/edit?usp=sharing)
