@@ -1,4 +1,6 @@
 sourover
 ========
 
-This is the android program. Should be able to point the ADT kit at this folder somehow...
+This is the android program. You can import this Android project into the ADT kit found here:
+
+http://developer.android.com/sdk/index.html

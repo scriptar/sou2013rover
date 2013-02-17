@@ -4,5 +4,12 @@
     <string name="app_name">SOU2013Rover</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="button_forward">Forward</string>
+    <string name="button_reverse">Reverse</string>
+    <string name="button_left">Left</string>
+    <string name="button_right">Right</string>
+    <string name="setting_title_bluetooth">Bluetooth Connection</string>
+    <string name="setting_title_rover_telemetry">Rover Telemetry</string>
+    <string name="setting_title_control_mode">Control Mode</string>
 
 </resources>
