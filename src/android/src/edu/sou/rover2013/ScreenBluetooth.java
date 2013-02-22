@@ -1,6 +1,8 @@
-package sou.rover.sou2013rover;
+package edu.sou.rover2013;
 
 import java.util.Set;
+
+import edu.sou.rover2013.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

@@ -1,33 +1,28 @@
-package sou.rover.sou2013rover;
+package edu.sou.rover2013;
 
+import edu.sou.rover2013.R;
+import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-//Initial Activity
-//Will be initial screen, with menu options and instructions on connecting rover. 
-//Creates menu, launches other activities.
-
-public class ScreenMain extends Activity {
-
+public class ScreenTelemetry extends Activity {
 
 	@Override
-	// Called when activity is first created
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_screen_main);
+		setContentView(R.layout.activity_screen_telemetry);
 	}
 
 	@Override
-	// Inflate the menu; adds items to the action bar if it is present.
+	// Inflate the menu; adds items to the action bar if it is present.	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.settings_menu, menu);
 		return true;
 	}
-
+	
 	@Override
 	// Handles menu item selection, returns true if successful
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -56,6 +51,6 @@ public class ScreenMain extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
 
 }

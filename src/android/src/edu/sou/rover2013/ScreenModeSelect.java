@@ -1,11 +1,13 @@
-package sou.rover.sou2013rover;
+package edu.sou.rover2013;
 
+import edu.sou.rover2013.R;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 
 public class ScreenModeSelect extends Activity {
 
