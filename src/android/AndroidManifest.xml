@@ -4,11 +4,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-            
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-       
-    
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
@@ -17,16 +15,28 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="sou.rover.sou2013rover.Main"
+            android:name="sou.rover.sou2013rover.ScreenMain"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>              
-        </activity>  
-             
-    </application> 
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="sou.rover.sou2013rover.ScreenBluetooth"
+            android:label="@string/title_activity_screen__bluetooth" >
+        </activity>
+        <activity
+            android:name="sou.rover.sou2013rover.ScreenTelemetry"
+            android:label="@string/title_activity_screen_telemetry" >
+        </activity>
+        <activity
+            android:name="sou.rover.sou2013rover.ScreenModeSelect"
+            android:label="@string/title_activity_screen_mode_select" >
+        </activity>
+    </application>
+
 </manifest>
