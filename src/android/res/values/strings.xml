@@ -3,7 +3,7 @@
 
     <string name="app_name">2013 SOU Rover Capstone</string>
     <string name="menu_settings">Settings</string>
-    <string name="button_test_bluetooth">Test Bluetooth</string>
+    <string name="button_test_bluetooth">Show Paired Bluetooth Devices</string>
     <string name="button_forward">Forward</string>
     <string name="button_reverse">Reverse</string>
     <string name="button_left">Left</string>

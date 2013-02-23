@@ -14,6 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class ScreenBluetooth extends Activity {
 
@@ -75,8 +78,7 @@ public class ScreenBluetooth extends Activity {
 	// Just a temporary function where I'm trying to hash out how Bluetooth
 	// functions in Android. Will be moved. --Ryan
 	protected void testBluetooth() {
-		Log.d("test", "testing bluetooth");
-
+		
 		// Check to see if bluetooth exists
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
@@ -99,13 +101,19 @@ public class ScreenBluetooth extends Activity {
 		// Sort/Select available bluetooth paired devices.
 		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter
 				.getBondedDevices();
+		
 		// If there are paired devices
+		Log.d("test", "Device Count: "+pairedDevices.size());
 		if (pairedDevices.size() > 0) {
 			// Loop through paired devices
-			// for (BluetoothDevice device : pairedDevices) {
-			// TODO For each device, add name & address to ListView
-			// mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-			// }
+			TextView text = (TextView)findViewById(R.id.textView2);
+			text.setText("");
+			text.append("List of paired devices:\n");
+			for (BluetoothDevice device : pairedDevices) {
+			//For each device, add name & address to label
+				text.append(device.getName()+" "+device.getAddress()+"\n");
+			}
+
 		}
 
 	}

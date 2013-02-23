@@ -14,6 +14,17 @@ import android.view.MenuItem;
 
 public class ScreenMain extends Activity {
 
+	//Lifecycle Method List
+	//	protected void onCreate(Bundle savedInstanceState);
+	//	protected void onStart();
+	//	protected void onRestart();
+	//	protected void onResume();
+	//	protected void onPause();
+	//	protected void onStop();
+	//	protected void onDestroy();
+	
+	// TODO find a way to implement menu in all activities, rather than dupe code. 
+	
 
 	@Override
 	// Called when activity is first created
