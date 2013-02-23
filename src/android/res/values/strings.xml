@@ -16,5 +16,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_screen_telemetry">ROGO Telemetry &amp; Console</string>
     <string name="title_activity_screen_mode_select">ROGO Mode Select</string>
+    <string name="text_welcome">Welcome to Rogo!\nPlease select an option from the options menu.</string>
 
 </resources>
