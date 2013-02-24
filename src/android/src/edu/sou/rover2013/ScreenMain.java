@@ -23,7 +23,9 @@ public class ScreenMain extends Activity {
 	//	protected void onStop();
 	//	protected void onDestroy();
 	
-	// TODO find a way to implement menu in all activities, rather than dupe code. 
+	// TODO find a way to implement menu in all activities, rather than dupe code.
+	// TODO Replace bluetooth, mode select, and telemetry activities with proper preference screens
+	// TODO find a way to have bluetooth persist through application, rather than activities.
 	
 
 	@Override
@@ -36,6 +38,8 @@ public class ScreenMain extends Activity {
 	@Override
 	// Inflate the menu; adds items to the action bar if it is present.
 	public boolean onCreateOptionsMenu(Menu menu) {
+		//call parent to include system items as well
+		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.settings_menu, menu);
 		return true;
 	}
@@ -46,21 +50,14 @@ public class ScreenMain extends Activity {
 		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.bluetooth_settings:
-			// Open Bluetooth Activity
-			Log.d("test", "Open Bluetooth Activity");
 			intent = new Intent(this, ScreenBluetooth.class);
 			startActivity(intent);
-			//
 			return true;
 		case R.id.telemetry_settings:
-			// Open Console & Sensor Activity
-			Log.d("test", "Open Console & Sensor Activity");
 			intent = new Intent(this, ScreenTelemetry.class);
 			startActivity(intent);
 			return true;
 		case R.id.control_mode_settings:
-			// Open Mode Selection Menu
-			Log.d("test", "Open Mode Selection Menu");
 			intent = new Intent(this, ScreenModeSelect.class);
 			startActivity(intent);
 			return true;

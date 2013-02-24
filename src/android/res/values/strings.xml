@@ -3,7 +3,7 @@
 
     <string name="app_name">2013 SOU Rover Capstone</string>
     <string name="menu_settings">Settings</string>
-    <string name="button_test_bluetooth">Show Paired Bluetooth Devices</string>
+    <string name="button_test_bluetooth">Debug Bluetooth</string>
     <string name="button_forward">Forward</string>
     <string name="button_reverse">Reverse</string>
     <string name="button_left">Left</string>
@@ -16,6 +16,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_screen_telemetry">ROGO Telemetry &amp; Console</string>
     <string name="title_activity_screen_mode_select">ROGO Mode Select</string>
-    <string name="text_welcome">Welcome to Rogo!\nPlease select an option from the options menu.</string>
+    <string name="text_welcome">Welcome to Rogo!\nPlease select an action from the options menu.</string>
 
 </resources>

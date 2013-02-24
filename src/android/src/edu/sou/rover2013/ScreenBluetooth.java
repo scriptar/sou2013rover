@@ -17,15 +17,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import edu.sou.rover2013.RogoApplication;
 
 public class ScreenBluetooth extends Activity {
 
 	private static final int REQUEST_ENABLE_BT = 5;
+	private RogoApplication app;
+	private BluetoothConnection bluetooth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_screen_bluetooth);
+
+		app = (RogoApplication) getApplication();
 
 		// in-line button listener
 		final Button button = (Button) findViewById(R.id.button_test_bluetooth);
@@ -74,68 +79,66 @@ public class ScreenBluetooth extends Activity {
 		}
 	}
 
-	// Just a temporary function where I'm trying to hash out how Bluetooth
+	// Just a temporary non-oop function where I'm trying to hash out how
+	// Bluetooth
 	// functions in Android. Will be broken up and moved. --Ryan
 	protected void testBluetooth() {
 
-		// Check to see if bluetooth exists
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
-				.getDefaultAdapter();
-		if (mBluetoothAdapter == null) {
-			// Device does not support Bluetooth
+		bluetooth = app.getBluetoothConnection();
+
+		if (!bluetooth.isAvailable()) {
 			Log.d("test", "Device does not support Bluetooth");
 			return;
-		}
-
-		// Check to see if it's enabled
-		if (!mBluetoothAdapter.isEnabled()) {
-			Log.d("test", "Bluetooth Not Enabled, Enabling");
-			Intent enableBtIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		} else {
-			Log.d("test", "Bluetooth already Enabled");
+			Log.d("test", "Device supports Bluetooth");
 		}
 
-		// Sort/Select available bluetooth paired devices.
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter
-				.getBondedDevices();
-
-		// If there are paired devices
-		Log.d("test", "Device Count: " + pairedDevices.size());
-		BluetoothDevice lastDevice = null;
-		if (pairedDevices.size() > 0) {
-			// Loop through paired devices
-			TextView text = (TextView) findViewById(R.id.textView2);
-			text.setText("");
-			text.append("List of paired devices:\n");
-
-			for (BluetoothDevice device : pairedDevices) {
-				// For each device, add name & address to label
-				text.append(device.getName() + " " + device.getAddress() + "\n");
-				lastDevice = device;
-			}
-
-			UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); // Standard
-																					// SerialPortService
-																					// ID
-			BluetoothSocket mmSocket;
-			OutputStream mmOutputStream;
-			InputStream mmInputStream = null;
-			try {
-				mmSocket = lastDevice.createRfcommSocketToServiceRecord(uuid);
-				mmSocket.connect();
-				mmOutputStream = mmSocket.getOutputStream();
-				mmInputStream = mmSocket.getInputStream();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			Log.v("test", "Bluetooth connected.");
-			
-			//do {
-			//	text.append(mmInputStream.toString());
-			//} while (true);
-
+		if (!bluetooth.isEnabled()) {
+			Log.d("test", "Bluetooth Not Enabled, Enabling");
+			bluetooth.enableBluetooth();
+		} else {
+			Log.d("test", "Bluetooth Already Enabled");
 		}
+
+		Log.d("test", "Available Device Count: " + bluetooth.pairedDeviceCount());
+		//
+		// BluetoothDevice lastDevice = null;
+		// if (bluetooth.pairedDeviceCount() > 0) {
+		// // Loop through paired devices
+		// TextView text = (TextView) findViewById(R.id.textView2);
+		// text.setText("");
+		// text.append("List of paired devices:\n");
+		//
+		// for (BluetoothDevice device : bluetooth.pairedDevices()) {
+		// // For each device, add name & address to label
+		// text.append(device.getName() + " " + device.getAddress() + "\n");
+		// lastDevice = device;
+		// }
+		//
+		// UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+		// // Standard
+		// // SerialPortService
+		// // ID
+		// BluetoothSocket mmSocket;
+		// OutputStream mmOutputStream;
+		// InputStream mmInputStream = null;
+		// try {
+		// mmSocket = lastDevice.createRfcommSocketToServiceRecord(uuid);
+		// mmSocket.connect();
+		// mmOutputStream = mmSocket.getOutputStream();
+		// mmInputStream = mmSocket.getInputStream();
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// Log.v("test", "Bluetooth connected.");
+		//
+		//
+		// Log.v("test", "output"+app.getBluetoothConnection());
+		//
+		// //do {
+		// // text.append(mmInputStream.toString());
+		// //} while (true);
+		//
+		// }
 	}
 }

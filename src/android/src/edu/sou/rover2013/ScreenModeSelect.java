@@ -53,4 +53,6 @@ public class ScreenModeSelect extends Activity {
 		}
 	}
 	
+	
+	
 }
