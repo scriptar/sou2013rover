@@ -17,5 +17,9 @@
     <string name="title_activity_screen_telemetry">ROGO Telemetry &amp; Console</string>
     <string name="title_activity_screen_mode_select">ROGO Mode Select</string>
     <string name="text_welcome">Welcome to Rogo!\nPlease select an action from the options menu.</string>
+    <string name="button_enable_Bluetooth">Enable Bluetooth</string>
+    <string name="button_disable_bluetooth">Disable Bluetooth</string>
+    <string name="button_connect_bluetooth">Connect Bluetooth</string>
+    <string name="button_list_devices">List Devices</string>
 
 </resources>

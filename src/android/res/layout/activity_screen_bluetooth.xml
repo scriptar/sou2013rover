@@ -8,33 +8,58 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ScreenBluetooth" >
 
-    
-    
-    <Button
-        android:id="@+id/button_test_bluetooth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/button_test_bluetooth" />
-
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:text="Bluetooth Activity"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/button_enable_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView1"
+        android:layout_alignLeft="@+id/header"
+        android:layout_alignRight="@+id/header"
+        android:layout_below="@+id/header"
+        android:text="@string/button_enable_Bluetooth" />
+
+    <Button
+        android:id="@+id/button_disable_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_enable_bluetooth"
+        android:layout_alignRight="@+id/button_enable_bluetooth"
+        android:layout_below="@+id/button_enable_bluetooth"
+        android:text="@string/button_disable_bluetooth" />
+
+    <Button
+        android:id="@+id/button_list_devices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_disable_bluetooth"
+        android:layout_alignRight="@+id/button_disable_bluetooth"
+        android:layout_below="@+id/button_disable_bluetooth"
+        android:text="@string/button_list_devices" />
+
+    <Button
+        android:id="@+id/button_connect_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_list_devices"
+        android:layout_alignRight="@+id/button_list_devices"
+        android:layout_below="@+id/button_list_devices"
+        android:text="@string/button_connect_bluetooth" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="TextView" />
+        android:layout_below="@+id/button_connect_bluetooth" />
 
 </RelativeLayout>

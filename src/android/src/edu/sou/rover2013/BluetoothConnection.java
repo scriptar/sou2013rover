@@ -1,18 +1,29 @@
 package edu.sou.rover2013;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Set;
+import java.util.UUID;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
-import android.util.Log;
-import android.bluetooth.*;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 
 // This class handles creation of Android Bluetooth connections
 public class BluetoothConnection {
 
-	private BluetoothAdapter adapter;
-	private BluetoothDevice device;
+	private static UUID uuid = UUID
+			.fromString("00001101-0000-1000-8000-00805f9b34fb");
+
+	private BluetoothAdapter adapter = null;
+	private BluetoothDevice device = null;
+	private BluetoothSocket mmSocket = null;
+	private OutputStream mmOutputStream = null;
+	private InputStream mmInputStream = null;
+
+	// TODO Consider adding pauses after enabling/disabling bluetooth
+	
+	// TODO check for status before operations. Will fail if changing
 
 	// Constructor
 	public BluetoothConnection() {
@@ -20,7 +31,7 @@ public class BluetoothConnection {
 	}
 
 	// Check to see if bluetooth exists on device
-	public boolean isAvailable() {
+	public boolean isBluetoothCapable() {
 		if (BluetoothAdapter.getDefaultAdapter() == null) {
 			return false;
 		} else {
@@ -30,7 +41,7 @@ public class BluetoothConnection {
 
 	// Check to see if Bluetooth is currently enabled
 	public boolean isEnabled() {
-		if (!isAvailable()) {
+		if (!isBluetoothCapable()) {
 			return false;
 		}
 		if (BluetoothAdapter.getDefaultAdapter().isEnabled()) {
@@ -40,21 +51,24 @@ public class BluetoothConnection {
 		}
 	}
 
-	// TODO Currently connected?
-	public boolean isConnected(){
-		return false;
+	// Currently connected?
+	public boolean isConnected() {
+		if (mmSocket == null) {
+			return false;
+		}
+		return mmSocket.isConnected();
 	}
 
 	// Enables Bluetooth
 	public void enableBluetooth() {
 		if (!isEnabled())
-			BluetoothAdapter.getDefaultAdapter().enable();
+			adapter.enable();
 	}
 
 	// Disables Bluetooth
 	public void disableBluetooth() {
 		if (isEnabled())
-			BluetoothAdapter.getDefaultAdapter().disable();
+			adapter.disable();
 	}
 
 	// Returns a set containing all paired devices
@@ -66,22 +80,29 @@ public class BluetoothConnection {
 	public int pairedDeviceCount() {
 		return adapter.getBondedDevices().size();
 	}
-	
+
 	// allows Bluetooth Device selection
-	public void selectDevice(BluetoothDevice item){
-		device = item;
+	public void selectDevice(BluetoothDevice object) {
+		device = object;
 	}
-	
+
 	// Establishes connection with currently selected device
-	public boolean connectDevice(){
+	public boolean connectSelectedDevice() {
 		return connectDevice(device);
 	}
 
-	// TODO Connection Code here
-	public boolean connectDevice(BluetoothDevice object){
-		//connect to device...
-		//False if not connected.
+	// Connection Code, bluetooth to device
+	public boolean connectDevice(BluetoothDevice object) {
+		try {
+			mmSocket = object.createRfcommSocketToServiceRecord(uuid);
+			mmSocket.connect();
+			mmOutputStream = mmSocket.getOutputStream();
+			mmInputStream = mmSocket.getInputStream();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
-	
+
 }
