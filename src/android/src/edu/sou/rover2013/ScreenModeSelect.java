@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+// TODO Replace this action with a proper dialog Combo-Selection-box-thingy
 public class ScreenModeSelect extends Activity {
 
 	@Override

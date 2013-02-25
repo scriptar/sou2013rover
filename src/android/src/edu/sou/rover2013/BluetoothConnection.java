@@ -24,6 +24,8 @@ public class BluetoothConnection {
 	// TODO Consider adding pauses after enabling/disabling bluetooth
 	
 	// TODO check for status before operations. Will fail if changing
+	
+	// TODO Data Streams... how are we going to handle input/output?
 
 	// Constructor
 	public BluetoothConnection() {
