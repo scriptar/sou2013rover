@@ -17,29 +17,25 @@
 #define CONTROL_PRIORITY	1
 #define PREFIX_PRIORITY		2
 
-typedef long int NODETYPES;
-#define NT_ROOT		(NODETYPES)0001
-#define NT_CONTROL	(NODETYPES)0002
-#define NT_OP		(NODETYPES)0004
-#define NT_NUMBER	(NODETYPES)0010
-#define NT_VAR		(NODETYPES)0020
-#define NT_FUNC		(NODETYPES)0040
-#define NT_LIST		(NODETYPES)0100
+typedef enum {ntUnknown, ntControl, ntOp, ntNumber, ntVar, ntFunc, ntList} NodeType;
 
 /*** type definitions ***/
 
-typedef struct rogonode {
-	NODETYPES nodetype;
-	struct rogonode *params;
-	struct rogonode *next;
+typedef struct treeNode {
+	NodeType type;
+	struct treeNode *left;
+	struct treeNode *right;
+	struct treeNode *next;
 	struct {
 	    short minargs;
 	    short defargs;
 		short maxargs;
 		short priority;
-		struct rogonode *(*prim_funtion) ();
+		struct treeNode *(*prim_funtion) ();
 	} prim;
-} RNODE;
+} TNODE;
+
+#define NIL (TNODE *)0
 
 typedef struct primitive {
     char *name;
@@ -47,34 +43,36 @@ typedef struct primitive {
     short defargs;
     short maxargs;
     short priority;
-    RNODE *(*prim_function) ();
+    TNODE *(*prim_function) ();
 } PRIMTYPE;
 
 /*** function definitions ***/
-RNODE *newnode(NODETYPES type);
-RNODE *getRootNode(void);
-RNODE *getMulNode(RNODE *args);
-RNODE *getAddNode(RNODE *args);
-RNODE *getSubNode(RNODE *args);
-RNODE *getDivideNode(RNODE *args);
-RNODE *getLessNode(RNODE *args);
-RNODE *getEqualNode(RNODE *args);
-RNODE *getGreaterNode(RNODE *args);
-RNODE *getLessEqualNode(RNODE *args);
-RNODE *getNotEqualNode(RNODE *args);
-RNODE *getGreaterEqualNode(RNODE *args);
-RNODE *getAndNode(RNODE *args);
-RNODE *getBackNode(RNODE *args);
-RNODE *getForwardNode(RNODE *args);
-RNODE *getIfNode(RNODE *args);
-RNODE *getIfElseNode(RNODE *args);
-RNODE *getLeftNode(RNODE *args);
-RNODE *getLzAimNode(RNODE *args);
-RNODE *getLzFireNode(RNODE *args);
-RNODE *getNotNode(RNODE *args);
-RNODE *getOrNode(RNODE *args);
-RNODE *getPauseNode(RNODE *args);
-RNODE *getRepeatNode(RNODE *args);
-RNODE *getRightNode(RNODE *args);
+TNODE *makeTree(char **cmdlist);
+TNODE *makeExpNode(TNODE *parent, TNODE *leftChild, TNODE *rightChild);
+TNODE *setNextNode(TNODE *currentNode, TNODE *nextNode);
+TNODE *newTreeNode(char *ident);
+TNODE *getMulNode(TNODE *args);
+TNODE *getAddNode(TNODE *args);
+TNODE *getSubNode(TNODE *args);
+TNODE *getDivideNode(TNODE *args);
+TNODE *getLessNode(TNODE *args);
+TNODE *getEqualNode(TNODE *args);
+TNODE *getGreaterNode(TNODE *args);
+TNODE *getLessEqualNode(TNODE *args);
+TNODE *getNotEqualNode(TNODE *args);
+TNODE *getGreaterEqualNode(TNODE *args);
+TNODE *getAndNode(TNODE *args);
+TNODE *getBackNode(TNODE *args);
+TNODE *getForwardNode(TNODE *args);
+TNODE *getIfNode(TNODE *args);
+TNODE *getIfElseNode(TNODE *args);
+TNODE *getLeftNode(TNODE *args);
+TNODE *getLzAimNode(TNODE *args);
+TNODE *getLzFireNode(TNODE *args);
+TNODE *getNotNode(TNODE *args);
+TNODE *getOrNode(TNODE *args);
+TNODE *getPauseNode(TNODE *args);
+TNODE *getRepeatNode(TNODE *args);
+TNODE *getRightNode(TNODE *args);
 
 #endif

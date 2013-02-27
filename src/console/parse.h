@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "tree.h"
 
 /*** defines ***/
 #define MAXSTR		100
@@ -20,8 +19,5 @@
 
 /*** function definitions ***/
 char **fileReadCommands(const char* fileName);
-RNODE *makeTree(char **cmds);
-void appendNode(RNODE *parent, RNODE *child);
-RNODE *makeNode(const char *txt);
 
 #endif

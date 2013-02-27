@@ -29,7 +29,7 @@ char **fileReadCommands(const char* fileName)
 	int good, i, start, end, count = 0;
 	char linebuf[MAXSTR + 1];
 	char *chPtr;
-	char **cmds = malloc(sizeof(char)*(MAXCMDS + 1));
+	char **cmds = malloc(sizeof(char)*(MAXCMDS + 1)); //TODO: convert cmds to linked list...
 	for (i = 0; i < MAXCMDS + 1; i++)
 		cmds[i] = NULL;
 	
@@ -92,32 +92,4 @@ char **fileReadCommands(const char* fileName)
 	fclose(fp);
 	
 	return cmds;
-}
-
-RNODE *makeTree(char **cmds)
-{
-	char *cmd;
-	int i;
-	//create command tree from cmds array
-	//RNODE *tree = getRootNode();
-	while (*cmds)
-	{
-		cmd = *cmds;
-		printf("%s\n", cmd);
-		free(cmd);
-		cmd = NULL;
-		*cmds++;
-	}
-	//return tree;
-	return (RNODE *)0;
-}
-
-void appendNode(RNODE *parent, RNODE *child)
-{
-	parent->next = child;
-}
-
-RNODE *makeNode(const char *txt)
-{
-	RNODE *node = (RNODE *)0;
 }

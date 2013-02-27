@@ -5,142 +5,200 @@
 
 #include "tree.h"
 
+TNODE *makeTree(char **cmdlist)
+{
+	char *cmd;
+	int i;
+	//create command tree from cmdlist array
+	//TNODE *tree = newTreeNode("ROGOBEGIN");
+	//TNODE *next = tree;
+	while (*cmdlist)
+	{
+		cmd = *cmdlist;
+		printf("%s\n", cmd);
+		//split cmd into cmds...?
+
+		//setNextNode(next, newTreeNode(cmd));
+		free(cmd);
+		cmd = NULL;
+		*cmdlist++;
+	}
+	//free(cmdlist);
+	//setNextNode(next, newTreeNode("ROGOEND"));
+	//return tree;
+	return NIL;
+}
+
+TNODE *makeExpNode(TNODE *parent, TNODE *leftChild, TNODE *rightChild)
+{
+	parent->left = leftChild;
+	parent->right = rightChild;
+	return parent;
+}
+
+TNODE *setNextNode(TNODE *currentNode, TNODE *nextNode)
+{
+	currentNode->next = nextNode;
+	return nextNode;
+}
+
+
 /*
-NODE *exec(NODE *args, char fcn) {
+TNODE *exec(TNODE *args, char fcn)
+{
 	switch(fcn) {
 		case '-': ival = -ival; break;
 		
 	}
 }
-
 */
-RNODE *newnode(NODETYPES type)
+
+TNODE *newTreeNode(char *ident)
 {
-	RNODE *newnd = (RNODE *)0;
-	//newnode->nodetype = type;
-	//newnode->params = (RNODE *)0;
-	//newnd->next = (RNODE *)0;
-	return newnd;
+	//char *pos = (char*) bsearch(ident, prims, sizeof(prims), sizeof(primtype), (int(*)(const void*, const void*))strcmp);
+	//NodeType type = determine type of node from ident...
+	NodeType type = ntUnknown;
+	//if (strcmp(ident, "[") != 0)
+	//	type = ntList;
+	
+	switch (type) {
+		case ntVar:
+			
+			break;
+		case ntOp:
+			if (strcmp(ident, "=") != 0)
+			{
+				
+			}
+			break;
+		case ntControl:
+			
+			break;
+		case ntUnknown:
+			return NIL;
+	}
+	TNODE *newNode = (TNODE *)malloc(sizeof(TNODE));
+	//newNode->ident = ident;
+	newNode->type = type;
+	newNode->left = NULL;
+	newNode->right = NULL;
+	newNode->next = NULL;
+	return newNode;
 }
 
-RNODE *getRootNode(void)
+TNODE *getMulNode(TNODE *args)
 {
-	return newnode(NT_ROOT);
+	return NIL;
 }
 
-RNODE *getMulNode(RNODE *args)
+TNODE *getAddNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getAddNode(RNODE *args)
+TNODE *getSubNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getSubNode(RNODE *args)
+TNODE *getDivideNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getDivideNode(RNODE *args)
+TNODE *getLessNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getLessNode(RNODE *args)
+TNODE *getEqualNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getEqualNode(RNODE *args)
+TNODE *getGreaterNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getGreaterNode(RNODE *args)
+TNODE *getLessEqualNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getLessEqualNode(RNODE *args)
+TNODE *getNotEqualNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getNotEqualNode(RNODE *args)
+TNODE *getGreaterEqualNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getGreaterEqualNode(RNODE *args)
+TNODE *getAndNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getAndNode(RNODE *args)
+TNODE *getBackNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getBackNode(RNODE *args)
+TNODE *getForwardNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getForwardNode(RNODE *args)
+TNODE *getIfNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getIfNode(RNODE *args)
+TNODE *getIfElseNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getIfElseNode(RNODE *args)
+TNODE *getLeftNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getLeftNode(RNODE *args)
+TNODE *getLzAimNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getLzAimNode(RNODE *args)
+TNODE *getLzFireNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getLzFireNode(RNODE *args)
+TNODE *getNotNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getNotNode(RNODE *args)
+TNODE *getOrNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getOrNode(RNODE *args)
+TNODE *getPauseNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getPauseNode(RNODE *args)
+TNODE *getRepeatNode(TNODE *args)
 {
-	return (RNODE *)0;
+	return NIL;
 }
 
-RNODE *getRepeatNode(RNODE *args)
+TNODE *getRightNode(TNODE *args)
 {
-	return (RNODE *)0;
-}
-
-RNODE *getRightNode(RNODE *args)
-{
-	return (RNODE *)0;
+	return NIL;
 }
 
 PRIMTYPE prims[] = {
