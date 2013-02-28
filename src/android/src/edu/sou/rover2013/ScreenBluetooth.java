@@ -1,9 +1,13 @@
 package edu.sou.rover2013;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +60,7 @@ public class ScreenBluetooth extends Activity {
 				TextView outputText = (TextView) findViewById(R.id.output);
 				outputText.append("\nList of paired & available devices:\n");
 				for (BluetoothDevice device : bluetooth.pairedDevices()) {
-					outputText.append("   "+device.getName() + " "
+					outputText.append("   " + device.getName() + " "
 							+ device.getAddress() + "\n");
 				}
 				outputText.append("\n");
@@ -94,7 +98,7 @@ public class ScreenBluetooth extends Activity {
 		}
 
 		outputText.append("Paired devices Count: "
-				+ bluetooth.pairedDeviceCount()+"\n");
+				+ bluetooth.pairedDeviceCount() + "\n");
 
 		if (bluetooth.pairedDeviceCount() <= 0) {
 			outputText.append("No Devices Available\n");
@@ -105,11 +109,11 @@ public class ScreenBluetooth extends Activity {
 		outputText.append("List of paired devices:\n");
 		BluetoothDevice rover = null;
 		for (BluetoothDevice device : bluetooth.pairedDevices()) {
-			outputText.append("   "+device.getName() + " " + device.getAddress()+"\n");
+			outputText.append("   " + device.getName() + " "
+					+ device.getAddress() + "\n");
 			rover = device;
 		}
 
-		
 		if (bluetooth.isConnected()) {
 			outputText.append("Bluetooth Connection Already Exists\n");
 			return;
@@ -121,6 +125,29 @@ public class ScreenBluetooth extends Activity {
 			outputText.append("Bluetooth connection failed\n");
 		}
 		outputText.append("\n");
+
+		InputStream input = bluetooth.getMmInputStream();
+		String packet = "";
+
+		while (true) {
+			try {
+				int get_byte = input.read();
+				char get_char = (char) get_byte;
+
+				if (get_char != '\u0003') {
+					Log.v("test", "Adding packet raw data: \"" + get_char
+							+ "\"");
+					packet += get_char;
+				} else {
+					Log.v("test", "Packet received:\n" + packet);
+					outputText.append("Packet Contents: packet");
+					packet = "";
+				}
+			} catch (IOException e) {
+				Log.v("test", "Connection lost.");
+				break;
+			}
+		}
 
 	}
 

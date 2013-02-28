@@ -13,20 +13,19 @@ import android.view.MenuItem;
 
 public class ScreenMain extends Activity {
 
-	//Lifecycle Method List
-	//	protected void onCreate(Bundle savedInstanceState);
-	//	protected void onStart();
-	//	protected void onRestart();
-	//	protected void onResume();
-	//	protected void onPause();
-	//	protected void onStop();
-	//	protected void onDestroy();
+	// Lifecycle Method List
+	// protected void onCreate(Bundle savedInstanceState);
+	// protected void onStart();
+	// protected void onRestart();
+	// protected void onResume();
+	// protected void onPause();
+	// protected void onStop();
+	// protected void onDestroy();
 	
 	// TODO find a way to implement menu in all activities, rather than dupe code.
 	// TODO Replace bluetooth, mode select, and telemetry activities with proper preference screens
 	// TODO find a way to have bluetooth persist through application, rather than activities.
 	
-
 	@Override
 	// Called when activity is first created
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class ScreenMain extends Activity {
 	@Override
 	// Inflate the menu; adds items to the action bar if it is present.
 	public boolean onCreateOptionsMenu(Menu menu) {
-		//call parent to include system items as well
+		// call parent to include system items as well
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.settings_menu, menu);
 		return true;
@@ -64,6 +63,5 @@ public class ScreenMain extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 
 }

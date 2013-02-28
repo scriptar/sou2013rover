@@ -20,6 +20,21 @@ public class BluetoothConnection {
 	private BluetoothSocket mmSocket = null;
 	private OutputStream mmOutputStream = null;
 	private InputStream mmInputStream = null;
+	public InputStream getMmInputStream() {
+		return mmInputStream;
+	}
+
+	public void setMmInputStream(InputStream mmInputStream) {
+		this.mmInputStream = mmInputStream;
+	}
+
+	public OutputStream getMmOutputStream() {
+		return mmOutputStream;
+	}
+
+	public void setMmOutputStream(OutputStream mmOutputStream) {
+		this.mmOutputStream = mmOutputStream;
+	}
 
 	// TODO Consider adding pauses after enabling/disabling bluetooth
 	
@@ -53,21 +68,24 @@ public class BluetoothConnection {
 		}
 	}
 
-	// Currently connected?
+	// TODO Currently connected?
 	public boolean isConnected() {
 		if (mmSocket == null) {
 			return false;
 		}
-		return mmSocket.isConnected();
+			return true;
+		//return mmSocket.isConnected();
 	}
 
 	// Enables Bluetooth
+	// TODO add error catching if not supported
 	public void enableBluetooth() {
 		if (!isEnabled())
 			adapter.enable();
 	}
 
 	// Disables Bluetooth
+	// TODO add error catching if not supported
 	public void disableBluetooth() {
 		if (isEnabled())
 			adapter.disable();
