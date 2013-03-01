@@ -125,29 +125,43 @@ public class ScreenBluetooth extends Activity {
 			outputText.append("Bluetooth connection failed\n");
 		}
 		outputText.append("\n");
-
-		InputStream input = bluetooth.getMmInputStream();
-		String packet = "";
-
-		while (true) {
-			try {
-				int get_byte = input.read();
-				char get_char = (char) get_byte;
-
-				if (get_char != '\u0003') {
-					Log.v("test", "Adding packet raw data: \"" + get_char
-							+ "\"");
-					packet += get_char;
-				} else {
-					Log.v("test", "Packet received:\n" + packet);
-					outputText.append("Packet Contents: packet");
-					packet = "";
-				}
-			} catch (IOException e) {
-				Log.v("test", "Connection lost.");
-				break;
-			}
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		InputStream input = bluetooth.getMmInputStream();
+		byte[] buffer = new byte[1024];
+		try {
+			int r = input.read(buffer);
+			String message = new String(buffer, 0, r);
+		
+			outputText.setText(message);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+//		String packet = "";
+//		while (true) {
+//			try {
+//				int get_byte = input.read();
+//				char get_char = (char) get_byte;
+////				outputText.setText("");
+//				if (get_char != '\u0003') {
+//					Log.v("test", "Adding packet raw data: \"" + get_char
+//							+ "\"");
+//					packet += get_char;
+//				} else {
+//					Log.v("test", "Packet received:\n" + packet);
+//					outputText.append("Packet Contents: packet");
+//					packet = "";
+//				}
+//			} catch (IOException e) {
+//				Log.v("test", "Connection lost.");
+//				break;
+//			}
+//		}
 
 	}
 

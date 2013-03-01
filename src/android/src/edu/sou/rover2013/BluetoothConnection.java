@@ -5,12 +5,13 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 // This class handles creation of Android Bluetooth connections
-public class BluetoothConnection {
+public class BluetoothConnection extends Activity{
 
 	private static UUID uuid = UUID
 			.fromString("00001101-0000-1000-8000-00805f9b34fb");
