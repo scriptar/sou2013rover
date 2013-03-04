@@ -21,5 +21,6 @@
     <string name="button_disable_bluetooth">Disable Bluetooth</string>
     <string name="button_connect_bluetooth">Connect Bluetooth</string>
     <string name="button_list_devices">List Devices</string>
-
+    <string name="exit">Exit</string>
+    
 </resources>

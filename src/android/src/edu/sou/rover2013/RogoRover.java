@@ -5,4 +5,14 @@ package edu.sou.rover2013;
 // Uses Bluetooth Communication Class
 public class RogoRover {
 
+	private WirelessConnection connection;
+
+	public RogoRover(WirelessConnection connection){
+		this.connection = connection;
+	}
+
+	//TODO Method rover.send(data)
+	//Other useful rover information
+	//Collect Bluetooth data and store here, so that other classes can access it
+
 }

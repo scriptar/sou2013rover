@@ -6,32 +6,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ScreenBluetooth" >
+    android:scrollbars="vertical"
+    tools:context=".ConnectionActivity" >
 
     <TextView
-        android:id="@+id/header"
+        android:id="@+id/output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="Bluetooth Activity"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/button_enable_bluetooth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/header"
-        android:layout_alignRight="@+id/header"
-        android:layout_below="@+id/header"
-        android:text="@string/button_enable_Bluetooth" />
+        android:layout_above="@+id/Clear"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ToggleLight"
+        android:gravity="bottom"
+        android:scrollbars="vertical"
+        android:text="Console Output\n" />
 
     <Button
         android:id="@+id/button_disable_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_enable_bluetooth"
-        android:layout_alignRight="@+id/button_enable_bluetooth"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/button_enable_bluetooth"
         android:text="@string/button_disable_bluetooth" />
 
@@ -39,27 +34,54 @@
         android:id="@+id/button_list_devices"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_disable_bluetooth"
-        android:layout_alignRight="@+id/button_disable_bluetooth"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/button_disable_bluetooth"
         android:text="@string/button_list_devices" />
+
+    <Button
+        android:id="@+id/button_enable_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/button_enable_Bluetooth" />
 
     <Button
         android:id="@+id/button_connect_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_list_devices"
-        android:layout_alignRight="@+id/button_list_devices"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/button_list_devices"
         android:text="@string/button_connect_bluetooth" />
 
-    <TextView
-        android:id="@+id/output"
+    <Button
+        android:id="@+id/display_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button_connect_bluetooth"
+        android:text="Display Buffered Ultrasonic Data" />
+
+    <Button
+        android:id="@+id/Clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_connect_bluetooth" />
+        android:text="Clear Output" />
+
+    <Button
+        android:id="@+id/ToggleLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/display_data"
+        android:text="Toggle Remote Light" />
 
 </RelativeLayout>

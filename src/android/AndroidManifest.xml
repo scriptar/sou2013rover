@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="edu.sou.rover2013.ScreenMain"
+            android:name="edu.sou.rover2013.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,17 +28,17 @@
         </activity>
         
         <activity
-            android:name="edu.sou.rover2013.ScreenBluetooth"
+            android:name="edu.sou.rover2013.ConnectionActivity"
             android:label="@string/title_activity_screen__bluetooth" >
         </activity>
         
         <activity
-            android:name="edu.sou.rover2013.ScreenTelemetry"
+            android:name="edu.sou.rover2013.TelemetryActivity"
             android:label="@string/title_activity_screen_telemetry" >
         </activity>
         
         <activity
-            android:name="edu.sou.rover2013.ScreenModeSelect"
+            android:name="edu.sou.rover2013.ModeSelectActivity"
             android:label="@string/title_activity_screen_mode_select" >
         </activity>
         

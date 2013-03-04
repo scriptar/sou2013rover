@@ -17,11 +17,11 @@ import android.app.Application;
 
 public class RogoApplication extends Application {
 
-	private BluetoothConnection bluetoothConnection = null;
+	private WirelessConnection bluetoothConnection = null;
 
-	public BluetoothConnection getBluetoothConnection() {
+	public WirelessConnection getWirelessConnection() {
 		if (bluetoothConnection == null) {
-			bluetoothConnection = new BluetoothConnection();
+			bluetoothConnection = new WirelessConnection();
 		}
 		return bluetoothConnection;
 	}
