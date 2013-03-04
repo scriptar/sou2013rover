@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "parse.h"
 
 /*** defines ***/
 
@@ -47,10 +48,11 @@ typedef struct primitive {
 } PRIMTYPE;
 
 /*** function definitions ***/
-TNODE *makeTree(char **cmdlist);
+TNODE *makeTree(const TEXTNODE *list);
+int cmpPrim(const void *p1, const void *p2);
+TNODE *newTreeNode(const TEXTNODE *node);
 TNODE *makeExpNode(TNODE *parent, TNODE *leftChild, TNODE *rightChild);
 TNODE *setNextNode(TNODE *currentNode, TNODE *nextNode);
-TNODE *newTreeNode(char *ident);
 TNODE *getMulNode(TNODE *args);
 TNODE *getAddNode(TNODE *args);
 TNODE *getSubNode(TNODE *args);

@@ -13,11 +13,22 @@
 
 /*** defines ***/
 #define MAXSTR		100
-#define MAXCMDS		100
 
 /*** type definitions ***/
+typedef enum {NONE, ID, NUM, NEGATIVE, OP, LBR, RBR} PrimitiveType;
+
+typedef struct textNode {
+	char *text;
+	PrimitiveType type;
+	struct textNode *prev;
+	struct textNode *next;
+} TEXTNODE;
 
 /*** function definitions ***/
-char **fileReadCommands(const char* fileName);
+TEXTNODE *fileReadCommands(const char* fileName);
+TEXTNODE *getNewTextNode(const char* text);
+void splitTextOnPrimitives(TEXTNODE *list);
+void destroyTextList(TEXTNODE *list);
+const char *dispType(const PrimitiveType ptype);
 
 #endif

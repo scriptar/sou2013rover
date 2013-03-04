@@ -1,2 +1,2 @@
-repeat 100 [ fd 10 rt 90 ]
-if 1 = 1 [ fd 100 ]
+repeat v0[fd v2 rt v3.2]
+if 1==-1+2 [fd 100]

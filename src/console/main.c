@@ -23,8 +23,9 @@ int main(int argc, char *argv[])
 	}
 	strcpy(fName, argv[1]);
 	
-	char **cmdList = fileReadCommands(fName);
-	makeTree(cmdList);
+	TEXTNODE *list = fileReadCommands(fName);
+	makeTree(list);
+	destroyTextList(list);
 	
 	return 0;
 } //int main

@@ -5,28 +5,136 @@
 
 #include "tree.h"
 
-TNODE *makeTree(char **cmdlist)
-{
-	char *cmd;
-	int i;
-	//create command tree from cmdlist array
-	//TNODE *tree = newTreeNode("ROGOBEGIN");
-	//TNODE *next = tree;
-	while (*cmdlist)
-	{
-		cmd = *cmdlist;
-		printf("%s\n", cmd);
-		//split cmd into cmds...?
+PRIMTYPE prims[] = {
+	{"-", 1, 1, 1, PREFIX_PRIORITY + 2, getSubNode},
+	{"*", 1, 1, 1, PREFIX_PRIORITY + 3, getMulNode},
+	{"/", 1, 1, 1, PREFIX_PRIORITY + 3, getDivideNode},
+	{"+", 1, 1, 1, PREFIX_PRIORITY + 2, getAddNode},
+	{"<", 2, 2, 2, PREFIX_PRIORITY + 1, getLessNode},
+	{"<=", 2, 2, 2, PREFIX_PRIORITY + 1, getLessEqualNode},
+	{"<>", 2, 2, 2, PREFIX_PRIORITY + 1, getNotEqualNode},
+	{"=", 2, 2, 2, PREFIX_PRIORITY + 1, getEqualNode},
+	{">", 2, 2, 2, PREFIX_PRIORITY + 1, getGreaterNode},
+	{">=", 2, 2, 2, PREFIX_PRIORITY + 1, getGreaterEqualNode},
+	{"AND", 0, 2, -1, PREFIX_PRIORITY, getAndNode},
+	{"BACK", 1, 1, 1, PREFIX_PRIORITY, getBackNode},
+	{"BK", 1, 1, 1, PREFIX_PRIORITY, getBackNode},
+	{"FD", 1, 1, 1, PREFIX_PRIORITY, getForwardNode},
+	{"FORWARD", 1, 1, 1, PREFIX_PRIORITY, getForwardNode},
+	{"IF", 2, 2, 3, CONTROL_PRIORITY, getIfNode},
+	{"IFELSE", 3, 3, 3, CONTROL_PRIORITY, getIfElseNode},
+	{"LEFT", 1, 1, 1, PREFIX_PRIORITY, getLeftNode},
+	{"LT", 1, 1, 1, PREFIX_PRIORITY, getLeftNode},
+	{"LZAIM", 1, 1, 1, PREFIX_PRIORITY, getLzAimNode},
+	{"LZFILE", 1, 1, 1, PREFIX_PRIORITY, getLzFireNode},
+	{"NOT", 1, 1, 1, PREFIX_PRIORITY, getNotNode},
+	{"OR", 0, 2, -1, PREFIX_PRIORITY, getOrNode},
+	{"PAUSE", 0, 0, 0, PREFIX_PRIORITY, getPauseNode},
+	{"REPEAT", 2, 2, 2, CONTROL_PRIORITY, getRepeatNode},
+	{"RIGHT", 1, 1, 1, PREFIX_PRIORITY, getRightNode},
+	{"RT", 1, 1, 1, PREFIX_PRIORITY, getRightNode},
+	{"", 0, 0, 0, 0, 0},
+	{"", 0, 0, 0, 0, 0},
+	{"", 0, 0, 0, 0, 0},
+	{"", 0, 0, 0, 0, 0},
+	{"", 0, 0, 0, 0, 0},
+	{"", 0, 0, 0, 0, 0}
+};
 
-		//setNextNode(next, newTreeNode(cmd));
-		free(cmd);
-		cmd = NULL;
-		*cmdlist++;
+TNODE *makeTree(const TEXTNODE *list)
+{
+	const TEXTNODE *listnode = list;
+	char *text;
+	int i = 0;
+	
+	qsort(prims, sizeof(prims)/sizeof(prims[0]), sizeof(PRIMTYPE), cmpPrim);
+	printf("Making Syntax Tree...\n");
+	//create command tree from list array
+	TNODE *tree = NIL;
+	TNODE *current = NIL;
+	//split text into expressions and commands...
+	while (listnode)
+	{
+		printf("List[%d]: %s (%s)\n", i++, listnode->text, dispType(listnode->type));
+		if (tree == NIL)
+		{
+			current = tree = newTreeNode(listnode);
+		}
+		else
+		{
+			setNextNode(current, newTreeNode(listnode));
+		}
+		listnode = listnode->next;
 	}
-	//free(cmdlist);
-	//setNextNode(next, newTreeNode("ROGOEND"));
-	//return tree;
-	return NIL;
+	return tree;
+	//return NIL;
+}
+
+int cmpPrim(const void *p1, const void *p2)
+{
+    PRIMTYPE *prim1 = (PRIMTYPE *) p1;
+    PRIMTYPE *prim2 = (PRIMTYPE *) p2;
+    return strcmp(prim1->name, prim2->name);
+}
+
+TNODE *newTreeNode(const TEXTNODE *node)
+{
+	PRIMTYPE *pos = NULL;
+	PRIMTYPE *search = NULL;
+	NodeType treetype = ntUnknown;
+	int isVar;
+
+	switch (node->type)
+	{
+		case OP:
+		case ID:
+			search = (PRIMTYPE *)malloc(sizeof(PRIMTYPE));
+			search->name = (char *)malloc(strlen(node->text) + 1);
+			strcpy(search->name, node->text);
+			pos = (PRIMTYPE *) bsearch(search, prims, sizeof(prims)/sizeof(prims[0]), sizeof(PRIMTYPE), cmpPrim);
+			free(search->name);
+			free(search);
+			//cmd?
+			if (pos != NULL)
+			{
+				printf("\tFound: %s\n", pos->name);
+				treetype = ntControl;
+			}
+			else
+			{
+				isVar = 0;
+				if (strlen(node->text) == 2)
+					isVar = (node->text[0] == 'V' && isdigit(node->text[1]));
+				else if (strlen(node->text) == 3)
+					isVar = (node->text[0] == 'V' && isdigit(node->text[1]) && isdigit(node->text[2]));
+				if (isVar)
+					printf("\tVariable %s found.\n", node->text);
+				else
+					printf("\tNot found: %s\n", node->text);
+			}
+			// var?
+			
+			// 
+			break;
+		case NUM:
+			// convert to numeric
+			treetype = ntNumber;
+			break;
+		case LBR:
+			break;
+		case RBR:
+			break;
+		default:
+			return NIL;
+	}
+	
+	TNODE *newNode = (TNODE *)malloc(sizeof(TNODE));
+	//newNode->ident = ident;
+	newNode->type = treetype;
+	newNode->left = NULL;
+	newNode->right = NULL;
+	newNode->next = NULL;
+	return newNode;
 }
 
 TNODE *makeExpNode(TNODE *parent, TNODE *leftChild, TNODE *rightChild)
@@ -53,38 +161,7 @@ TNODE *exec(TNODE *args, char fcn)
 }
 */
 
-TNODE *newTreeNode(char *ident)
-{
-	//char *pos = (char*) bsearch(ident, prims, sizeof(prims), sizeof(primtype), (int(*)(const void*, const void*))strcmp);
-	//NodeType type = determine type of node from ident...
-	NodeType type = ntUnknown;
-	//if (strcmp(ident, "[") != 0)
-	//	type = ntList;
-	
-	switch (type) {
-		case ntVar:
-			
-			break;
-		case ntOp:
-			if (strcmp(ident, "=") != 0)
-			{
-				
-			}
-			break;
-		case ntControl:
-			
-			break;
-		case ntUnknown:
-			return NIL;
-	}
-	TNODE *newNode = (TNODE *)malloc(sizeof(TNODE));
-	//newNode->ident = ident;
-	newNode->type = type;
-	newNode->left = NULL;
-	newNode->right = NULL;
-	newNode->next = NULL;
-	return newNode;
-}
+
 
 TNODE *getMulNode(TNODE *args)
 {
@@ -200,36 +277,5 @@ TNODE *getRightNode(TNODE *args)
 {
 	return NIL;
 }
-
-PRIMTYPE prims[] = {
-	{"*", 1, 1, 1, PREFIX_PRIORITY + 3, getMulNode},
-	{"+", 1, 1, 1, PREFIX_PRIORITY + 2, getAddNode},
-	{"-", 1, 1, 1, PREFIX_PRIORITY + 2, getSubNode},
-	{"/", 1, 1, 1, PREFIX_PRIORITY + 3, getDivideNode},
-	{"<", 2, 2, 2, PREFIX_PRIORITY + 1, getLessNode},
-	{"=", 2, 2, 2, PREFIX_PRIORITY + 1, getEqualNode},
-	{">", 2, 2, 2, PREFIX_PRIORITY + 1, getGreaterNode},
-	{"<=", 2, 2, 2, PREFIX_PRIORITY + 1, getLessEqualNode},
-	{"<>", 2, 2, 2, PREFIX_PRIORITY + 1, getNotEqualNode},
-	{">=", 2, 2, 2, PREFIX_PRIORITY + 1, getGreaterEqualNode},
-	{"AND", 0, 2, -1, PREFIX_PRIORITY, getAndNode},
-	{"BACK", 1, 1, 1, PREFIX_PRIORITY, getBackNode},
-	{"BK", 1, 1, 1, PREFIX_PRIORITY, getBackNode},
-	{"FD", 1, 1, 1, PREFIX_PRIORITY, getForwardNode},
-	{"FORWARD", 1, 1, 1, PREFIX_PRIORITY, getForwardNode},
-	{"IF", 2, 2, 3, CONTROL_PRIORITY, getIfNode},
-	{"IFELSE", 3, 3, 3, CONTROL_PRIORITY, getIfElseNode},
-	{"LEFT", 1, 1, 1, PREFIX_PRIORITY, getLeftNode},
-	{"LT", 1, 1, 1, PREFIX_PRIORITY, getLeftNode},
-	{"LZAIM", 1, 1, 1, PREFIX_PRIORITY, getLzAimNode},
-	{"LZFILE", 1, 1, 1, PREFIX_PRIORITY, getLzFireNode},
-	{"NOT", 1, 1, 1, PREFIX_PRIORITY, getNotNode},
-	{"OR", 0, 2, -1, PREFIX_PRIORITY, getOrNode},
-	{"PAUSE", 0, 0, 0, PREFIX_PRIORITY, getPauseNode},
-	{"REPEAT", 2, 2, 2, CONTROL_PRIORITY, getRepeatNode},
-	{"RIGHT", 1, 1, 1, PREFIX_PRIORITY, getRightNode},
-	{"RT", 1, 1, 1, PREFIX_PRIORITY, getRightNode},
-	{0, 0, 0, 0, 0, 0}
-};
 
 
