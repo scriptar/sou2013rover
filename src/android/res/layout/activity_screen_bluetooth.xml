@@ -10,7 +10,7 @@
     tools:context=".ConnectionActivity" >
 
     <TextView
-        android:id="@+id/output"
+        android:id="@+id/outputText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/Clear"
@@ -82,6 +82,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/display_data"
-        android:text="Toggle Remote Light" />
+        android:text="Test Remote Lights" />
 
 </RelativeLayout>

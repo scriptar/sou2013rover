@@ -3,7 +3,7 @@ package edu.sou.rover2013;
 import android.app.Application;
 
 // Extends application class, allowing for values/items to exist across all actions.
-// Similar to Singleton design pattern. Alternatives: passing data between actions.
+// Similar to Singleton design pattern. Alternatives: passing data between actions - Lots of work.
 
 // To access, use "connection = ((RogoApplication) getBluetoothConnection());"
 
@@ -17,12 +17,24 @@ import android.app.Application;
 
 public class RogoApplication extends Application {
 
-	private WirelessConnection bluetoothConnection = null;
+	private WirelessConnection wirelessConnection = null;
+	private RogoRover rogoRover = null;
 
+	/**
+	 * Returns current wireless connection, instantiates if does not exist. 
+	//TODO move this into the rover class.
+	*/
 	public WirelessConnection getWirelessConnection() {
-		if (bluetoothConnection == null) {
-			bluetoothConnection = new WirelessConnection();
+		if (wirelessConnection == null) {
+			wirelessConnection = new WirelessConnection();
 		}
-		return bluetoothConnection;
+		return wirelessConnection;
+	}
+	
+	/**
+	* Returns current rover object.
+	*/
+	public RogoRover getRogoRover(){
+		return rogoRover;
 	}
 }

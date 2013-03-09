@@ -8,13 +8,32 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ModeSelectActivity" >
 
+    <Button
+        android:id="@+id/complex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/simple"
+        android:text="Complex Control Mode" />
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="86dp"
         android:text="Control Mode Activity"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/simple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/complex"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="Simple Control Mode" />
 
 </RelativeLayout>

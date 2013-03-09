@@ -22,5 +22,6 @@
     <string name="button_connect_bluetooth">Connect Bluetooth</string>
     <string name="button_list_devices">List Devices</string>
     <string name="exit">Exit</string>
-    
+    <string name="title_activity_control_simple">Control Mode - Simple</string>
+
 </resources>

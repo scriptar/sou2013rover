@@ -12,35 +12,36 @@
         android:targetSdkVersion="17" />
 
     <application
-        android:allowBackup="true"
         android:name="edu.sou.rover2013.RogoApplication"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        
         <activity
             android:name="edu.sou.rover2013.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="edu.sou.rover2013.ConnectionActivity"
             android:label="@string/title_activity_screen__bluetooth" >
         </activity>
-        
         <activity
             android:name="edu.sou.rover2013.TelemetryActivity"
             android:label="@string/title_activity_screen_telemetry" >
         </activity>
-        
         <activity
             android:name="edu.sou.rover2013.ModeSelectActivity"
             android:label="@string/title_activity_screen_mode_select" >
         </activity>
-        
+        <activity
+            android:name="edu.sou.rover2013.ControlSimpleActivity"
+            android:label="@string/title_activity_control_simple" >
+        </activity>
     </application>
+
 </manifest>

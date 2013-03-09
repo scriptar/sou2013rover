@@ -2,7 +2,6 @@ package edu.sou.rover2013;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -23,20 +22,19 @@ public class ConnectionActivity extends BaseActivity {
 
 		app = (RogoApplication) getApplication();
 		connection = app.getWirelessConnection();
-		outputText = (TextView) findViewById(R.id.output);
+		outputText = (TextView) findViewById(R.id.outputText);
 
 		// inline button listeners
 		final Button button1 = (Button) findViewById(R.id.button_enable_bluetooth);
 		button1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				TextView outputText = (TextView) findViewById(R.id.output);
+				TextView outputText = (TextView) findViewById(R.id.outputText);
 				if (!WirelessConnection.isBluetoothEnabled()) {
 					try {
 						connection.enableBluetooth();
 						outputText.append("Bluetooth Enabled\n");
 					} catch (Exception e) {
-						outputText.append(e.toString());
-						outputText.append("\n");
+						outputText.append(e.toString() + "\n");
 					}
 				} else {
 					outputText.append("Bluetooth Already Enabled\n");
@@ -47,7 +45,7 @@ public class ConnectionActivity extends BaseActivity {
 		final Button button2 = (Button) findViewById(R.id.button_disable_bluetooth);
 		button2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				TextView outputText = (TextView) findViewById(R.id.output);
+				TextView outputText = (TextView) findViewById(R.id.outputText);
 				if (WirelessConnection.isBluetoothEnabled()) {
 					try {
 						connection.disableBluetooth();
@@ -65,7 +63,7 @@ public class ConnectionActivity extends BaseActivity {
 		final Button button3 = (Button) findViewById(R.id.button_list_devices);
 		button3.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				TextView outputText = (TextView) findViewById(R.id.output);
+				TextView outputText = (TextView) findViewById(R.id.outputText);
 				outputText.append("List of paired devices:\n");
 				try {
 					for (BluetoothDevice device : connection.pairedDevices()) {
@@ -91,21 +89,21 @@ public class ConnectionActivity extends BaseActivity {
 				displayBufferedInput();
 			}
 		});
-		
+
 		final Button button6 = (Button) findViewById(R.id.Clear);
 		button6.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				outputText.setText("");
 			}
 		});
-		
+
 		final Button button7 = (Button) findViewById(R.id.ToggleLight);
 		button7.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				toggleRemoteLight();
 			}
 		});
-		
+
 	}
 
 	// Create a Bluetooth Connection
@@ -130,7 +128,7 @@ public class ConnectionActivity extends BaseActivity {
 		outputText.append("Device Selected for Connection: " + rover.getName()
 				+ "\n");
 
-		//Attempt Connection
+		// Attempt Connection
 		try {
 			connection.connectDevice(rover);
 			outputText.append("Bluetooth connection established\n");
@@ -140,9 +138,12 @@ public class ConnectionActivity extends BaseActivity {
 		}
 	}
 
-
-	private void displayBufferedInput(){
-		if(!connection.isConnected()){
+	/**
+	 * Grabs Bluetooth Buffered Input, and prints it on the screen.
+	 * TODO Eventually, buffered input will be handled by Wireless Connection Class.
+	 */
+	private void displayBufferedInput() {
+		if (!connection.isConnected()) {
 			outputText.append("No Bluetooth Connection\n");
 			return;
 		}
@@ -156,19 +157,16 @@ public class ConnectionActivity extends BaseActivity {
 			e.printStackTrace();
 		}
 	}
-	
-	private void toggleRemoteLight(){
-		if(!connection.isConnected()){
-			outputText.append("No Bluetooth Connection\n");
-			return;
+
+	/**
+	 * Simple transmit example, used to change a single pin through bluetooth
+	 */
+	private void toggleRemoteLight() {
+		if(connection.transmitByte((byte) 1)){
+			outputText.append("Light Toggle Transmitted.\n");
+		} else {
+			outputText.append("Light Toggle Failed.\n");	
 		}
-		OutputStream output = connection.getOutputStream();
-		try {
-			output.write(1);
-			output.flush();
-			outputText.append("Light Toggle Sent.\n");
-		} catch (IOException e) {
-			outputText.append(e.toString()+"\n");
-		}
+		
 	}
 }

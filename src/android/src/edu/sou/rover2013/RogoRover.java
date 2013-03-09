@@ -11,6 +11,7 @@ public class RogoRover {
 		this.connection = connection;
 	}
 
+	//TODO Make sure connection object exists and is valid
 	//TODO Method rover.send(data)
 	//Other useful rover information
 	//Collect Bluetooth data and store here, so that other classes can access it

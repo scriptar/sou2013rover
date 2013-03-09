@@ -26,12 +26,16 @@ public class WirelessConnection extends Activity {
 	// TODO Consider adding pauses after enabling/disabling bluetooth
 	// TODO check for status before operations. Will fail if changing
 
-	/** Default Constructor. */
+	/**
+	 * Default Constructor.
+	 */
 	public WirelessConnection() {
 		adapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
-	/** Returns true if Android is Bluetooth capable, false if not. */
+	/**
+	 * Returns true if Android is Bluetooth capable, false if not.
+	 */
 	public static boolean isBluetoothCapable() {
 		if (BluetoothAdapter.getDefaultAdapter() == null) {
 			return false;
@@ -40,7 +44,9 @@ public class WirelessConnection extends Activity {
 		}
 	}
 
-	/** Returns true if Bluetooth is enabled, false if disabled or unavailable */
+	/**
+	 * Returns true if Bluetooth is enabled, false if disabled or unavailable
+	 */
 	public static boolean isBluetoothEnabled() {
 		if (!isBluetoothCapable()) {
 			return false;
@@ -52,23 +58,30 @@ public class WirelessConnection extends Activity {
 		}
 	}
 
-	/** Enables Bluetooth on Android */
+	/**
+	 * Enables Bluetooth on Android
+	 */
 	public void enableBluetooth() throws Exception {
 		if (isBluetoothCapable() && !isBluetoothEnabled()) {
 			adapter.enable();
 		}
 	}
 
-	/** Disables Bluetooth on Android */
+	/**
+	 * Disables Bluetooth on Android
+	 */
 	public void disableBluetooth() {
 		if (isBluetoothCapable() && isBluetoothEnabled()) {
 			adapter.disable();
 		}
 	}
 
-	/** Returns true if Android is currently connected to device. */
-	// TODO if connection is interrupted, still returns true. Need to add a
-	// check to return false if connection no longer valid
+	/**
+	 * Returns true if Android is currently connected to device.
+	 * 
+	 * // TODO if connection is interrupted, still returns true. Need to add a
+	 * // check to return false if connection no longer valid
+	 */
 	public boolean isConnected() {
 		if (socket == null) {
 			return false;
@@ -93,7 +106,9 @@ public class WirelessConnection extends Activity {
 		return adapter.getBondedDevices();
 	}
 
-	/** Returns count of paired devices., */
+	/**
+	 * Returns count of paired devices.
+	 */
 	public int pairedDeviceCount() throws Exception {
 		if (!isBluetoothCapable()) {
 			throw new Exception("Device Not Bluetooth Capable");
@@ -175,6 +190,28 @@ public class WirelessConnection extends Activity {
 	 */
 	public OutputStream getOutputStream() {
 		return outStream;
+	}
+
+	/**
+	 * Used to transmit single bytes over an established bluetooth connection.
+	 * Can use this rather than grabbing the InputStream.
+	 * 
+	 * @param data
+	 *            is a byte value that you wish to transmit
+	 * @return returns true if successful, false if an error occured
+	 */
+	public boolean transmitByte(byte data) {
+		if (!isConnected()) {
+			return false;
+		}
+		try {
+			outStream.write(data);
+			outStream.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 }
