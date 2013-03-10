@@ -36,18 +36,36 @@ void setup()
 
 void loop()
 {
-  for(int i=0;i<18;i++){
-      forward(2);
-      right(20);
+  if(Serial.available()){
+    byte input = Serial.read(); 
+    switch (input){
+
+    case 10:
+      forward(1);
+      break;
+    case 20:
+      reverse(1);
+      break;
+    case 30:
+      left(45);
+      break;
+    case 40:
+      right(45);
+      break;
     }
-  pause(3000);
+//  for(int i=0;i<18;i++){
+//      forward(2);
+//      right(20);
+//    }
+//  pause(3000);
+}
 }
 
 
 //---Functions-----------------------------------------------------
 void forward(int countF)
 {
-  for(int i=0;i<countF;i++){
+  for(int i=0;i<=countF;i++){
     setR = 180; //servo1 full forward
     setL = 59; //servo2 full forward
     pingCheck();

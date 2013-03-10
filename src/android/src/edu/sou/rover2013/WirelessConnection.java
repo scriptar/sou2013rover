@@ -84,10 +84,10 @@ public class WirelessConnection extends Activity {
 	 */
 	public boolean isConnected() {
 		if (socket == null) {
-			return false;
-		} else if (!socket.isConnected()) {
-			return false;
-		} else {
+			return false;}
+//		} else if (!socket.isConnected()) {
+//			return false;
+		else {
 			return true;
 		}
 	}
