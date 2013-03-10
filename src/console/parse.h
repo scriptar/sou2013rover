@@ -29,6 +29,6 @@ TEXTNODE *fileReadCommands(const char* fileName);
 TEXTNODE *getNewTextNode(const char* text);
 void splitTextOnPrimitives(TEXTNODE *list);
 void destroyTextList(TEXTNODE *list);
-const char *dispType(const PrimitiveType ptype);
+const char *dispPrimType(const PrimitiveType ptype);
 
 #endif

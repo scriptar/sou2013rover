@@ -184,15 +184,27 @@ void splitTextOnPrimitives(TEXTNODE *node)
 	}
 	if (ptype == NEGATIVE)
 		ptype = OP;
+	if (ptype == ID && strcmp(node->text, "AND") == 0)
+		ptype = OP;
+	if (ptype == ID && strcmp(node->text, "OR") == 0)
+		ptype = OP;
+	if (ptype == ID && strcmp(node->text, "NOT") == 0)
+		ptype = OP;
 	node->type = ptype;
 	return;
 //place chars starting from node->text[i] into new linked node
 SPLIT_PRIMITIVE:
-	if (ptype == NEGATIVE)
-		ptype = OP;
-	node->type = ptype;
 	newNode = getNewTextNode(node->text + i);
 	node->text[i] = '\0';
+	if (ptype == NEGATIVE)
+		ptype = OP;
+	if (ptype == ID && strcmp(node->text, "AND") == 0)
+		ptype = OP;
+	if (ptype == ID && strcmp(node->text, "OR") == 0)
+		ptype = OP;
+	if (ptype == ID && strcmp(node->text, "NOT") == 0)
+		ptype = OP;
+	node->type = ptype;
 	newNode->prev = node;
 	newNode->next = node->next;
 	node->next = newNode;
@@ -210,7 +222,7 @@ void destroyTextList(TEXTNODE *list)
 	}
 }
 
-const char *dispType(const PrimitiveType ptype)
+const char *dispPrimType(const PrimitiveType ptype)
 {
 	switch (ptype)
 	{

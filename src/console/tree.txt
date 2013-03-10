@@ -1,0 +1,87 @@
+Parsing cmds.txt
+Making Syntax Tree...
+SET (OP)
+  Left Child
+  V[0] (VAR)
+  Right Child
+  42 (INT)
+SET (OP)
+  Left Child
+  V[1] (VAR)
+  Right Child
+  69 (INT)
+SET (OP)
+  Left Child
+  V[2] (VAR)
+  Right Child
+  V[0] (VAR)
+SET (OP)
+  Left Child
+  V[3] (VAR)
+  Right Child
+  45 (INT)
+REPEAT (CONTROL)
+  Left Child
+  V[0] (VAR)
+  Right Child
+  [ (LIST_START)
+    Left Child
+    FD (CONTROL)
+      Left Child
+      V[2] (VAR)
+    RT (CONTROL)
+      Left Child
+      V[3] (VAR)
+    REPEAT (CONTROL)
+      Left Child
+      5 (INT)
+      Right Child
+      [ (LIST_START)
+        Left Child
+        FD (CONTROL)
+          Left Child
+          V[1] (VAR)
+        Right Child
+        ] (LIST_END)
+    Right Child
+    ] (LIST_END)
+IF (CONTROL)
+  Left Child
+  EQ (OP)
+    Left Child
+    1 (INT)
+    Right Child
+    OR (OP)
+      Left Child
+      AND (OP)
+        Left Child
+        ADD (OP)
+          Left Child
+          -1 (INT)
+          Right Child
+          2 (INT)
+        Right Child
+        1 (INT)
+      Right Child
+      NOT (OP)
+        Left Child
+        0 (INT)
+  Right Child
+  [ (LIST_START)
+    Left Child
+    FD (CONTROL)
+      Left Child
+      100 (INT)
+    Right Child
+    ] (LIST_END)
+REPEAT (CONTROL)
+  Left Child
+  MUL (OP)
+    Left Child
+    1.414214 (DBL)
+    Right Child
+    1.414214 (DBL)
+  Right Child
+  FD (CONTROL)
+    Left Child
+    3.141593 (DBL)

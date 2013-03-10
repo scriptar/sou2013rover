@@ -2,46 +2,47 @@
 	tree.c: Rogo tree node structures
 	Created by: Jeff Miller, 2/24/2013
 */
-
+#include <limits.h>
 #include "tree.h"
 
 PRIMTYPE prims[] = {
-	{"-", 1, 1, 1, PREFIX_PRIORITY + 2, getSubNode},
-	{"*", 1, 1, 1, PREFIX_PRIORITY + 3, getMulNode},
-	{"/", 1, 1, 1, PREFIX_PRIORITY + 3, getDivideNode},
-	{"+", 1, 1, 1, PREFIX_PRIORITY + 2, getAddNode},
-	{"<", 2, 2, 2, PREFIX_PRIORITY + 1, getLessNode},
-	{"<=", 2, 2, 2, PREFIX_PRIORITY + 1, getLessEqualNode},
-	{"<>", 2, 2, 2, PREFIX_PRIORITY + 1, getNotEqualNode},
-	{"=", 2, 2, 2, PREFIX_PRIORITY + 1, getEqualNode},
-	{">", 2, 2, 2, PREFIX_PRIORITY + 1, getGreaterNode},
-	{">=", 2, 2, 2, PREFIX_PRIORITY + 1, getGreaterEqualNode},
-	{"AND", 0, 2, -1, PREFIX_PRIORITY, getAndNode},
-	{"BACK", 1, 1, 1, PREFIX_PRIORITY, getBackNode},
-	{"BK", 1, 1, 1, PREFIX_PRIORITY, getBackNode},
-	{"FD", 1, 1, 1, PREFIX_PRIORITY, getForwardNode},
-	{"FORWARD", 1, 1, 1, PREFIX_PRIORITY, getForwardNode},
-	{"IF", 2, 2, 3, CONTROL_PRIORITY, getIfNode},
-	{"IFELSE", 3, 3, 3, CONTROL_PRIORITY, getIfElseNode},
-	{"LEFT", 1, 1, 1, PREFIX_PRIORITY, getLeftNode},
-	{"LT", 1, 1, 1, PREFIX_PRIORITY, getLeftNode},
-	{"LZAIM", 1, 1, 1, PREFIX_PRIORITY, getLzAimNode},
-	{"LZFILE", 1, 1, 1, PREFIX_PRIORITY, getLzFireNode},
-	{"NOT", 1, 1, 1, PREFIX_PRIORITY, getNotNode},
-	{"OR", 0, 2, -1, PREFIX_PRIORITY, getOrNode},
-	{"PAUSE", 0, 0, 0, PREFIX_PRIORITY, getPauseNode},
-	{"REPEAT", 2, 2, 2, CONTROL_PRIORITY, getRepeatNode},
-	{"RIGHT", 1, 1, 1, PREFIX_PRIORITY, getRightNode},
-	{"RT", 1, 1, 1, PREFIX_PRIORITY, getRightNode},
-	{"", 0, 0, 0, 0, 0},
-	{"", 0, 0, 0, 0, 0},
-	{"", 0, 0, 0, 0, 0},
-	{"", 0, 0, 0, 0, 0},
-	{"", 0, 0, 0, 0, 0},
-	{"", 0, 0, 0, 0, 0}
+	{"-", 2, INFIX_PRIORITY + 3, execSubNode},
+	{"*", 2, INFIX_PRIORITY + 4, execMulNode},
+	{"/", 2, INFIX_PRIORITY + 4, execDivideNode},
+	{"+", 2, INFIX_PRIORITY + 3, execAddNode},
+	{"<", 2, INFIX_PRIORITY + 1, execLessNode},
+	{"<=", 2, INFIX_PRIORITY + 1, execLessEqualNode},
+	{"<>", 2, INFIX_PRIORITY + 1, execNotEqualNode},
+	{"=", 2, PREFIX_PRIORITY, execAssignNode},
+	{"==", 2, INFIX_PRIORITY + 1, execEqualNode},
+	{">", 2, INFIX_PRIORITY + 1, execGreaterNode},
+	{">=", 2, INFIX_PRIORITY + 1, execGreaterEqualNode},
+	{"AND", 2, INFIX_PRIORITY + 2, execAndNode},
+	{"BACK", 1, PREFIX_PRIORITY, execBackNode},
+	{"BK", 1, PREFIX_PRIORITY, execBackNode},
+	{"FD", 1, PREFIX_PRIORITY, execForwardNode},
+	{"FORWARD", 1, PREFIX_PRIORITY, execForwardNode},
+	{"IF", 2, CONTROL_PRIORITY, execIfNode},
+	{"IFELSE", 3, CONTROL_PRIORITY, execIfElseNode},
+	{"LEFT", 1, PREFIX_PRIORITY, execLeftNode},
+	{"LT", 1, PREFIX_PRIORITY, execLeftNode},
+	{"LZAIM", 1, PREFIX_PRIORITY, execLzAimNode},
+	{"LZFIRE", 1, PREFIX_PRIORITY, execLzFireNode},
+	{"NOT", 1, INFIX_PRIORITY + 3, execNotNode},
+	{"OR", 2, INFIX_PRIORITY + 2, execOrNode},
+	{"PAUSE", 0, PREFIX_PRIORITY, execPauseNode},
+	{"REPEAT", 2, CONTROL_PRIORITY, execRepeatNode},
+	{"RIGHT", 1, PREFIX_PRIORITY, execRightNode},
+	{"RT", 1, PREFIX_PRIORITY, execRightNode},
+	{"", 0, 0, 0},
+	{"", 0, 0, 0},
+	{"", 0, 0, 0},
+	{"", 0, 0, 0},
+	{"", 0, 0, 0},
+	{"", 0, 0, 0}
 };
 
-TNODE *makeTree(const TEXTNODE *list)
+TNODE *makeFlatTree(const TEXTNODE *list)
 {
 	const TEXTNODE *listnode = list;
 	char *text;
@@ -55,19 +56,218 @@ TNODE *makeTree(const TEXTNODE *list)
 	//split text into expressions and commands...
 	while (listnode)
 	{
-		printf("List[%d]: %s (%s)\n", i++, listnode->text, dispType(listnode->type));
+		//printf("List[%d]: %s (%s)\n", i++, listnode->text, dispPrimType(listnode->type));
 		if (tree == NIL)
 		{
 			current = tree = newTreeNode(listnode);
 		}
 		else
 		{
-			setNextNode(current, newTreeNode(listnode));
+			current = setNextNode(current, newTreeNode(listnode));
 		}
 		listnode = listnode->next;
 	}
 	return tree;
-	//return NIL;
+}
+
+TNODE *makeParseTree(TNODE *tree)
+{
+	//set parent and child nodes...
+	short priority;
+	TNODE *current = NULL;
+	TNODE *opcmd = NULL;
+	TNODE *left = NULL;
+	TNODE *right = NULL;
+	TNODE *listCurrent = NULL;
+	int listCount;
+	//handle lists first
+	current = tree;
+	while (current)
+	{
+		//any list beginnings?
+		if (current->type == NT_LIST_START)
+		{
+			listCurrent = current;
+			listCount = 0;
+			while (listCurrent)
+			{
+				switch (listCurrent->type)
+				{
+					case NT_LIST_START:
+						listCount++;
+						break;
+					case NT_LIST_END:
+						listCount--;
+						if (listCount == 0)
+						{
+							//end of list reached...
+							left = current->next; //1st expression in list
+							right = listCurrent; //list end
+							makeExpNode(current, left, right); //make everything in list the left child of list start, right child is list end
+							left->prev = NULL; //1st expression in list has no prior nodes
+							current->next = right->next; //list points to node after end of the list
+							right->prev->next = NULL; //the "next" of the last element in list should point to nothing
+							right->prev = NULL; //the list end should point to nothing
+							right->next = NULL; //the list end should point to nothing
+							makeParseTree(left); //inner list is its own tree, parse it
+						}
+						break;
+				}
+				listCurrent = listCurrent->next;
+			}
+		}
+		current = current->next;
+	}
+	
+	//handle nodes from highest priority to lowest
+	for (priority = INFIX_PRIORITY + 4; priority >= 0; priority--)
+	{
+		current = tree;
+		while (current)
+		{
+			if (current->priority == priority)
+			{
+				switch (current->type)
+				{
+					case NT_OP:
+						//swap 1st and 2nd to make the op the current
+						opcmd = current;
+						if (opcmd->numargs != 1) // (don't swap if op is is a "NOT")
+						{
+							left = current->prev;
+							opcmd->prev = left->prev;
+							if (opcmd->prev != NULL)
+								opcmd->prev->next = opcmd;
+							left->next = opcmd->next;
+							if (left->next != NULL)
+								left->next->prev = left;
+							opcmd->next = left;
+							left->prev = opcmd;
+							if (left == tree)
+								tree = opcmd; //fix tree if first node was left
+						}
+						//pass through...
+					case NT_CONTROL:
+						opcmd = current;
+						left = current->next;
+						right = current->next->next;
+						if (opcmd->numargs == 1)
+						{
+							makeExpNode(opcmd, left, NULL);
+							opcmd->next = left->next;
+							if (opcmd->next != NULL)
+								opcmd->next->prev = opcmd;
+							left->prev = NULL;
+							left->next = NULL;
+						}
+						else if (opcmd->numargs == 2)
+						{
+							makeExpNode(opcmd, left, right);
+							if (left != NULL)
+							{
+								left->prev = NULL;
+								//don't do this if type == NT_OP...
+								//still buggy, EQ...
+								//if (opcmd->type == NT_CONTROL)
+									left->next = NULL;
+							}
+							if (right != NULL)
+							{
+								opcmd->next = right->next;
+								if (opcmd->next)
+									opcmd->next->prev = opcmd;
+								right->prev = NULL;
+								right->next = NULL;
+							}
+							else
+							{
+								opcmd->next = NULL;
+							}
+						}
+						break;
+					case NT_INT:
+					case NT_DBL:
+					case NT_VAR:
+
+						break;
+				}
+			}
+			current = current->next;
+		}
+	}
+	return tree;
+}
+
+void printTree(TNODE *tree, int depth)
+{
+	TNODE *current = tree;
+	int i;
+	while (current)
+	{
+		for (i = 0; i < depth; i++)
+			printf("  ");
+		switch (current->type)
+		{
+			case NT_OP:
+			case NT_CONTROL:
+				if (current->prim_function != NULL)
+					current->prim_function();
+				else
+					printf("OP/CMD?");
+				break;
+			case NT_INT:
+				printf("%d", current->nInteger);
+				break;
+			case NT_DBL:
+				printf("%lf", current->nRational);
+				break;
+			case NT_VAR:
+				printf("V[%d]", current->varIdx);
+				break;
+			case NT_LIST_START:
+				printf("[");
+				break;
+			case NT_LIST_END:
+				printf("]");
+				break;
+			default:
+				printf("???");
+		}
+		//printf(" Type: %s Priority: %d Depth: %d\n", dispNodeType(current->type), current->priority, depth);
+		printf(" (%s)\n", dispNodeType(current->type));
+		if (current->left != NULL)
+		{
+			for (i = 0; i < depth + 1; i++)
+				printf("  ");
+			printf("Left Child\n");
+			printTree(current->left, depth + 1);
+		}
+		if (current->right != NULL)
+		{
+			for (i = 0; i < depth + 1; i++)
+				printf("  ");
+			printf("Right Child\n");
+			printTree(current->right, depth + 1);
+		}
+		current = current->next;
+	}
+}
+
+const char *dispNodeType(const NodeType type)
+{
+	switch (type)
+	{
+		case NT_UNKNOWN: return "UNKNOWN";
+		case NT_CONTROL: return "CONTROL";
+		case NT_OP: return "OP";
+		case NT_INT: return "INT";
+		case NT_DBL: return "DBL";
+		case NT_VAR: return "VAR";
+		case NT_FUNC: return "FUNC";
+		case NT_LIST_START: return "LIST_START";
+		case NT_LIST_END: return "LIST_END";
+		default: return "???";
+	}
 }
 
 int cmpPrim(const void *p1, const void *p2)
@@ -81,8 +281,10 @@ TNODE *newTreeNode(const TEXTNODE *node)
 {
 	PRIMTYPE *pos = NULL;
 	PRIMTYPE *search = NULL;
-	NodeType treetype = ntUnknown;
-	int isVar;
+	NodeType ntype = NT_UNKNOWN;
+	int i, isVar, nInt = 0;
+	short varIdx = -1;
+	double nDbl = 0.0;
 
 	switch (node->type)
 	{
@@ -97,8 +299,12 @@ TNODE *newTreeNode(const TEXTNODE *node)
 			//cmd?
 			if (pos != NULL)
 			{
-				printf("\tFound: %s\n", pos->name);
-				treetype = ntControl;
+				//printf("\tFound: %s\n", pos->name);
+				switch (node->type)
+				{
+					case OP: ntype = NT_OP; break;
+					case ID: ntype = NT_CONTROL; break;
+				}
 			}
 			else
 			{
@@ -108,32 +314,54 @@ TNODE *newTreeNode(const TEXTNODE *node)
 				else if (strlen(node->text) == 3)
 					isVar = (node->text[0] == 'V' && isdigit(node->text[1]) && isdigit(node->text[2]));
 				if (isVar)
-					printf("\tVariable %s found.\n", node->text);
-				else
-					printf("\tNot found: %s\n", node->text);
+				{
+					varIdx = atoi(node->text + 1);
+					//printf("\tVariable v%d found.\n", varIdx);
+					ntype = NT_VAR;
+				}
+				//else
+					//printf("\tNot found: %s\n", node->text);
 			}
-			// var?
-			
-			// 
 			break;
 		case NUM:
 			// convert to numeric
-			treetype = ntNumber;
+			ntype = NT_INT;
+			nInt = atoi(node->text);
+			if (nInt == INT_MAX || nInt == INT_MIN)
+				ntype = NT_DBL;
+			else
+				for (i = 0; i < strlen(node->text); i++)
+					if (node->text[i] == '.')
+						ntype = NT_DBL;
+			nDbl = atof(node->text);
 			break;
 		case LBR:
+			ntype = NT_LIST_START;
 			break;
 		case RBR:
+			ntype = NT_LIST_END;
 			break;
 		default:
 			return NIL;
 	}
-	
 	TNODE *newNode = (TNODE *)malloc(sizeof(TNODE));
-	//newNode->ident = ident;
-	newNode->type = treetype;
+	newNode->type = ntype;
+	newNode->varIdx = varIdx;
+	newNode->nInteger = nInt;
+	newNode->nRational = nDbl;
 	newNode->left = NULL;
 	newNode->right = NULL;
+	newNode->prev = NULL;
 	newNode->next = NULL;
+	newNode->numargs = 0;
+	newNode->priority = 0;
+	newNode->prim_function = NULL;
+	if (pos != NULL)
+	{
+		newNode->numargs = pos->numargs;
+		newNode->priority = pos->priority;
+		newNode->prim_function = pos->prim_function;
+	}
 	return newNode;
 }
 
@@ -147,6 +375,7 @@ TNODE *makeExpNode(TNODE *parent, TNODE *leftChild, TNODE *rightChild)
 TNODE *setNextNode(TNODE *currentNode, TNODE *nextNode)
 {
 	currentNode->next = nextNode;
+	nextNode->prev = currentNode;
 	return nextNode;
 }
 
@@ -163,118 +392,147 @@ TNODE *exec(TNODE *args, char fcn)
 
 
 
-TNODE *getMulNode(TNODE *args)
+TNODE *execMulNode(TNODE *args)
 {
+	printf("MUL");
 	return NIL;
 }
 
-TNODE *getAddNode(TNODE *args)
+TNODE *execAddNode(TNODE *args)
 {
+	printf("ADD");
 	return NIL;
 }
 
-TNODE *getSubNode(TNODE *args)
+TNODE *execSubNode(TNODE *args)
 {
+	printf("SUB");
 	return NIL;
 }
 
-TNODE *getDivideNode(TNODE *args)
+TNODE *execDivideNode(TNODE *args)
 {
+	printf("DIV");
 	return NIL;
 }
 
-TNODE *getLessNode(TNODE *args)
+TNODE *execLessNode(TNODE *args)
 {
+	printf("LT");
 	return NIL;
 }
 
-TNODE *getEqualNode(TNODE *args)
+TNODE *execAssignNode(TNODE *args)
 {
+	printf("SET");
 	return NIL;
 }
 
-TNODE *getGreaterNode(TNODE *args)
+TNODE *execEqualNode(TNODE *args)
 {
+	printf("EQ");
 	return NIL;
 }
 
-TNODE *getLessEqualNode(TNODE *args)
+TNODE *execGreaterNode(TNODE *args)
 {
+	printf("GT");
 	return NIL;
 }
 
-TNODE *getNotEqualNode(TNODE *args)
+TNODE *execLessEqualNode(TNODE *args)
 {
+	printf("LTE");
 	return NIL;
 }
 
-TNODE *getGreaterEqualNode(TNODE *args)
+TNODE *execNotEqualNode(TNODE *args)
 {
+	printf("NEQ");
 	return NIL;
 }
 
-TNODE *getAndNode(TNODE *args)
+TNODE *execGreaterEqualNode(TNODE *args)
 {
+	printf("GTE");
 	return NIL;
 }
 
-TNODE *getBackNode(TNODE *args)
+TNODE *execAndNode(TNODE *args)
 {
+	printf("AND");
 	return NIL;
 }
 
-TNODE *getForwardNode(TNODE *args)
+TNODE *execBackNode(TNODE *args)
 {
+	printf("BK");
 	return NIL;
 }
 
-TNODE *getIfNode(TNODE *args)
+TNODE *execForwardNode(TNODE *args)
 {
+	printf("FD");
 	return NIL;
 }
 
-TNODE *getIfElseNode(TNODE *args)
+TNODE *execIfNode(TNODE *args)
 {
+	printf("IF");
 	return NIL;
 }
 
-TNODE *getLeftNode(TNODE *args)
+TNODE *execIfElseNode(TNODE *args)
 {
+	printf("IFELSE");
 	return NIL;
 }
 
-TNODE *getLzAimNode(TNODE *args)
+TNODE *execLeftNode(TNODE *args)
 {
+	printf("LT");
 	return NIL;
 }
 
-TNODE *getLzFireNode(TNODE *args)
+TNODE *execLzAimNode(TNODE *args)
 {
+	printf("LZAIM");
 	return NIL;
 }
 
-TNODE *getNotNode(TNODE *args)
+TNODE *execLzFireNode(TNODE *args)
 {
+	printf("LZFIRE");
 	return NIL;
 }
 
-TNODE *getOrNode(TNODE *args)
+TNODE *execNotNode(TNODE *args)
 {
+	printf("NOT");
 	return NIL;
 }
 
-TNODE *getPauseNode(TNODE *args)
+TNODE *execOrNode(TNODE *args)
 {
+	printf("OR");
 	return NIL;
 }
 
-TNODE *getRepeatNode(TNODE *args)
+TNODE *execPauseNode(TNODE *args)
 {
+	printf("PAUSE");
 	return NIL;
 }
 
-TNODE *getRightNode(TNODE *args)
+TNODE *execRepeatNode(TNODE *args)
 {
+	printf("REPEAT");
+	return NIL;
+}
+
+TNODE *execRightNode(TNODE *args)
+{
+	printf("RT");
 	return NIL;
 }
 

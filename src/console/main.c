@@ -4,6 +4,7 @@
 */
 
 #include "parse.h"
+#include "tree.h"
 #include "rover.h"
 
 char fName[MAXSTR + 1];
@@ -24,8 +25,11 @@ int main(int argc, char *argv[])
 	strcpy(fName, argv[1]);
 	
 	TEXTNODE *list = fileReadCommands(fName);
-	makeTree(list);
+	TNODE *tree = makeFlatTree(list);
+	//printTree(tree, 0);
 	destroyTextList(list);
+	tree = makeParseTree(tree);
+	printTree(tree, 0);
 	
 	return 0;
 } //int main
