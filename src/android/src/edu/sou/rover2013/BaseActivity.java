@@ -1,24 +1,39 @@
 package edu.sou.rover2013;
 
+import edu.sou.rover2013.activities.ConnectionActivity;
+import edu.sou.rover2013.activities.ModeSelectActivity;
+import edu.sou.rover2013.activities.TelemetryActivity;
+import edu.sou.rover2013.activities.WiFiServerActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-//Simply pulling out common activity code into parent class
-public class BaseActivity extends Activity {
+/**
+ * Pulling common activity code for our application into a parent abstract
+ * class. When writing a new activity, extend this to inherit the standard menu
+ * bar and actions.
+ * 
+ * @author Ryan Dempsey
+ * 
+ */
+public abstract class BaseActivity extends Activity {
 
 	@Override
-	// Inflate the menu; adds items to the action bar if it is present.
+	/**
+	 *  Inflate the menu; adds items to the action bar if it is present.
+	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// call parent to include system items as well
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.settings_menu, menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
 
+	
 	@Override
-	// Handles menu item selection, returns true if successful
+	/**
+	 *  Handles menu item selection, returns true if successful
+	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 		switch (item.getItemId()) {
@@ -34,9 +49,11 @@ public class BaseActivity extends Activity {
 			intent = new Intent(this, ModeSelectActivity.class);
 			startActivity(intent);
 			return true;
+		case R.id.wifi_server:
+			intent = new Intent(this, WiFiServerActivity.class);
+			startActivity(intent);
+			return true;
 		case R.id.exit:
-			// TODO have events cascade-close, rather than simply returning to
-			// prior activity.
 			System.exit(0);
 		default:
 			return super.onOptionsItemSelected(item);

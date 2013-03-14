@@ -1,8 +1,12 @@
-package edu.sou.rover2013;
+package edu.sou.rover2013.activities;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import edu.sou.rover2013.BaseActivity;
+import edu.sou.rover2013.BaseApplication;
+import edu.sou.rover2013.R;
+import edu.sou.rover2013.utility.BluetoothService;
 
 /**
  * 
@@ -17,8 +21,8 @@ import android.widget.Button;
 // TODO Have rover commands appear in text box as well.
 public class ControlSimpleActivity extends BaseActivity {
 
-	private RogoApplication app;
-	private WirelessConnection connection;
+	private BaseApplication app;
+	private BluetoothService connection;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +31,7 @@ public class ControlSimpleActivity extends BaseActivity {
 		setContentView(R.layout.activity_control_simple);
 
 		// Catch parent and connection class for usage
-		app = (RogoApplication) getApplication();
+		app = (BaseApplication) getApplication();
 		connection = app.getWirelessConnection();
 
 		// Establishing button references

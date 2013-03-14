@@ -1,4 +1,4 @@
-package edu.sou.rover2013;
+package edu.sou.rover2013.widgets;
 
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -7,6 +7,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 
 /**
+ * Borrowed Code
+ * 
  * A class, that can be used as a TouchListener on any view (e.g. a Button).
  * It cyclically runs a clickListener, emulating keyboard-like behaviour. First
  * click is fired immediately, next after initialInterval, and subsequent after
@@ -15,7 +17,7 @@ import android.view.View.OnTouchListener;
  * <p>Interval is scheduled after the onClick completes, so it has to run fast.
  * If it runs slow, it does not generate skipped onClicks.
  */
-public class RepeatListener implements OnTouchListener {
+public class RepeatButton2 implements OnTouchListener {
 
     private Handler handler = new Handler();
 
@@ -40,7 +42,7 @@ public class RepeatListener implements OnTouchListener {
      * @param clickListener The OnClickListener, that will be called
      *       periodically
      */
-    public RepeatListener(int initialInterval, int normalInterval, 
+    public RepeatButton2(int initialInterval, int normalInterval, 
             OnClickListener clickListener) {
         if (clickListener == null)
             throw new IllegalArgumentException("null runnable");

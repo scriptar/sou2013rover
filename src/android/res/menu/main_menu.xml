@@ -5,22 +5,25 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/setting_title_bluetooth"/>
-    
     <item
         android:id="@+id/telemetry_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/setting_title_rover_telemetry"/>
-       
-	<item
+    <item
         android:id="@+id/control_mode_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/setting_title_control_mode"/>
-	
-	<item
+    <item
+        android:id="@+id/wifi_server"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Wi-Fi Server Mode"/>
+    <item
         android:id="@+id/exit"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/exit"/>
+
 </menu>

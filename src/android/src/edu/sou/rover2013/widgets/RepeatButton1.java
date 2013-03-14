@@ -1,4 +1,4 @@
-package edu.sou.rover2013;
+package edu.sou.rover2013.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,7 +6,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-public class AutoRepeatButton extends Button {
+/**
+ * Borrowed code
+ * 
+ * test this to see if it holds buttons down for repeated movement.
+ *
+ */
+public class RepeatButton1 extends Button {
 
   private long initialRepeatDelay = 500;
   private long repeatIntervalInMilliseconds = 100;
@@ -54,18 +60,18 @@ public class AutoRepeatButton extends Button {
     });
   }
 
-    public AutoRepeatButton(Context context, AttributeSet attrs, int defStyle) {
+    public RepeatButton1(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         commonConstructorCode();
     }
 
 
-    public AutoRepeatButton(Context context, AttributeSet attrs) {
+    public RepeatButton1(Context context, AttributeSet attrs) {
         super(context, attrs);
         commonConstructorCode();
     }
 
-  public AutoRepeatButton(Context context) {
+  public RepeatButton1(Context context) {
     super(context);
     commonConstructorCode();
   }

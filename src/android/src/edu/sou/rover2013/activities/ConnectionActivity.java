@@ -1,4 +1,4 @@
-package edu.sou.rover2013;
+package edu.sou.rover2013.activities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import edu.sou.rover2013.BaseActivity;
+import edu.sou.rover2013.BaseApplication;
+import edu.sou.rover2013.R;
+import edu.sou.rover2013.utility.BluetoothService;
 
+/**
+ * View for establishing a bluetooth connection. Currently very cluttered, is in testing mode.
+ * Will clean up massivly, simplify, etc.
+ * 
+ * @author Ryan Dempsey
+ *
+ */
 public class ConnectionActivity extends BaseActivity {
 
-	private RogoApplication app;
-	private WirelessConnection connection;
+	private BaseApplication app;
+	private BluetoothService connection;
 	private TextView outputText;
 
 	@Override
@@ -20,7 +31,7 @@ public class ConnectionActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_screen_bluetooth);
 
-		app = (RogoApplication) getApplication();
+		app = (BaseApplication) getApplication();
 		connection = app.getWirelessConnection();
 		outputText = (TextView) findViewById(R.id.outputText);
 
@@ -29,7 +40,7 @@ public class ConnectionActivity extends BaseActivity {
 		button1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				TextView outputText = (TextView) findViewById(R.id.outputText);
-				if (!WirelessConnection.isBluetoothEnabled()) {
+				if (!BluetoothService.isBluetoothEnabled()) {
 					try {
 						connection.enableBluetooth();
 						outputText.append("Bluetooth Enabled\n");
@@ -46,7 +57,7 @@ public class ConnectionActivity extends BaseActivity {
 		button2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				TextView outputText = (TextView) findViewById(R.id.outputText);
-				if (WirelessConnection.isBluetoothEnabled()) {
+				if (BluetoothService.isBluetoothEnabled()) {
 					try {
 						connection.disableBluetooth();
 						outputText.append("Bluetooth Disabled\n");

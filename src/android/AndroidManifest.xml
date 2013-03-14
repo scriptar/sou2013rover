@@ -6,19 +6,21 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
 
     <application
-        android:name="edu.sou.rover2013.RogoApplication"
+        android:name="edu.sou.rover2013.BaseApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="edu.sou.rover2013.MainActivity"
+            android:name=".activities.FirstActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,20 +29,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="edu.sou.rover2013.ConnectionActivity"
+            android:name=".activities.ConnectionActivity"
             android:label="@string/title_activity_screen__bluetooth" >
         </activity>
         <activity
-            android:name="edu.sou.rover2013.TelemetryActivity"
+            android:name=".activities.TelemetryActivity"
             android:label="@string/title_activity_screen_telemetry" >
         </activity>
         <activity
-            android:name="edu.sou.rover2013.ModeSelectActivity"
+            android:name=".activities.ModeSelectActivity"
             android:label="@string/title_activity_screen_mode_select" >
         </activity>
         <activity
-            android:name="edu.sou.rover2013.ControlSimpleActivity"
+            android:name=".activities.ControlSimpleActivity"
             android:label="@string/title_activity_control_simple" >
+        </activity>
+        <activity
+            android:name=".activities.WiFiServerActivity"
+            android:label="@string/title_activity_wi_fi_server" >
         </activity>
     </application>
 

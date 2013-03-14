@@ -1,4 +1,4 @@
-package edu.sou.rover2013;
+package edu.sou.rover2013.utility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,13 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-/** This class handles creation of Android-Arduino Bluetooth connections */
-public class WirelessConnection extends Activity {
+/**
+ * This class handles creation of Android-Arduino Bluetooth connections
+ * 
+ * @author Ryan Dempsey
+ *
+ */
+public class BluetoothService extends Activity {
 
 	private BluetoothAdapter adapter = null;
 	private BluetoothDevice device = null;
@@ -29,7 +34,7 @@ public class WirelessConnection extends Activity {
 	/**
 	 * Default Constructor.
 	 */
-	public WirelessConnection() {
+	public BluetoothService() {
 		adapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
@@ -84,9 +89,10 @@ public class WirelessConnection extends Activity {
 	 */
 	public boolean isConnected() {
 		if (socket == null) {
-			return false;}
-//		} else if (!socket.isConnected()) {
-//			return false;
+			return false;
+		}
+		// } else if (!socket.isConnected()) {
+		// return false;
 		else {
 			return true;
 		}
