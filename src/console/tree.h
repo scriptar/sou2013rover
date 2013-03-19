@@ -14,17 +14,21 @@
 
 /*** defines ***/
 
+#define DEBUG				0
 #define STOP_PRIORITY		0
 #define CONTROL_PRIORITY	1
 #define PREFIX_PRIORITY		2
-#define INFIX_PRIORITY		3 
+#define INFIX_PRIORITY		3
+#define NUM_ROGOVARS		100
 
-typedef enum {NT_UNKNOWN, NT_CONTROL, NT_OP, NT_INT, NT_DBL, NT_VAR, NT_FUNC, NT_LIST_START, NT_LIST_END} NodeType;
+typedef enum {NT_UNKNOWN, NT_CONTROL, NT_OP, NT_NUM, NT_VAR, NT_FUNC, NT_LIST_START, NT_LIST_END} NodeType;
+typedef enum {DT_UNKNOWN, DT_INT, DT_DBL} DataType;
 
 /*** type definitions ***/
 
 typedef struct treeNode {
-	NodeType type;
+	NodeType ntype;
+	DataType dtype;
 	short varIdx;
 	int nInteger;
 	double nRational;
@@ -32,9 +36,9 @@ typedef struct treeNode {
 	struct treeNode *right;
 	struct treeNode *prev;
 	struct treeNode *next;
+	int primIdx;
 	short numargs;
 	short priority;
-	struct treeNode *(*prim_function) ();
 } TNODE;
 
 #define NIL (TNODE *)0
@@ -46,6 +50,8 @@ typedef struct primitive {
     TNODE *(*prim_function) ();
 } PRIMTYPE;
 
+double rogo_vars[NUM_ROGOVARS + 1];
+
 /*** function definitions ***/
 TNODE *makeFlatTree(const TEXTNODE *list);
 TNODE *makeParseTree(TNODE *tree);
@@ -55,29 +61,32 @@ int cmpPrim(const void *p1, const void *p2);
 TNODE *newTreeNode(const TEXTNODE *node);
 TNODE *makeExpNode(TNODE *parent, TNODE *leftChild, TNODE *rightChild);
 TNODE *setNextNode(TNODE *currentNode, TNODE *nextNode);
-TNODE *execMulNode(TNODE *args);
-TNODE *execAddNode(TNODE *args);
-TNODE *execSubNode(TNODE *args);
-TNODE *execDivideNode(TNODE *args);
-TNODE *execLessNode(TNODE *args);
-TNODE *execAssignNode(TNODE *args);
-TNODE *execEqualNode(TNODE *args);
-TNODE *execGreaterNode(TNODE *args);
-TNODE *execLessEqualNode(TNODE *args);
-TNODE *execNotEqualNode(TNODE *args);
-TNODE *execGreaterEqualNode(TNODE *args);
-TNODE *execAndNode(TNODE *args);
-TNODE *execBackNode(TNODE *args);
-TNODE *execForwardNode(TNODE *args);
-TNODE *execIfNode(TNODE *args);
-TNODE *execIfElseNode(TNODE *args);
-TNODE *execLeftNode(TNODE *args);
-TNODE *execLzAimNode(TNODE *args);
-TNODE *execLzFireNode(TNODE *args);
-TNODE *execNotNode(TNODE *args);
-TNODE *execOrNode(TNODE *args);
-TNODE *execPauseNode(TNODE *args);
-TNODE *execRepeatNode(TNODE *args);
-TNODE *execRightNode(TNODE *args);
+TNODE *exec(TNODE *current, char fcn);
+TNODE *evalNodeValue(TNODE *current);
+int evalNodeValueInt(TNODE *current);
+TNODE *execMulNode(TNODE *current);
+TNODE *execAddNode(TNODE *current);
+TNODE *execSubNode(TNODE *current);
+TNODE *execDivideNode(TNODE *current);
+TNODE *execLessNode(TNODE *current);
+TNODE *execAssignNode(TNODE *current);
+TNODE *execEqualNode(TNODE *current);
+TNODE *execGreaterNode(TNODE *current);
+TNODE *execLessEqualNode(TNODE *current);
+TNODE *execNotEqualNode(TNODE *current);
+TNODE *execGreaterEqualNode(TNODE *current);
+TNODE *execAndNode(TNODE *current);
+TNODE *execBackNode(TNODE *current);
+TNODE *execForwardNode(TNODE *current);
+TNODE *execIfNode(TNODE *current);
+TNODE *execIfElseNode(TNODE *current);
+TNODE *execLeftNode(TNODE *current);
+TNODE *execLzAimNode(TNODE *current);
+TNODE *execLzFireNode(TNODE *current);
+TNODE *execNotNode(TNODE *current);
+TNODE *execOrNode(TNODE *current);
+TNODE *execPauseNode(TNODE *current);
+TNODE *execRepeatNode(TNODE *current);
+TNODE *execRightNode(TNODE *current);
 
 #endif

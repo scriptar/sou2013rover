@@ -4,12 +4,12 @@ SET (OP)
   Left Child
   V[0] (VAR)
   Right Child
-  42 (INT)
+  42 (NUM)
 SET (OP)
   Left Child
   V[1] (VAR)
   Right Child
-  69 (INT)
+  69 (NUM)
 SET (OP)
   Left Child
   V[2] (VAR)
@@ -19,7 +19,7 @@ SET (OP)
   Left Child
   V[3] (VAR)
   Right Child
-  45 (INT)
+  45 (NUM)
 REPEAT (CONTROL)
   Left Child
   V[0] (VAR)
@@ -34,7 +34,7 @@ REPEAT (CONTROL)
       V[3] (VAR)
     REPEAT (CONTROL)
       Left Child
-      5 (INT)
+      5 (NUM)
       Right Child
       [ (LIST_START)
         Left Child
@@ -45,43 +45,43 @@ REPEAT (CONTROL)
         ] (LIST_END)
     Right Child
     ] (LIST_END)
-IF (CONTROL)
+IFEQORANDADDNOT (Executing subtree...) (CONTROL)
   Left Child
-  EQ (OP)
+  EQORANDADDNOT (OP)
     Left Child
-    1 (INT)
+    1 (NUM)
     Right Child
-    OR (OP)
+    ORANDADDNOT (OP)
       Left Child
-      AND (OP)
+      ANDADD (OP)
         Left Child
         ADD (OP)
           Left Child
-          -1 (INT)
+          -1 (NUM)
           Right Child
-          2 (INT)
+          2 (NUM)
         Right Child
-        1 (INT)
+        1 (NUM)
       Right Child
       NOT (OP)
         Left Child
-        0 (INT)
+        0 (NUM)
   Right Child
   [ (LIST_START)
     Left Child
     FD (CONTROL)
       Left Child
-      100 (INT)
+      100 (NUM)
     Right Child
     ] (LIST_END)
-REPEAT (CONTROL)
+REPEATMULFD (CONTROL)
   Left Child
   MUL (OP)
     Left Child
-    1.414214 (DBL)
+    1.414214 (NUM)
     Right Child
-    1.414214 (DBL)
+    1.414214 (NUM)
   Right Child
   FD (CONTROL)
     Left Child
-    3.141593 (DBL)
+    3.141593 (NUM)

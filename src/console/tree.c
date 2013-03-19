@@ -49,14 +49,15 @@ TNODE *makeFlatTree(const TEXTNODE *list)
 	int i = 0;
 	
 	qsort(prims, sizeof(prims)/sizeof(prims[0]), sizeof(PRIMTYPE), cmpPrim);
-	printf("Making Syntax Tree...\n");
+	if (DEBUG)
+		printf("Making Syntax Tree...\n");
 	//create command tree from list array
 	TNODE *tree = NIL;
 	TNODE *current = NIL;
 	//split text into expressions and commands...
 	while (listnode)
 	{
-		//printf("List[%d]: %s (%s)\n", i++, listnode->text, dispPrimType(listnode->type));
+		//printf("List[%d]: %s (%s)\n", i++, listnode->text, dispPrimType(listnode->ntype));
 		if (tree == NIL)
 		{
 			current = tree = newTreeNode(listnode);
@@ -85,13 +86,13 @@ TNODE *makeParseTree(TNODE *tree)
 	while (current)
 	{
 		//any list beginnings?
-		if (current->type == NT_LIST_START)
+		if (current->ntype == NT_LIST_START)
 		{
 			listCurrent = current;
 			listCount = 0;
 			while (listCurrent)
 			{
-				switch (listCurrent->type)
+				switch (listCurrent->ntype)
 				{
 					case NT_LIST_START:
 						listCount++;
@@ -127,7 +128,7 @@ TNODE *makeParseTree(TNODE *tree)
 		{
 			if (current->priority == priority)
 			{
-				switch (current->type)
+				switch (current->ntype)
 				{
 					case NT_OP:
 						//swap 1st and 2nd to make the op the current
@@ -168,7 +169,7 @@ TNODE *makeParseTree(TNODE *tree)
 								left->prev = NULL;
 								//don't do this if type == NT_OP...
 								//still buggy, EQ...
-								//if (opcmd->type == NT_CONTROL)
+								//if (opcmd->ntype == NT_CONTROL)
 									left->next = NULL;
 							}
 							if (right != NULL)
@@ -185,8 +186,7 @@ TNODE *makeParseTree(TNODE *tree)
 							}
 						}
 						break;
-					case NT_INT:
-					case NT_DBL:
+					case NT_NUM:
 					case NT_VAR:
 
 						break;
@@ -206,20 +206,25 @@ void printTree(TNODE *tree, int depth)
 	{
 		for (i = 0; i < depth; i++)
 			printf("  ");
-		switch (current->type)
+		switch (current->ntype)
 		{
 			case NT_OP:
 			case NT_CONTROL:
-				if (current->prim_function != NULL)
-					current->prim_function();
+				if (current->primIdx != -1)
+					printf("%s", prims[current->primIdx]);
 				else
 					printf("OP/CMD?");
 				break;
-			case NT_INT:
-				printf("%d", current->nInteger);
-				break;
-			case NT_DBL:
-				printf("%lf", current->nRational);
+			case NT_NUM:
+				switch (current->dtype)
+				{
+					case DT_INT:
+						printf("%d", current->nInteger);
+						break;
+					case DT_DBL:
+						printf("%lf", current->nRational);
+						break;
+				}
 				break;
 			case NT_VAR:
 				printf("V[%d]", current->varIdx);
@@ -233,8 +238,8 @@ void printTree(TNODE *tree, int depth)
 			default:
 				printf("???");
 		}
-		//printf(" Type: %s Priority: %d Depth: %d\n", dispNodeType(current->type), current->priority, depth);
-		printf(" (%s)\n", dispNodeType(current->type));
+		//printf(" Type: %s Priority: %d Depth: %d\n", dispNodeType(current->ntype), current->priority, depth);
+		printf(" (%s)\n", dispNodeType(current->ntype));
 		if (current->left != NULL)
 		{
 			for (i = 0; i < depth + 1; i++)
@@ -260,8 +265,7 @@ const char *dispNodeType(const NodeType type)
 		case NT_UNKNOWN: return "UNKNOWN";
 		case NT_CONTROL: return "CONTROL";
 		case NT_OP: return "OP";
-		case NT_INT: return "INT";
-		case NT_DBL: return "DBL";
+		case NT_NUM: return "NUM";
 		case NT_VAR: return "VAR";
 		case NT_FUNC: return "FUNC";
 		case NT_LIST_START: return "LIST_START";
@@ -282,7 +286,8 @@ TNODE *newTreeNode(const TEXTNODE *node)
 	PRIMTYPE *pos = NULL;
 	PRIMTYPE *search = NULL;
 	NodeType ntype = NT_UNKNOWN;
-	int i, isVar, nInt = 0;
+	DataType dtype = DT_INT;
+	int primIdx = -1, i, isVar, nInt = 0;
 	short varIdx = -1;
 	double nDbl = 0.0;
 
@@ -300,6 +305,7 @@ TNODE *newTreeNode(const TEXTNODE *node)
 			if (pos != NULL)
 			{
 				//printf("\tFound: %s\n", pos->name);
+				primIdx = (int)(pos - prims);
 				switch (node->type)
 				{
 					case OP: ntype = NT_OP; break;
@@ -325,14 +331,15 @@ TNODE *newTreeNode(const TEXTNODE *node)
 			break;
 		case NUM:
 			// convert to numeric
-			ntype = NT_INT;
+			ntype = NT_NUM;
+			dtype = DT_INT;
 			nInt = atoi(node->text);
 			if (nInt == INT_MAX || nInt == INT_MIN)
-				ntype = NT_DBL;
+				dtype = DT_DBL;
 			else
 				for (i = 0; i < strlen(node->text); i++)
 					if (node->text[i] == '.')
-						ntype = NT_DBL;
+						dtype = DT_DBL;
 			nDbl = atof(node->text);
 			break;
 		case LBR:
@@ -345,7 +352,8 @@ TNODE *newTreeNode(const TEXTNODE *node)
 			return NIL;
 	}
 	TNODE *newNode = (TNODE *)malloc(sizeof(TNODE));
-	newNode->type = ntype;
+	newNode->ntype = ntype;
+	newNode->dtype = dtype;
 	newNode->varIdx = varIdx;
 	newNode->nInteger = nInt;
 	newNode->nRational = nDbl;
@@ -353,14 +361,13 @@ TNODE *newTreeNode(const TEXTNODE *node)
 	newNode->right = NULL;
 	newNode->prev = NULL;
 	newNode->next = NULL;
+	newNode->primIdx = primIdx;
 	newNode->numargs = 0;
 	newNode->priority = 0;
-	newNode->prim_function = NULL;
 	if (pos != NULL)
 	{
 		newNode->numargs = pos->numargs;
 		newNode->priority = pos->priority;
-		newNode->prim_function = pos->prim_function;
 	}
 	return newNode;
 }
@@ -379,161 +386,459 @@ TNODE *setNextNode(TNODE *currentNode, TNODE *nextNode)
 	return nextNode;
 }
 
-
-/*
-TNODE *exec(TNODE *args, char fcn)
+void execTree(TNODE *tree)
 {
-	switch(fcn) {
-		case '-': ival = -ival; break;
-		
+	TNODE *current = tree;
+	int i;
+	while (current)
+	{
+		switch (current->ntype)
+		{
+			case NT_OP:
+			case NT_CONTROL:
+				if (current->primIdx != -1)
+					prims[current->primIdx].prim_function(current);
+				else
+					printf("OP/CMD?");
+				break;
+			case NT_NUM:
+				switch (current->dtype)
+				{
+					case DT_INT:
+						printf("%d", current->nInteger);
+						break;
+					case DT_DBL:
+						printf("%lf", current->nRational);
+						break;
+				}
+				break;
+			case NT_VAR:
+				printf("V[%d]", current->varIdx);
+				break;
+			case NT_LIST_START:
+				execTree(current->left);
+				break;
+			case NT_LIST_END:
+				printf("]");
+				break;
+			default:
+				printf("???");
+		}
+		current = current->next;
 	}
 }
-*/
 
-
-
-TNODE *execMulNode(TNODE *args)
+TNODE *loadVar(TNODE *current)
 {
-	printf("MUL");
-	return NIL;
+	if (current->varIdx != -1 && current->varIdx <= NUM_ROGOVARS)
+	{
+		current->nRational = rogo_vars[current->varIdx];
+		current->nInteger = (int)round(current->nRational);
+		current->dtype = DT_DBL;
+		if ((int)ceil(current->nRational) == (int)floor(current->nRational))
+			current->dtype = DT_INT;
+		if (DEBUG)
+			switch (current->dtype)
+			{
+				case DT_INT: printf("\nLoading Variable #%d. Value: %d", current->varIdx, current->nInteger); break;
+				case DT_DBL: printf("\nLoading Variable #%d. Value: %lf", current->varIdx, current->nRational); break;
+			}
+	}
+	return current;
 }
 
-TNODE *execAddNode(TNODE *args)
+TNODE *exec(TNODE *current, char fcn)
 {
-	printf("ADD");
-	return NIL;
+	int lvarIdx = -1,
+		rvarIdx = -1,
+		retCurrentNode = 1,
+		ival = 0, ileft = 0, iright = 0;
+	double fval = 0.0,
+		fleft = 0.0,
+		fright = 0.0;
+	DataType retDataType = DT_UNKNOWN;
+	
+	if (current->left != NULL)
+	{
+		if (current->left->primIdx != -1)
+		{
+			prims[current->left->primIdx].prim_function(current->left);
+		}
+		loadVar(current->left);
+		switch (current->left->dtype)
+		{
+			case DT_INT:
+				ileft = current->left->nInteger;
+				fleft = (double)ileft;
+				break;
+			case DT_DBL:
+				fleft = current->left->nRational;
+				ileft = (int)fleft;
+				break;
+		}
+		if (retDataType != DT_DBL)
+			retDataType = current->left->dtype;
+	}
+	if (current->right != NULL)
+	{
+		if (current->right->primIdx != -1)
+		{
+			prims[current->right->primIdx].prim_function(current->right);
+		}
+		loadVar(current->right);
+		switch (current->right->dtype)
+		{
+			case DT_INT:
+				iright = current->right->nInteger;
+				fright = (double)iright;
+				break;
+			case DT_DBL:
+				fright = current->right->nRational;
+				iright = (int)fright;
+				break;
+		}
+		if (retDataType != DT_DBL)
+			retDataType = current->right->dtype;
+	}
+
+	switch(fcn) {
+		case '-': //subtract
+			ival = ileft - iright;
+			fval = fleft - fright;
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case '+': //add
+			ival = ileft + iright;
+			fval = fleft + fright;
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case '*': //multiply
+			ival = ileft * iright;
+			fval = fleft * fright;
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case '/': //divide
+			if (iright != 0)
+				ival = ileft / iright;
+			if (fright != 0.0)
+				fval = fleft / fright;
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case '>': //greater
+			ival = (ileft > iright);
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break; 
+		case '<': //less
+			ival = (ileft < iright);
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break; 
+		case ':': //assign
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\nv[%d]:=%d", current->left->varIdx, iright); break;
+					case DT_DBL: printf("\nv[%d]:=%lf", current->left->varIdx, fright); break;
+				}
+			fval = fright;
+			if (current->left->varIdx != -1 && current->left->varIdx <= NUM_ROGOVARS)
+				rogo_vars[current->left->varIdx] = fval;
+			break;
+		case '=': //eq
+			ival = (ileft == iright);
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case '#': //neq
+			ival = (ileft != iright);
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case 'L': //lte
+			ival = (ileft <= iright);
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case 'G': //gte
+			ival = (ileft >= iright);
+			if (DEBUG)
+				switch (retDataType)
+				{
+					case DT_INT: printf("\n%d%c%d=%d", ileft, fcn, iright, ival); break;
+					case DT_DBL: printf("\n%lf%c%lf=%lf", fleft, fcn, fright, fval); break;
+				}
+			break;
+		case '&': //and
+			//printf("\n%d%c%d", ileft, fcn, iright);
+			ival = (ileft && iright);
+			break;
+		case '|': //or
+			//printf("\n%d%c%d", ileft, fcn, iright);
+			ival = (ileft || iright);
+			break;
+		case '!': //not
+			//printf("\n%c%d", fcn, ileft);
+			ival = !ileft;
+			break;
+		case '?': //if
+			
+			break;
+		case '^': //ifelse
+			
+			break;
+		case 'R': //repeat
+			
+			break;
+		case 'P': //pause
+			
+			break;
+	}
+	if (retDataType == DT_DBL)
+		ival = (int)fval;
+	else
+		fval = (double)ival;
+	
+	if (retCurrentNode)
+	{
+		current->dtype = retDataType;
+		current->nInteger = ival;
+		current->nRational = fval;
+	}
+	else
+	{
+		TNODE *newNode = (TNODE *)malloc(sizeof(TNODE));
+		newNode->ntype = NT_NUM;
+		newNode->dtype = retDataType;
+		newNode->varIdx = -1;
+		newNode->nInteger = ival;
+		newNode->nRational = fval;
+		newNode->left = NULL;
+		newNode->right = NULL;
+		newNode->prev = NULL;
+		newNode->next = NULL;
+		newNode->primIdx = -1;
+		newNode->numargs = 0;
+		newNode->priority = 0;
+		return newNode;
+	}
 }
 
-TNODE *execSubNode(TNODE *args)
+TNODE *evalNodeValue(TNODE *current)
 {
-	printf("SUB");
-	return NIL;
+	TNODE *node;
+	if (current->primIdx != -1)
+		node = prims[current->primIdx].prim_function(current);
+	else if (current->varIdx != -1)
+		node = loadVar(current);
+	else
+		node = current;
+	return node;
 }
 
-TNODE *execDivideNode(TNODE *args)
+int evalNodeValueInt(TNODE *current)
 {
-	printf("DIV");
-	return NIL;
+	switch (current->dtype)
+	{
+		case DT_INT: return current->nInteger;
+		case DT_DBL: return (int)round(current->nRational);
+		default: return 0;
+	}
 }
 
-TNODE *execLessNode(TNODE *args)
+TNODE *execMulNode(TNODE *current)
 {
-	printf("LT");
-	return NIL;
+	return exec(current, '*');
 }
 
-TNODE *execAssignNode(TNODE *args)
+TNODE *execAddNode(TNODE *current)
 {
-	printf("SET");
-	return NIL;
+	return exec(current, '+');
 }
 
-TNODE *execEqualNode(TNODE *args)
+TNODE *execSubNode(TNODE *current)
 {
-	printf("EQ");
-	return NIL;
+	return exec(current, '-');
 }
 
-TNODE *execGreaterNode(TNODE *args)
+TNODE *execDivideNode(TNODE *current)
 {
-	printf("GT");
-	return NIL;
+	return exec(current, '/');
 }
 
-TNODE *execLessEqualNode(TNODE *args)
+TNODE *execLessNode(TNODE *current)
 {
-	printf("LTE");
-	return NIL;
+	return exec(current, '<');
 }
 
-TNODE *execNotEqualNode(TNODE *args)
+TNODE *execAssignNode(TNODE *current)
 {
-	printf("NEQ");
-	return NIL;
+	return exec(current, ':');
 }
 
-TNODE *execGreaterEqualNode(TNODE *args)
+TNODE *execEqualNode(TNODE *current)
 {
-	printf("GTE");
-	return NIL;
+	return exec(current, '=');
 }
 
-TNODE *execAndNode(TNODE *args)
+TNODE *execGreaterNode(TNODE *current)
 {
-	printf("AND");
-	return NIL;
+	return exec(current, '>');
 }
 
-TNODE *execBackNode(TNODE *args)
+TNODE *execLessEqualNode(TNODE *current)
 {
-	printf("BK");
-	return NIL;
+	return exec(current, 'L');
 }
 
-TNODE *execForwardNode(TNODE *args)
+TNODE *execNotEqualNode(TNODE *current)
 {
-	printf("FD");
-	return NIL;
+	return exec(current, '#');
 }
 
-TNODE *execIfNode(TNODE *args)
+TNODE *execGreaterEqualNode(TNODE *current)
 {
-	printf("IF");
-	return NIL;
+	return exec(current, 'G');
 }
 
-TNODE *execIfElseNode(TNODE *args)
+TNODE *execAndNode(TNODE *current)
 {
-	printf("IFELSE");
-	return NIL;
+	return exec(current, '&');
 }
 
-TNODE *execLeftNode(TNODE *args)
+TNODE *execBackNode(TNODE *current)
 {
-	printf("LT");
-	return NIL;
+	int i = evalNodeValueInt(evalNodeValue(current->left));
+	printf("\nBK %d", i);
+	return current;
 }
 
-TNODE *execLzAimNode(TNODE *args)
+TNODE *execForwardNode(TNODE *current)
 {
-	printf("LZAIM");
-	return NIL;
+	int i = evalNodeValueInt(evalNodeValue(current->left));
+	printf("\nFD %d", i);
+	return current;
 }
 
-TNODE *execLzFireNode(TNODE *args)
+TNODE *execIfNode(TNODE *current)
 {
-	printf("LZFIRE");
-	return NIL;
+	if (evalNodeValueInt(evalNodeValue(current->left)))
+	{
+		if (DEBUG)
+			printf("\nTest successful.");
+		execTree(current->right);
+	}
+	else
+		if (DEBUG)
+			printf("\nTest failed.");
+	return current;
 }
 
-TNODE *execNotNode(TNODE *args)
+TNODE *execIfElseNode(TNODE *current)
 {
-	printf("NOT");
-	return NIL;
+	if (DEBUG)
+		printf("\nIFELSE");
+	//return exec(current, '^');
+	return current;
 }
 
-TNODE *execOrNode(TNODE *args)
+TNODE *execLeftNode(TNODE *current)
 {
-	printf("OR");
-	return NIL;
+	int degrees = evalNodeValueInt(evalNodeValue(current->left));
+	printf("\nLT %d", degrees);
+	return current;
 }
 
-TNODE *execPauseNode(TNODE *args)
+TNODE *execLzAimNode(TNODE *current)
 {
-	printf("PAUSE");
-	return NIL;
+	if (DEBUG)
+		printf("\nLZAIM");
+	return current;
 }
 
-TNODE *execRepeatNode(TNODE *args)
+TNODE *execLzFireNode(TNODE *current)
 {
-	printf("REPEAT");
-	return NIL;
+	if (DEBUG)
+		printf("\nLZFIRE");
+	return current;
 }
 
-TNODE *execRightNode(TNODE *args)
+TNODE *execNotNode(TNODE *current)
 {
-	printf("RT");
-	return NIL;
+	return exec(current, '!');
+}
+
+TNODE *execOrNode(TNODE *current)
+{
+	return exec(current, '|');
+}
+
+TNODE *execPauseNode(TNODE *current)
+{
+	if (DEBUG)
+		printf("\nPAUSE");
+	return exec(current, 'P');
+}
+
+TNODE *execRepeatNode(TNODE *current)
+{
+	int i = evalNodeValueInt(evalNodeValue(current->left));
+	if (DEBUG)
+		printf("\nfor(1..%d) {", i);
+	for (; i > 0; i--)
+	{
+		execTree(current->right);
+	}
+	if (DEBUG)
+		printf("\n}");
+	return current;
+}
+
+TNODE *execRightNode(TNODE *current)
+{
+	int degrees = evalNodeValueInt(evalNodeValue(current->left));
+	printf("\nRT %d", degrees);
+	return current;
 }
 
 

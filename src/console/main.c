@@ -30,6 +30,8 @@ int main(int argc, char *argv[])
 	destroyTextList(list);
 	tree = makeParseTree(tree);
 	printTree(tree, 0);
+	printf("\nExecuting Tree...\n");
+	execTree(tree);
 	
 	return 0;
 } //int main

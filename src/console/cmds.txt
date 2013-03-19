@@ -1,4 +1,12 @@
-v0=42 v1=69 v2=v0 v3=45
-repeat v0[fd v2 rt v3 repeat 5[fd v1]]
-if 1==-1+2 and 1 or not 0 [fd 100]
-repeat 1.41421356237 * 1.41421356237 fd 3.1415926535897932384626433832795
+v0=3.2 v1=7 v2=v0 v3=45 v4=0
+repeat v0[fd v2 rt v3 repeat 4[fd v1]]
+if 1==-1+2 and 1 or not 1 [fd 100 v4=not v4]
+if v4 [bk 100 lt v3]
+if 1>2 [fd 1]
+if 2>1 [fd 2]
+if 1<2 [fd 3]
+if 2<1 [fd 4]
+if 1<>2 [fd 5]
+;repeat 3 [v4=not v4 if v4<>1 [fd 6]] invalid syntax tree on v4=not v4
+repeat 3 [fd 0 v4=not v4 if v4<>1 [fd 6]]
+repeat 1.18920711500 * 1.18920711500 * 1.41421356237 fd 3.1415926535897932384626433832795

@@ -168,7 +168,7 @@ void splitTextOnPrimitives(TEXTNODE *node)
 			case '/':
 			case '<':
 			case '>':
-				if (ptype == NONE)
+				if (ptype == NONE || ptype == OP)
 					ptype = OP;
 				else
 					goto SPLIT_PRIMITIVE;
