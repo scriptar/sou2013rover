@@ -110,7 +110,9 @@ TNODE *makeParseTree(TNODE *tree)
 							right->prev->next = NULL; //the "next" of the last element in list should point to nothing
 							right->prev = NULL; //the list end should point to nothing
 							right->next = NULL; //the list end should point to nothing
-							makeParseTree(left); //inner list is its own tree, parse it
+							left = makeParseTree(left); //inner list is its own tree, parse it
+							if (current->left != left)
+								current->left = left; //fix tree if root changed
 						}
 						break;
 				}

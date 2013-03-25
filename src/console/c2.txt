@@ -1,0 +1,1 @@
+v0=1 v4=0 repeat 5 [v4=not v4 if v4 or 0 [fd v0] v0=v0+1]

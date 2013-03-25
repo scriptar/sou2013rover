@@ -7,6 +7,6 @@ if 2>1 [fd 2]
 if 1<2 [fd 3]
 if 2<1 [fd 4]
 if 1<>2 [fd 5]
-;repeat 3 [v4=not v4 if v4<>1 [fd 6]] invalid syntax tree on v4=not v4
-repeat 3 [fd 0 v4=not v4 if v4<>1 [fd 6]]
+repeat 3 [v4=not v4 if v4<>1 [fd 6]]
+;repeat 3 [fd 0 v4=not v4 if v4<>1 [fd 6]]
 repeat 1.18920711500 * 1.18920711500 * 1.41421356237 fd 3.1415926535897932384626433832795
