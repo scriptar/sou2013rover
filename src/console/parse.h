@@ -13,6 +13,9 @@
 
 /*** defines ***/
 #define MAXSTR		100
+#define isdigit(ch)			(ch >= '0' && ch <= '9')
+#define isalphaupper(ch)	(ch >= 'A' && ch <= 'Z')
+#define isalphalower(ch)	(ch >= 'a' && ch <= 'z')
 
 /*** type definitions ***/
 typedef enum {NONE, ID, NUM, NEGATIVE, OP, LBR, RBR} PrimitiveType;

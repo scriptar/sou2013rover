@@ -5,10 +5,6 @@
 
 #include "parse.h"
 
-#define isdigit(ch)			(ch >= '0' && ch <= '9')
-#define isalphaupper(ch)	(ch >= 'A' && ch <= 'Z')
-#define isalphalower(ch)	(ch >= 'a' && ch <= 'z')
-
 /*
 Description: This function reads a Rogo program from a file.
 	It reads and filters-out characters that are not whitelisted.
@@ -60,10 +56,11 @@ TEXTNODE *fileReadCommands(const char* fileName)
 					case '[':
 					case ']':
 						good = 1;
+						break;
 				}
 				if (!good)
 					*chPtr = '\0';
-				*chPtr++;
+				chPtr++;
 				end++;
 			}
 			//read each string from buffer and add to text list
