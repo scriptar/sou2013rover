@@ -728,7 +728,7 @@ TNODE *evalNodeValue(TNODE *current)
 {
 	TNODE *node;
 	if (current->ntype == NT_LIST_START && current->left != NULL)
-		current = current->left;
+		current = evalNodeValue(current->left);
 	if (current->primIdx != -1)
 		node = prims[current->primIdx].prim_function(current);
 	else if (current->varIdx != -1)
