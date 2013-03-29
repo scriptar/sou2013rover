@@ -12,8 +12,9 @@ import edu.sou.rover2013.BaseActivity;
  * Borrowed Code
  * 
  * Hacked together solution that allows for TCP commands. Will remove/improve...
- * 
+ *
  */
+// TODO Allow for listing of server thread status, and allow for closing of thread.
 public class TCPService extends BaseActivity implements Runnable {
 
 	public static int serverPort = 4444;

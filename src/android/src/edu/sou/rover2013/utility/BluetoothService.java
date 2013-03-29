@@ -12,34 +12,48 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 /**
- * This class handles creation of Android-Arduino Bluetooth connections
+ * This class handles the Android Bluetooth connection. The Rover model uses this.
  * 
  * @author Ryan Dempsey
- *
+ * 
  */
+// TODO check for status before operations. Will fail if changing
 public class BluetoothService extends Activity {
 
-	private BluetoothAdapter adapter = null;
-	private BluetoothDevice device = null;
-	private BluetoothSocket socket = null;
-	private InputStream inStream = null;
-	private OutputStream outStream = null;
-	/** Used when discovering Bluetooth devices. */
-	private static UUID uuid = UUID
+	// Class Vars
+	private static BluetoothService singleton;
+	// Specific Bluetooth ID to look for when searching for BlueSmirf Module
+	private final static UUID uuid = UUID
 			.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
-	// TODO Consider adding pauses after enabling/disabling bluetooth
-	// TODO check for status before operations. Will fail if changing
+	// Instance Vars
+	private final BluetoothAdapter adapter;
+	private BluetoothSocket bluetoothSocket = null;
+	private InputStream inStream = null;
+	private OutputStream outStream = null;
 
 	/**
-	 * Default Constructor.
+	 * Constructor
 	 */
-	public BluetoothService() {
+	private BluetoothService() {
 		adapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
 	/**
+	 * Returns Singleton Instance
+	 */
+	public static BluetoothService getConnection() {
+		if (singleton == null) {
+			singleton = new BluetoothService();
+			return singleton;
+		} else
+			return singleton;
+	}
+
+	/**
 	 * Returns true if Android is Bluetooth capable, false if not.
+	 * 
+	 * @return whether the device supports Bluetooth
 	 */
 	public static boolean isBluetoothCapable() {
 		if (BluetoothAdapter.getDefaultAdapter() == null) {
@@ -51,6 +65,8 @@ public class BluetoothService extends Activity {
 
 	/**
 	 * Returns true if Bluetooth is enabled, false if disabled or unavailable
+	 * 
+	 * @return whether Bluetooth is enabled or not
 	 */
 	public static boolean isBluetoothEnabled() {
 		if (!isBluetoothCapable()) {
@@ -64,8 +80,53 @@ public class BluetoothService extends Activity {
 	}
 
 	/**
+	 * Closes any open connection, and resets Bluetooth service state.
+	 */
+	public void resetBluetooth() {
+		if (inStream != null) {
+			try {
+				inStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			inStream = null;
+		}
+		if (outStream != null) {
+			try {
+				outStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			outStream = null;
+		}
+		if (bluetoothSocket != null) {
+			try {
+				bluetoothSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			bluetoothSocket = null;
+		}
+	}
+
+	/**
+	 * Returns true if Android is currently connected to device.
+	 * 
+	 * @return
+	 */
+	// TODO if connection is interrupted, still returns true.
+	public boolean isConnected() {
+		if (bluetoothSocket == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Enables Bluetooth on Android
 	 */
+	// TODO add pause after enabling bluetooth, check for success
 	public void enableBluetooth() throws Exception {
 		if (isBluetoothCapable() && !isBluetoothEnabled()) {
 			adapter.enable();
@@ -73,47 +134,41 @@ public class BluetoothService extends Activity {
 	}
 
 	/**
-	 * Disables Bluetooth on Android
+	 * Disables Bluetooth and resets class.
 	 */
+	// TODO add pause after disabling bluetooth, check for success
 	public void disableBluetooth() {
 		if (isBluetoothCapable() && isBluetoothEnabled()) {
 			adapter.disable();
 		}
+		resetBluetooth();
 	}
 
 	/**
-	 * Returns true if Android is currently connected to device.
+	 * Returns a set containing all bonded Android devices. Not necessarily
+	 * connectable, just configured.
 	 * 
-	 * // TODO if connection is interrupted, still returns true. Need to add a
-	 * // check to return false if connection no longer valid
+	 * @return A set containing all paired devices.
+	 * @throws Exception
+	 *             if bluetooth not supported or enabled.
 	 */
-	public boolean isConnected() {
-		if (socket == null) {
-			return false;
-		}
-		// } else if (!socket.isConnected()) {
-		// return false;
-		else {
-			return true;
-		}
-	}
-
-	/**
-	 * Returns a set containing all paired devices. If disabled or unavailable,
-	 * returns null value
-	 */
-	public Set<BluetoothDevice> pairedDevices() throws Exception {
+	public Set<BluetoothDevice> getBondedBluetoothDevices() throws Exception {
 		if (!isBluetoothCapable()) {
-			throw new Exception("Device Not Bluetooth Capable");
+			throw new Exception("Bluetooth not available");
 		}
 		if (!isBluetoothEnabled()) {
-			throw new Exception("Device Bluetooth Not Enabled.");
+			throw new Exception("Bluetooth not enabled");
 		}
 		return adapter.getBondedDevices();
 	}
 
 	/**
-	 * Returns count of paired devices.
+	 * Returns a count of bonded Android devices. Not necessarily connectable,
+	 * just configured.
+	 * 
+	 * @return the number of bonded bluetooth devices.
+	 * @throws Exception
+	 *             if bluetooth not supported or enabled.
 	 */
 	public int pairedDeviceCount() throws Exception {
 		if (!isBluetoothCapable()) {
@@ -125,77 +180,37 @@ public class BluetoothService extends Activity {
 		return adapter.getBondedDevices().size();
 	}
 
-	/** Allows Bluetooth Device selection from pairedDevices */
-	public void selectDevice(BluetoothDevice object) {
-		device = object;
-	}
-
 	/**
-	 * Attempts connection with selected device. Throws Exception if connection
-	 * fails or no device selected
+	 * Attempts connection with passed in device. Use
+	 * "getBondedBluetoothDevices" to get bluetooth .
+	 * 
+	 * @param object
+	 *            the bonded BluetoothDevice to connect to
+	 * @throws Exception
+	 *             if connection fails. Message contains details.
 	 */
-	public void connectSelectedDevice() throws Exception {
-		if (device == null) {
-			throw new Exception("No device selected.");
-		}
-		connectDevice(device);
-	}
-
-	/**
-	 * Attempts connection with passed in device. Get the device from
-	 * "pairedDevices" method. Throws Exception if connection fails
-	 */
-	public void connectDevice(BluetoothDevice object) throws Exception {
-		// Check to see if Android is bluetooth capable, and set adapter if so
+	public void connectDevice(BluetoothDevice deviceArg) throws Exception {
 		if (!isBluetoothCapable()) {
-			throw new Exception("Android device not Bluetooth capable.");
-		} else {
-			adapter = BluetoothAdapter.getDefaultAdapter();
+			throw new Exception("Device not Bluetooth capable");
 		}
-
-		// Check to see if Android has enabled Bluetooth.
 		if (!isBluetoothEnabled()) {
-			throw new Exception("Bluetooth not enabled on Android device.");
+			throw new Exception("Bluetooth not enabled");
 		}
-
-		// Check to see if connection already open
 		if (isConnected()) {
-			throw new Exception("Connection already open.");
+			throw new Exception("Connection already open");
 		}
-
-		// TODO Check for valid passed-in object
-		device = object;
 
 		// Connection Attempt
+		// TODO don't hang app while connecting
 		try {
-			socket = device.createRfcommSocketToServiceRecord(uuid);
-			socket.connect();
-			outStream = socket.getOutputStream();
-			inStream = socket.getInputStream();
+			bluetoothSocket = deviceArg.createRfcommSocketToServiceRecord(uuid);
+			bluetoothSocket.connect();
+			outStream = bluetoothSocket.getOutputStream();
+			inStream = bluetoothSocket.getInputStream();
 		} catch (IOException e) {
-			throw new Exception("Error establishing connection.");
+			resetBluetooth();
+			throw new Exception("Error establishing connection");
 		}
-
-	}
-
-	/**
-	 * Get the Bluetooth input stream. Use this to receive information from the
-	 * remote Bluetooth device.
-	 * 
-	 * @return The input stream as an InputStream object.
-	 */
-	public InputStream getInputStream() {
-		return inStream;
-	}
-
-	/**
-	 * Get the Bluetooth output stream. Use this to send data to the remote
-	 * Bluetooth device.
-	 * 
-	 * @return The output stream as an OutputStream object.
-	 */
-	public OutputStream getOutputStream() {
-		return outStream;
 	}
 
 	/**
@@ -203,21 +218,37 @@ public class BluetoothService extends Activity {
 	 * Can use this rather than grabbing the InputStream.
 	 * 
 	 * @param data
-	 *            is a byte value that you wish to transmit
-	 * @return returns true if successful, false if an error occured
+	 *            byte value to transmit
+	 * @throws Exception
+	 *             if bluetooth is not connected properly
+	 * @throws IOException
+	 *             if an error occurs while writing data out
 	 */
-	public boolean transmitByte(byte data) {
-		if (!isConnected()) {
-			return false;
+	public void transmitByte(byte data) throws IOException, Exception {
+		if (!isConnected() || outStream == null) {
+			throw new Exception();
 		}
-		try {
-			outStream.write(data);
-			outStream.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		outStream.write(data);
+		outStream.flush();
+	}
+
+	/**
+	 * Transmits string through open bluetooth connection as a series of UTF-8
+	 * bytes
+	 * 
+	 * @param data
+	 *            string to transmit
+	 * @throws IOException
+	 *             if connection fails or transmission errors
+	 * @throws Exception
+	 *             if connection not properly formed
+	 */
+	public void transmitString(String data) throws IOException, Exception {
+		if (!isConnected() || outStream == null) {
+			throw new Exception();
 		}
-		return true;
+		outStream.write(data.getBytes());
+		outStream.flush();
 	}
 
 }

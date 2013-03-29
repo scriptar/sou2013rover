@@ -16,7 +16,7 @@
         android:layout_above="@+id/Clear"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/ToggleLight"
+        android:layout_below="@+id/button_connect_bluetooth"
         android:gravity="bottom"
         android:scrollbars="vertical"
         android:text="Console Output\n" />
@@ -58,15 +58,6 @@
         android:text="@string/button_connect_bluetooth" />
 
     <Button
-        android:id="@+id/display_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_connect_bluetooth"
-        android:text="Display Buffered Ultrasonic Data" />
-
-    <Button
         android:id="@+id/Clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,14 +65,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:text="Clear Output" />
-
-    <Button
-        android:id="@+id/ToggleLight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/display_data"
-        android:text="Test Remote Lights" />
 
 </RelativeLayout>

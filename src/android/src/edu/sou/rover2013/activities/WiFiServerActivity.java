@@ -3,19 +3,16 @@ package edu.sou.rover2013.activities;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import edu.sou.rover2013.BaseActivity;
-import edu.sou.rover2013.BaseApplication;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.utility.BluetoothService;
 import edu.sou.rover2013.utility.TCPService;
@@ -30,18 +27,16 @@ public class WiFiServerActivity extends BaseActivity {
 
 	private TextView console;
 	private EditText textPort;
-	private BaseApplication app;
 	private BluetoothService connection;
 	private Thread sThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_wi_fi_server);
+		setContentView(R.layout.wi_fi_server);
 
 		// Get wireless connection
-		app = (BaseApplication) getApplication();
-		connection = app.getWirelessConnection();
+		connection = BluetoothService.getConnection();
 
 		// Inline Button Listener
 		final Button startButton = (Button) findViewById(R.id.startWifi);
@@ -93,7 +88,7 @@ public class WiFiServerActivity extends BaseActivity {
 						.getInetAddresses());
 				for (InetAddress addr : addrs) {
 					if (!addr.isLoopbackAddress()) {
-						String sAddr = addr.getHostAddress().toUpperCase();
+						String sAddr = addr.getHostAddress();
 						boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
 						if (useIPv4) {
 							if (isIPv4)

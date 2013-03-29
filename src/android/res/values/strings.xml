@@ -25,5 +25,6 @@
     <string name="title_activity_control_simple">Control Mode - Simple</string>
     <string name="title_activity_wi_fi_server">Wi-Fi Server</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_control_complex">ControlComplexActivity</string>
 
 </resources>

@@ -11,8 +11,8 @@ import android.view.MenuItem;
 
 /**
  * Pulling common activity code for our application into a parent abstract
- * class. When writing a new activity, extend this to inherit the standard menu
- * bar and actions.
+ * class. When writing a new activity, extend this rather than Activity to
+ * inherit the standard menu bar and actions.
  * 
  * @author Ryan Dempsey
  * 
@@ -29,7 +29,6 @@ public abstract class BaseActivity extends Activity {
 		return true;
 	}
 
-	
 	@Override
 	/**
 	 *  Handles menu item selection, returns true if successful
@@ -40,18 +39,22 @@ public abstract class BaseActivity extends Activity {
 		case R.id.bluetooth_settings:
 			intent = new Intent(this, ConnectionActivity.class);
 			startActivity(intent);
+			finish();
 			return true;
 		case R.id.telemetry_settings:
 			intent = new Intent(this, TelemetryActivity.class);
 			startActivity(intent);
+			finish();
 			return true;
 		case R.id.control_mode_settings:
 			intent = new Intent(this, ModeSelectActivity.class);
 			startActivity(intent);
+			finish();
 			return true;
 		case R.id.wifi_server:
 			intent = new Intent(this, WiFiServerActivity.class);
 			startActivity(intent);
+			finish();
 			return true;
 		case R.id.exit:
 			System.exit(0);

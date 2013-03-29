@@ -19,20 +19,36 @@ public class ModeSelectActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_screen_mode_select);
+		setContentView(R.layout.mode_select);
 
 		final Button simple = (Button) findViewById(R.id.simple);
+		final Button complex = (Button) findViewById(R.id.complex);
 
 		simple.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				launchSimple();
 			}
 		});
+		
+		complex.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				launchComplex();
+			}
+
+
+		});
+		
 	}
 
-	protected void launchSimple() {
+	private void launchComplex() {
+		Intent intent = new Intent(this, ControlComplexActivity.class);
+		startActivity(intent);
+		finish();
+	}
+	private void launchSimple() {
 		Intent intent = new Intent(this, ControlSimpleActivity.class);
 		startActivity(intent);
+		finish();
 	}
 
 }
