@@ -1,10 +1,13 @@
 package edu.sou.rover2013;
 
 import edu.sou.rover2013.activities.ConnectionActivity;
-import edu.sou.rover2013.activities.ModeSelectActivity;
+import edu.sou.rover2013.activities.ControlComplexActivity;
+import edu.sou.rover2013.activities.ControlSimpleActivity;
 import edu.sou.rover2013.activities.TelemetryActivity;
 import edu.sou.rover2013.activities.WiFiServerActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,9 +50,30 @@ public abstract class BaseActivity extends Activity {
 			finish();
 			return true;
 		case R.id.control_mode_settings:
-			intent = new Intent(this, ModeSelectActivity.class);
-			startActivity(intent);
-			finish();
+			// Display Selection List
+			final String simpleMode = "Simple Direct Control";
+			final String complexMode = "Advanced Programming Control";
+			final CharSequence[] list = { simpleMode, complexMode };
+			// Build list dialog box
+			AlertDialog.Builder chooserBox = new AlertDialog.Builder(this);
+			chooserBox.setTitle("Select a Rover Control Mode:");
+			chooserBox.setItems(list, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					if (list[item].equals(simpleMode)) {
+						Intent intent = new Intent(getApplicationContext(),
+								ControlSimpleActivity.class);
+						startActivity(intent);
+						finish();
+					} else if (list[item].equals(complexMode)) {
+						Intent intent = new Intent(getApplicationContext(),
+								ControlComplexActivity.class);
+						startActivity(intent);
+						finish();
+					}
+				}
+			});
+			AlertDialog alert = chooserBox.create();
+			alert.show();
 			return true;
 		case R.id.wifi_server:
 			intent = new Intent(this, WiFiServerActivity.class);
@@ -57,7 +81,7 @@ public abstract class BaseActivity extends Activity {
 			finish();
 			return true;
 		case R.id.exit:
-			System.exit(0);
+			this.finish();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
