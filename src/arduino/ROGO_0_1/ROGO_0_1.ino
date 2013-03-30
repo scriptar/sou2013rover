@@ -1,21 +1,44 @@
+/*
+  Official ROGO rover sketch.
+ 
+  Project Information:
+  https://github.com/scriptar/sou2013rover
+*/
 
+// Arduino-Supplied Servo Library
+// URL: http://arduino.cc/en/Reference/Servo
 #include <Servo.h>
+
+// Third-Party Ultrasonic Sensor Library
+// URL:http://playground.arduino.cc/Code/NewPing
 #include <NewPing.h>
+
 #include "parse.h"
 #include "tree.h"
 #include "rover.h"
 
-#define PIN_BATT_SENSE A0
-#define PIN_ULTRA_TRIGGER  5  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define PIN_ULTRA_ECHO     4  // Arduino pin tied to echo pin on the ultrasonic sensor.
-#define PIN_BATT_LED_INDICATOR 6 // Indicator for battery check
-#define PIN_SERVO_RIGHT 7
-#define PIN_SERVO_LEFT 8
+// ***************************************
+// Arduino Pin Declarations
+// ***************************************
+#define PIN_BATT_SENSE          A0
+//#define PIN_BLUETOOTH_RECEIVE  0
+//#define PIN_BLUETOOTH_TRANSMIT 1
+#define PIN_ULTRA_ECHO           4  // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define PIN_ULTRA_TRIGGER        5  // Arduino pin tied to trigger pin on the ultrasonic sensor.
+#define PIN_BATT_LED_INDICATOR   6 // Indicator for battery check
+#define PIN_SERVO_RIGHT          7
+#define PIN_SERVO_LEFT           8
 
+// ***************************************
+// Constant Declarations
+// ***************************************
 #define ULTRA_MAX_DISTANCE 10 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 #define SERVO_MAX 2000 // Servo Maximum Pulse Width. Maybe need to adjust/test this more
 #define SERVO_MIN 1000 // Servo Minimum Pulse Width. Maybe need to adjust/test this more
 
+// ***************************************
+// Variables
+// ***************************************
 Servo servoR; //create servo objects
 Servo servoL;
 float bLevel = 0; //Battery Level
@@ -24,6 +47,9 @@ int setL = 90;
 boolean pingFlag = true;
 NewPing sonar(PIN_ULTRA_TRIGGER, PIN_ULTRA_ECHO, ULTRA_MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
+// ***************************************
+// Arduino Sketch Setup
+// ***************************************
 void setup()
 {
   Serial.begin(115200);
@@ -32,40 +58,24 @@ void setup()
   batCheck(); //Battery level check. HIGH = 3 blinks, MED = 2, LOW = 1, Led On if batteries need replaced. 
 }
 
-/* ********************* READ HERE ****************************
+/* ************* READ HERE ***************
  03/9 - Changed movement functions to act more logoish' 
         Left and right accept degrees as parameters.
         Forward accepts "units"... 
         Currently has a program to "draw" a circle, 
         Repeat 18[Foward 2 Right 20]. Gets close...
         Forward sometimes doesnt execute
+ 03/29 - Parse Tree implemented and working. 
+         Temporarily disabled ping stop motion
  */
-
+// ***************************************
+// Arduino Sketch Main Loop
+// ***************************************
 void loop()
 {
   if(Serial.available()){
-    /*
-    byte input = Serial.read(); 
-    switch (input){
-
-    case 10:
-      forward(1);
-      break;
-    case 20:
-      reverse(1);
-      break;
-    case 30:
-      left(45);
-      break;
-    case 40:
-      right(45);
-      break;
-    }
-    */
 	TEXTNODE *list = serialReadCommands();
 	TNODE *tree = makeFlatTree(list);
-	//printTree(tree, 0);
-	//destroyTextList(list);
 	tree = makeParseTree(tree);
 	printTree(tree, 0);
 	Serial.print("\nExecuting Tree...\n");
@@ -74,41 +84,46 @@ void loop()
   }
 }
 
-
-//---Functions-----------------------------------------------------
+// ***************************************
+// Functions
+// ***************************************
 void forward(int countF)
 {
+  Serial.print("Executing Forward: ");
+  Serial.println(countF);
   for(int i=0;i<=countF;i++){
     setR = 180; //servo1 full forward
     setL = 59; //servo2 full forward
-    pingCheck();
-          if(pingFlag){
+//    pingCheck();
+//          if(pingFlag){
            servoR.write(setR); //feed servos speed setting
            servoL.write(setL); 
            delay(333);
           }
-          else {
-            pause(1000);
-          }
-  }
+//          else {
+//            pause(1000);
+ //         }
+//  }
   pause(10);
 }
 
 void reverse(int countR)
 {
+  Serial.print("Executing Reverse: ");
+  Serial.println(countR);
     for(int i=0;i<countR;i++){
       setR = 59; //servo1 full reverse
       setL = 180; //servo2 full reverse
-      pingCheck();
-          if(pingFlag){
+//      pingCheck();
+ //         if(pingFlag){
            servoR.write(setR); //feed servos speed setting
            servoL.write(setL); 
            delay(333);
            }
-           else {
-             pause(1000);
-           }
-    }
+  //         else {
+   //          pause(1000);
+  //         }
+ //   }
     pause(10);
 }
 
