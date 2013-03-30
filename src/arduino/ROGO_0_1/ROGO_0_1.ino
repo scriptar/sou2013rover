@@ -5,9 +5,16 @@
 #include "tree.h"
 #include "rover.h"
 
-#define ULTRA_TRIGGER_PIN  5  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define ULTRA_ECHO_PIN     2  // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define PIN_BATT_SENSE A0
+#define PIN_ULTRA_TRIGGER  5  // Arduino pin tied to trigger pin on the ultrasonic sensor.
+#define PIN_ULTRA_ECHO     4  // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define PIN_BATT_LED_INDICATOR 6 // Indicator for battery check
+#define PIN_SERVO_RIGHT 7
+#define PIN_SERVO_LEFT 8
+
 #define ULTRA_MAX_DISTANCE 10 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
+#define SERVO_MAX 2000 // Servo Maximum Pulse Width. Maybe need to adjust/test this more
+#define SERVO_MIN 1000 // Servo Minimum Pulse Width. Maybe need to adjust/test this more
 
 Servo servoR; //create servo objects
 Servo servoL;
@@ -15,14 +22,13 @@ float bLevel = 0; //Battery Level
 int setR = 90; //set servo speed to 0
 int setL = 90;
 boolean pingFlag = true;
-//NewPing sonar(ULTRA_TRIGGER_PIN, ULTRA_ECHO_PIN, ULTRA_MAX_DISTANCE); // NewPing setup of pins and maximum distance.
+NewPing sonar(PIN_ULTRA_TRIGGER, PIN_ULTRA_ECHO, ULTRA_MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
 void setup()
 {
   Serial.begin(115200);
-  servoR.attach(7); //attach right servo to pin 7
-  servoL.attach(8); //attach left servo to pin 8
-  pinMode(4, OUTPUT);
+  servoR.attach(PIN_SERVO_RIGHT,SERVO_MIN, SERVO_MAX); //attach right servo to pin 7
+  servoL.attach(PIN_SERVO_LEFT,SERVO_MIN,SERVO_MAX); //attach left servo to pin 8
   batCheck(); //Battery level check. HIGH = 3 blinks, MED = 2, LOW = 1, Led On if batteries need replaced. 
 }
 
@@ -65,11 +71,6 @@ void loop()
 	Serial.print("\nExecuting Tree...\n");
 	execTree(tree);
 	destroyTree(tree);
-//  for(int i=0;i<18;i++){
-//      forward(2);
-//      right(20);
-//    }
-//  pause(3000);
   }
 }
 
@@ -151,53 +152,53 @@ void LZ_Up()
 void batCheck()
 {
   //Battery Monitor
-  //warning led attached to pin 3
-  bLevel = analogRead(A0); //Read analog input in var
+  //warning led attached to pin 6
+  bLevel = analogRead(PIN_BATT_SENSE); //Read analog input in var
   bLevel = bLevel * .0049; //convert to corresponding input voltage value
   if(bLevel >= 4.0) //check if above 4.0 input volts (8v), three blinks
   {
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
     delay(125);
-    digitalWrite(4, LOW);
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
     delay(125);
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
     delay(125);
-    digitalWrite(4, LOW);
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
     delay(125);
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
     delay(125);
-    digitalWrite(4, LOW);
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
     delay(125);
   }
   if(bLevel >= 3.0 && bLevel < 4.0) //check if between 3.0 and 4.0 input volts (6-8v), two blinks
   {
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
     delay(125);
-    digitalWrite(4, LOW);
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
     delay(125);
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
     delay(125);
-    digitalWrite(4, LOW);
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
     delay(125);
   }
   if(bLevel >= 2.6 && bLevel < 3.0) //check if between 2.6 and 3.0 input volts (5.2-6v), one blink
   {
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
     delay(125);
-    digitalWrite(4, LOW);
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
     delay(125);
   }
   if(bLevel < 2.5) //check if below 2.5 input volts(5v), warning led on
   {
-    digitalWrite(4, HIGH); 
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
   }
   //  Serial.println(2 * bLevel);  //possible sensor value to android app
 }
 
 void pingCheck()
 {
-  //sonar.ping();  // Send ping. Possible sensor value to android app
-  if(digitalRead(2) == LOW) pingFlag = false;
+  sonar.ping();  // Send ping. Possible sensor value to android app
+  if(digitalRead(PIN_ULTRA_ECHO) == LOW) pingFlag = false;
   else {
     pingFlag = true;
   }
