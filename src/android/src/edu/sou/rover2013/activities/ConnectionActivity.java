@@ -11,7 +11,7 @@ import edu.sou.rover2013.utility.BluetoothService;
 
 /**
  * View for establishing a bluetooth connection. Currently very cluttered, is in
- * testing mode. Will clean up massivly, simplify, etc.
+ * testing mode. Will clean up massively, simplify, etc.
  * 
  * @author Ryan Dempsey
  * 

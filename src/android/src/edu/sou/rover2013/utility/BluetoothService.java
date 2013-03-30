@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 /**
  * This class handles the Android Bluetooth connection. The Rover model uses this.
@@ -236,18 +237,27 @@ public class BluetoothService extends Activity {
 	 * Transmits string through open bluetooth connection as a series of UTF-8
 	 * bytes
 	 * 
-	 * @param data
+	 * @param stringArg
 	 *            string to transmit
 	 * @throws IOException
 	 *             if connection fails or transmission errors
 	 * @throws Exception
 	 *             if connection not properly formed
 	 */
-	public void transmitString(String data) throws IOException, Exception {
+	public void transmitString(String stringArg) throws IOException, Exception {
 		if (!isConnected() || outStream == null) {
 			throw new Exception();
 		}
-		outStream.write(data.getBytes());
+		
+		byte[] outBytes = stringArg.getBytes();
+		
+		System.out.println("Debugging Transmit. Text, then bytes:");
+		System.out.println(stringArg);
+		for(Byte theByte : outBytes){
+			System.out.print(theByte+" ");
+		}
+		System.out.println();
+		outStream.write(outBytes);
 		outStream.flush();
 	}
 

@@ -141,6 +141,7 @@ public class ControlComplexActivity extends BaseActivity {
 	 * Sends the script text-box contents to the rover model.
 	 */
 	private void transmitScript(){
+		
 		rover.transmitRogoScript(scriptTextBox.getText().toString());
 		// TODO Get Output, show on screen
 	}

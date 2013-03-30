@@ -45,7 +45,6 @@ public class Rover {
 			log(LOG_ERROR, "Bluetooth not connected");
 			return;
 		}
-		scriptArg = "start\n" + scriptArg + "\nend";
 		try {
 			bluetoothConnection.transmitString(scriptArg);
 			// TODO listen to rover for acknowledgment before declaring a
