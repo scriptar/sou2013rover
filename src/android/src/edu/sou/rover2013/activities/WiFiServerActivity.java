@@ -18,7 +18,8 @@ import edu.sou.rover2013.utility.BluetoothService;
 import edu.sou.rover2013.utility.TCPService;
 
 /**
- * Simple Test Screen that triggers wifi mode. Will remove/hide/etc later on.
+ * Simple Test Screen that triggers wifi server mode. Will remove/hide/etc later
+ * on.
  * 
  * @author Ryan Dempsey
  * 

@@ -51,6 +51,8 @@ public abstract class BaseActivity extends Activity {
 			return true;
 		case R.id.control_mode_settings:
 			// Display Selection List
+			// User can select one of two options, and appropriate control mode
+			// is launched.
 			final String simpleMode = "Simple Direct Control";
 			final String complexMode = "Advanced Programming Control";
 			final CharSequence[] list = { simpleMode, complexMode };
@@ -74,11 +76,6 @@ public abstract class BaseActivity extends Activity {
 			});
 			AlertDialog alert = chooserBox.create();
 			alert.show();
-			return true;
-		case R.id.wifi_server:
-			intent = new Intent(this, WiFiServerActivity.class);
-			startActivity(intent);
-			finish();
 			return true;
 		case R.id.exit:
 			this.finish();
