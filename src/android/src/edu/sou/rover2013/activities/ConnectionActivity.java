@@ -1,10 +1,12 @@
 package edu.sou.rover2013.activities;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.utility.BluetoothService;
@@ -76,7 +78,7 @@ public class ConnectionActivity extends BaseActivity {
 								+ device.getAddress() + "\n");
 					}
 				} catch (Exception e) {
-					outputText.append(e.getLocalizedMessage()+"\n");
+					outputText.append(e.getLocalizedMessage() + "\n");
 				}
 			}
 		});
@@ -90,6 +92,16 @@ public class ConnectionActivity extends BaseActivity {
 		button6.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				outputText.setText("");
+				Toast.makeText(getApplicationContext(), "Console Cleared",
+						Toast.LENGTH_SHORT).show();
+			}
+		});
+		final Button wifiButton = (Button) findViewById(R.id.connection_wifi);
+		wifiButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), WiFiServerActivity.class);
+				startActivity(intent);
+				finish();
 			}
 		});
 	}
@@ -111,7 +123,7 @@ public class ConnectionActivity extends BaseActivity {
 				rover = device;
 			}
 		} catch (Exception e) {
-			outputText.append(e.getLocalizedMessage()+"\n");
+			outputText.append(e.getLocalizedMessage() + "\n");
 			return;
 		}
 

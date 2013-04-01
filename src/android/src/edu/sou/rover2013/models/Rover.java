@@ -8,8 +8,8 @@ import edu.sou.rover2013.utility.BluetoothService;
 /**
  * This class represents the Rogo rover. Collected data will be stored here, as
  * well as the current connection. Uses the Bluetooth Service for communication.
- * All rover communication passes through here. The model maintains a log of
- * actions and errors.
+ * All rover/bluetooth communication passes through here. The model maintains a
+ * log of actions and errors.
  * 
  * @author Ryan Dempsey
  * 
