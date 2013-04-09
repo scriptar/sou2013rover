@@ -27,8 +27,8 @@
 #define PIN_ULTRA_ECHO           4  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define PIN_ULTRA_TRIGGER        5  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define PIN_BATT_LED_INDICATOR   6 // Indicator for battery check
-#define PIN_SERVO_RIGHT          7
-#define PIN_SERVO_LEFT           8
+#define PIN_SERVO_RIGHT          9 // By design. PWM is disabled on these pins because of Servo.h. 
+#define PIN_SERVO_LEFT           10 // http://arduino.cc/en/Reference/Servo
 
 // ***************************************
 // Constant Declarations
