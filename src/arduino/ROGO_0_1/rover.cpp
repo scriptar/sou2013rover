@@ -26,7 +26,7 @@ void forward(int countF)
 //          if(pingFlag){
            servoR.write(setR); //feed servos speed setting
            servoL.write(setL); 
-           delay(333);
+           delay(100);
           }
 //          else {
 //            pause(1000);
@@ -46,7 +46,7 @@ void reverse(int countR)
  //         if(pingFlag){
            servoR.write(setR); //feed servos speed setting
            servoL.write(setL); 
-           delay(333);
+           delay(150);
            }
   //         else {
    //          pause(1000);
@@ -58,7 +58,7 @@ void reverse(int countR)
 void left(int degreeL)
 {
   setR = 180;
-  setL = 107;
+  setL = 0;
   for(int i=0;i<=degreeL;i++){
     servoR.write(setR); 
     servoL.write(setL);
@@ -70,7 +70,7 @@ void left(int degreeL)
 void right(int degreeR)
 {
   setR = 0;
-  setL = 73;
+  setL = 180;
   for(int i=0;i<=degreeR;i++){
     servoR.write(setR);
     servoL.write(setL);
