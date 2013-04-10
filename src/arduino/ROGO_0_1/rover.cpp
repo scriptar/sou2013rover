@@ -32,7 +32,7 @@ void forward(int countF)
 //            pause(1000);
  //         }
 //  }
-  pause(100);
+  pause(250);
 }
 
 void reverse(int countR)
@@ -52,7 +52,7 @@ void reverse(int countR)
    //          pause(1000);
   //         }
  //   }
-    pause(100);
+    pause(250);
 }
 
 void left(int degreeL)
@@ -64,7 +64,7 @@ void left(int degreeL)
     servoL.write(setL);
     delay(5);
   }
-  pause(100);
+  pause(250);
 }
 
 void right(int degreeR)
@@ -76,7 +76,7 @@ void right(int degreeR)
     servoL.write(setL);
     delay(5);
   }
-  pause(100);
+  pause(250);
 }
 
 void pause(int Us)

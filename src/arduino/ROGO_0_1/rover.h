@@ -44,7 +44,7 @@ struct rover_state {
 
 extern Servo servoR; //create servo objects
 extern Servo servoL;
-extern int setR; //set servo speed to 0
+extern int setR;
 extern int setL;
 extern boolean pingFlag;
 extern NewPing sonar; // NewPing setup of pins and maximum distance.
