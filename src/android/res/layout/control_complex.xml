@@ -1,100 +1,234 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ControlComplexActivity" >
+    android:orientation="vertical" >
 
     <EditText
         android:id="@+id/complex_script"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/complex_forward"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/complex_sample_one"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:ems="10"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vulputate fermentum justo vel congue. Praesent in ipsum in mauris fermentum lobortis. Nam id magna dui. Donec id nibh sed velit aliquet fermentum. Praesent tincidunt augue sit amet nibh semper pellentesque. Proin tincidunt mattis nisi dictum volutpat. Mauris aliquet, eros eget vestibulum egestas, quam quam scelerisque elit, et imperdiet libero ante vel ligula. Mauris id urna eu nibh auctor convallis. Ut turpis velit, dapibus sed fringilla quis, tristique eu nulla." >
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:text="&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&quot;" >
 
         <requestFocus />
     </EditText>
 
-    <Button
-        android:id="@+id/complex_clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/complex_sample_one"
-        android:layout_alignLeft="@+id/complex_sample_one"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Clear" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
 
-    <Button
-        android:id="@+id/complex_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/complex_reverse"
-        android:text="Right" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".25"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/complex_forward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/complex_reverse"
-        android:layout_alignLeft="@+id/complex_reverse"
-        android:text="Forward" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
 
-    <Button
-        android:id="@+id/complex_transmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/complex_script"
-        android:layout_alignParentRight="true"
-        android:text="Transmit" />
+                <Button
+                    android:id="@+id/complex_laser"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="Laser..."
+                    android:textSize="12sp" />
 
-    <Button
-        android:id="@+id/complex_reverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/complex_right"
-        android:layout_alignBottom="@+id/complex_right"
-        android:layout_centerHorizontal="true"
-        android:text="Reverse" />
+                <Button
+                    android:id="@+id/complex_logic"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Logic..."
+                    android:textSize="12sp" />
 
-    <Button
-        android:id="@+id/complex_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/complex_reverse"
-        android:text="Left" />
+                <Button
+                    android:id="@+id/complex_variables"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Variables..."
+                    android:textSize="10sp" />
 
-    <Button
-        android:id="@+id/complex_sample_three"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/complex_transmit"
-        android:layout_alignLeft="@+id/complex_transmit"
-        android:text="Load Sample 3" />
+                <Button
+                    android:id="@+id/complex_flow"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Program Flow..."
+                    android:textSize="11sp" />
 
-    <Button
-        android:id="@+id/complex_sample_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/complex_sample_three"
-        android:layout_alignLeft="@+id/complex_sample_three"
-        android:text="Load Sample 2" />
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/complex_sample_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/complex_sample_two"
-        android:layout_alignLeft="@+id/complex_sample_two"
-        android:text="Load Sample 1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
 
-</RelativeLayout>
+                <Button
+                    android:id="@+id/complex_pause"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Pause/Wait"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/complex_tests"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Tests..."
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/complex_variable_math"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Variable Math..."
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/complex_arithmetic"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Arithmetic..."
+                    android:textSize="9sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/spacer1"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/complex_forward"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Forward"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/spacer2"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/complex_left"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Left"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/complex_reverse"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Reverse"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/complex_right"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Right"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".75"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/complex_save"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Save"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/complex_load"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Load"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/complex_clear"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Clear"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/complex_transmit"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Send!"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
