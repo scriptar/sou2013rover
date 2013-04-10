@@ -32,7 +32,7 @@ void forward(int countF)
 //            pause(1000);
  //         }
 //  }
-  pause(10);
+  pause(100);
 }
 
 void reverse(int countR)
@@ -46,37 +46,37 @@ void reverse(int countR)
  //         if(pingFlag){
            servoR.write(setR); //feed servos speed setting
            servoL.write(setL); 
-           delay(150);
+           delay(100);
            }
   //         else {
    //          pause(1000);
   //         }
  //   }
-    pause(10);
+    pause(100);
 }
 
 void left(int degreeL)
 {
   setR = 180;
-  setL = 0;
+  setL = 180;
   for(int i=0;i<=degreeL;i++){
     servoR.write(setR); 
     servoL.write(setL);
-    delay(8);
+    delay(5);
   }
-  pause(10);
+  pause(100);
 }
 
 void right(int degreeR)
 {
   setR = 0;
-  setL = 180;
+  setL = 0;
   for(int i=0;i<=degreeR;i++){
     servoR.write(setR);
     servoL.write(setL);
-    delay(8);
+    delay(5);
   }
-  pause(10);
+  pause(100);
 }
 
 void pause(int Us)
