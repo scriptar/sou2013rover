@@ -7,9 +7,9 @@ As a large amount of project-code will be executed on the resource-limited micro
 
 
 ###Project Documents
-* Original Capstone Proposal - [LINK](https://docs.google.com/document/d/1J1UL4j7Lf-yPiSUX2qTsDye92ttL9pprFgh3oZ34V80/edit?usp=sharing)
-* Requirements Specifications - [LINK](https://docs.google.com/document/d/1EYvfeaCHvwV8-D5moLPi35BU9sNxnp1GpA60oCdEmgs/edit)
-* Weekly Task Schedule - [LINK](https://docs.google.com/document/d/10AntHoKGiwYBDfSGn_gRJ8CPggNaeCKWxTX8juCFG84/edit)
+* Capstone Proposal - [LINK](https://docs.google.com/document/d/1J1UL4j7Lf-yPiSUX2qTsDye92ttL9pprFgh3oZ34V80/edit?usp=sharing)
+* Finalized Requirements Specifications - [LINK](https://docs.google.com/document/d/1EYvfeaCHvwV8-D5moLPi35BU9sNxnp1GpA60oCdEmgs/edit)
+* Project Schedule - [LINK](https://docs.google.com/document/d/10AntHoKGiwYBDfSGn_gRJ8CPggNaeCKWxTX8juCFG84/edit)
 
 ###Additional Links
 * (Work in Progress) ROGO Site - [LINK](http://webpages.sou.edu/~rogo/)
