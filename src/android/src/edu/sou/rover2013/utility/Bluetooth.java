@@ -10,19 +10,16 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 
 /**
  * This class handles the Android Bluetooth connection. The Rover model uses this.
- * 
- * @author Ryan Dempsey
- * 
+ * Handles client and server class coordination.
  */
 // TODO check for status before operations. Will fail if changing
-public class BluetoothService extends Activity {
+public class Bluetooth extends Activity {
 
 	// Class Vars
-	private static BluetoothService singleton;
+	private static Bluetooth singleton;
 	// Specific Bluetooth ID to look for when searching for BlueSmirf Module
 	private final static UUID uuid = UUID
 			.fromString("00001101-0000-1000-8000-00805f9b34fb");
@@ -36,16 +33,16 @@ public class BluetoothService extends Activity {
 	/**
 	 * Constructor
 	 */
-	private BluetoothService() {
+	private Bluetooth() {
 		adapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
 	/**
 	 * Returns Singleton Instance
 	 */
-	public static BluetoothService getConnection() {
+	public static Bluetooth getConnection() {
 		if (singleton == null) {
-			singleton = new BluetoothService();
+			singleton = new Bluetooth();
 			return singleton;
 		} else
 			return singleton;

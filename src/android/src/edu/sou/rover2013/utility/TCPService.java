@@ -11,20 +11,20 @@ import edu.sou.rover2013.BaseActivity;
 /**
  * Borrowed Code
  * 
- * Hacked together solution that allows for TCP commands. Will remove/improve...
+ * Hacked together solution that allows for TCP commands. Will add/remove/improve...
  *
  */
 // TODO Allow for listing of server thread status, and allow for closing of thread.
 public class TCPService extends BaseActivity implements Runnable {
 
 	public static int serverPort = 4444;
-	public static BluetoothService connection;
+	public static Bluetooth connection;
 
-	public TCPService(BluetoothService connection) {
+	public TCPService(Bluetooth connection) {
 		TCPService.connection = connection;
 	}
 
-	public TCPService(BluetoothService connection, int portArg ){
+	public TCPService(Bluetooth connection, int portArg ){
 		TCPService.serverPort = portArg;
 		TCPService.connection = connection;
 	}

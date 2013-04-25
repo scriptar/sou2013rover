@@ -1,15 +1,13 @@
 package edu.sou.rover2013.activities;
 
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
-import edu.sou.rover2013.utility.BluetoothService;
+import edu.sou.rover2013.utility.Bluetooth;
 
 /**
  * View for establishing a bluetooth connection. Currently very cluttered, is in
@@ -20,7 +18,7 @@ import edu.sou.rover2013.utility.BluetoothService;
  */
 public class ConnectionActivity extends BaseActivity {
 
-	private BluetoothService connection;
+	private Bluetooth connection;
 	private TextView outputText;
 
 	@Override
@@ -28,7 +26,7 @@ public class ConnectionActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.connection);
 
-		connection = BluetoothService.getConnection();
+		connection = Bluetooth.getConnection();
 
 		outputText = (TextView) findViewById(R.id.outputText);
 
@@ -37,7 +35,7 @@ public class ConnectionActivity extends BaseActivity {
 		button1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				TextView outputText = (TextView) findViewById(R.id.outputText);
-				if (!BluetoothService.isBluetoothEnabled()) {
+				if (!Bluetooth.isBluetoothEnabled()) {
 					try {
 						connection.enableBluetooth();
 						outputText.append("Bluetooth Enabled\n");
@@ -53,7 +51,7 @@ public class ConnectionActivity extends BaseActivity {
 		button2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				TextView outputText = (TextView) findViewById(R.id.outputText);
-				if (BluetoothService.isBluetoothEnabled()) {
+				if (Bluetooth.isBluetoothEnabled()) {
 					try {
 						connection.disableBluetooth();
 						outputText.append("Bluetooth Disabled\n");
@@ -66,42 +64,10 @@ public class ConnectionActivity extends BaseActivity {
 				}
 			}
 		});
-		final Button button3 = (Button) findViewById(R.id.button_list_devices);
-		button3.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				TextView outputText = (TextView) findViewById(R.id.outputText);
-				outputText.append("List of bonded devices:\n");
-				try {
-					for (BluetoothDevice device : connection
-							.getBondedBluetoothDevices()) {
-						outputText.append("   " + device.getName() + " "
-								+ device.getAddress() + "\n");
-					}
-				} catch (Exception e) {
-					outputText.append(e.getLocalizedMessage() + "\n");
-				}
-			}
-		});
 		final Button button4 = (Button) findViewById(R.id.button_connect_bluetooth);
 		button4.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				connectBluetooth();
-			}
-		});
-		final Button button6 = (Button) findViewById(R.id.Clear);
-		button6.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				outputText.setText("");
-				Toast.makeText(getApplicationContext(), "Console Cleared",
-						Toast.LENGTH_SHORT).show();
-			}
-		});
-		final Button wifiButton = (Button) findViewById(R.id.connection_wifi);
-		wifiButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(getApplicationContext(), WiFiServerActivity.class);
-				startActivity(intent);
-				finish();
 			}
 		});
 	}

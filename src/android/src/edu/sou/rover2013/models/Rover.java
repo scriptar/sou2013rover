@@ -3,7 +3,7 @@ package edu.sou.rover2013.models;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import edu.sou.rover2013.utility.BluetoothService;
+import edu.sou.rover2013.utility.Bluetooth;
 
 /**
  * This class represents the Rogo rover. Collected data will be stored here, as
@@ -16,7 +16,7 @@ import edu.sou.rover2013.utility.BluetoothService;
  */
 public class Rover {
 
-	private BluetoothService bluetoothConnection;
+	private Bluetooth bluetoothConnection;
 	private ArrayList<String> roverLog;
 
 	private static final int LOG = 0;
@@ -26,7 +26,7 @@ public class Rover {
 	 * Rover Constructor
 	 */
 	public Rover() {
-		bluetoothConnection = BluetoothService.getConnection();
+		bluetoothConnection = Bluetooth.getConnection();
 		roverLog = new ArrayList<String>(1000);
 		log(LOG, "Rover Object Created");
 	}

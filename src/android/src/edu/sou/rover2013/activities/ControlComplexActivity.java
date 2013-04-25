@@ -444,6 +444,7 @@ public class ControlComplexActivity extends BaseActivity {
 	 * @param string
 	 *            Value to append
 	 */
+	@SuppressWarnings("unused")
 	private void scriptAppend(String string) {
 		scriptTextBox.getEditableText().append(string);
 	}

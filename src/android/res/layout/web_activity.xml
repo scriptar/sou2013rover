@@ -6,46 +6,54 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:scrollbars="vertical"
-    tools:context=".ConnectionActivity" >
+    tools:context=".ControlWebActivity" >
 
-    <TextView
-        android:id="@+id/outputText"
+    <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_connect_bluetooth"
-        android:gravity="bottom"
-        android:scrollbars="vertical"
-        android:text="Console Output\n" />
+        android:text="Show Text" />
 
     <Button
-        android:id="@+id/button_disable_bluetooth"
+        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_enable_bluetooth"
-        android:text="@string/button_disable_bluetooth" />
+        android:text="Change Site" />
 
     <Button
-        android:id="@+id/button_enable_bluetooth"
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/button_enable_Bluetooth" />
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/button3"
+        android:layout_toRightOf="@+id/button1"
+        android:text="Clear Text" />
 
-    <Button
-        android:id="@+id/button_connect_bluetooth"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/textView1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_disable_bluetooth"
-        android:text="@string/button_connect_bluetooth" />
+        android:layout_alignParentTop="true" >
+
+        <WebView
+            android:id="@+id/webView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

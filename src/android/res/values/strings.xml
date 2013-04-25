@@ -26,5 +26,6 @@
     <string name="title_activity_wi_fi_server">Wi-Fi Server</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_control_complex">ControlComplexActivity</string>
+    <string name="title_activity_web">Web Activity</string>
 
 </resources>

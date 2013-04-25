@@ -53,6 +53,10 @@
             android:name="edu.sou.rover2013.activities.ControlComplexActivity"
             android:label="@string/title_activity_control_complex" >
         </activity>
+        <activity
+            android:name="edu.sou.rover2013.activities.ControlWebActivity"
+            android:label="@string/title_activity_web" >
+        </activity>
     </application>
 
 </manifest>

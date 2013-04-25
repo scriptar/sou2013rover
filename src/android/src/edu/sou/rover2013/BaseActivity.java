@@ -3,8 +3,8 @@ package edu.sou.rover2013;
 import edu.sou.rover2013.activities.ConnectionActivity;
 import edu.sou.rover2013.activities.ControlComplexActivity;
 import edu.sou.rover2013.activities.ControlSimpleActivity;
+import edu.sou.rover2013.activities.ControlWebActivity;
 import edu.sou.rover2013.activities.TelemetryActivity;
-import edu.sou.rover2013.activities.WiFiServerActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,10 +15,7 @@ import android.view.MenuItem;
 /**
  * Pulling common activity code for our application into a parent abstract
  * class. When writing a new activity, extend this rather than Activity to
- * inherit the standard menu bar and actions.
- * 
- * @author Ryan Dempsey
- * 
+ * inherit standard menu bar and actions.
  */
 public abstract class BaseActivity extends Activity {
 
@@ -55,7 +52,8 @@ public abstract class BaseActivity extends Activity {
 			// is launched.
 			final String simpleMode = "Simple Direct Control";
 			final String complexMode = "Advanced Programming Control";
-			final CharSequence[] list = { simpleMode, complexMode };
+			final String webMode = "Web Control";
+			final CharSequence[] list = { simpleMode, complexMode, webMode };
 			// Build list dialog box
 			AlertDialog.Builder chooserBox = new AlertDialog.Builder(this);
 			chooserBox.setTitle("Select a Rover Control Mode:");
@@ -71,6 +69,11 @@ public abstract class BaseActivity extends Activity {
 								ControlComplexActivity.class);
 						startActivity(intent);
 						finish();
+					}else if (list[item].equals(webMode)) {
+						Intent intent = new Intent(getApplicationContext(),
+								ControlWebActivity.class);
+						startActivity(intent);
+						finish();
 					}
 				}
 			});
@@ -78,10 +81,11 @@ public abstract class BaseActivity extends Activity {
 			alert.show();
 			return true;
 		case R.id.exit:
+			//Exited Dialog
 			this.finish();
 		default:
+			//Nothing Selected
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 }
