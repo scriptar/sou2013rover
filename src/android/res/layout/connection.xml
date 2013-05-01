@@ -9,43 +9,57 @@
     android:scrollbars="vertical"
     tools:context=".ConnectionActivity" >
 
-    <TextView
-        android:id="@+id/outputText"
+    <Button
+        android:id="@+id/button_enable_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_connect_bluetooth"
-        android:gravity="bottom"
-        android:scrollbars="vertical"
-        android:text="Console Output\n" />
+        android:layout_alignParentTop="true"
+        android:text="@string/button_enable_Bluetooth" />
 
     <Button
         android:id="@+id/button_disable_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/button_enable_bluetooth"
         android:text="@string/button_disable_bluetooth" />
 
     <Button
-        android:id="@+id/button_enable_bluetooth"
+        android:id="@+id/button_start_discovery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/button_enable_Bluetooth" />
-
-    <Button
-        android:id="@+id/button_connect_bluetooth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/button_disable_bluetooth"
-        android:text="@string/button_connect_bluetooth" />
+        android:text="Start Device Discovery" />
+
+    <TextView
+        android:id="@+id/outputText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button_start_discovery"
+        android:gravity="bottom"
+        android:scrollbars="vertical"
+        android:text="Console" />
+
+    <ListView
+        android:id="@+id/listview_devices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:choiceMode="singleChoice" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/outputText"
+        android:text="Select a device to connect with:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

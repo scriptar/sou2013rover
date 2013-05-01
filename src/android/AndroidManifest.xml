@@ -4,15 +4,15 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:name="edu.sou.rover2013.BaseApplication"
@@ -36,10 +36,6 @@
         <activity
             android:name="edu.sou.rover2013.activities.TelemetryActivity"
             android:label="@string/title_activity_screen_telemetry" >
-        </activity>
-        <activity
-            android:name="edu.sou.rover2013.activities.ModeSelectActivity"
-            android:label="@string/title_activity_screen_mode_select" >
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.ControlSimpleActivity"

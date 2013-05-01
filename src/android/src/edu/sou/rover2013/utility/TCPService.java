@@ -18,13 +18,13 @@ import edu.sou.rover2013.BaseActivity;
 public class TCPService extends BaseActivity implements Runnable {
 
 	public static int serverPort = 4444;
-	public static Bluetooth connection;
+	public static BluetoothService connection;
 
-	public TCPService(Bluetooth connection) {
+	public TCPService(BluetoothService connection) {
 		TCPService.connection = connection;
 	}
 
-	public TCPService(Bluetooth connection, int portArg ){
+	public TCPService(BluetoothService connection, int portArg ){
 		TCPService.serverPort = portArg;
 		TCPService.connection = connection;
 	}

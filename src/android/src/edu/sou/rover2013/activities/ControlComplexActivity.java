@@ -1,8 +1,11 @@
 package edu.sou.rover2013.activities;
 
+import java.io.IOException;
+
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
+import edu.sou.rover2013.utility.BluetoothService;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -468,10 +471,20 @@ public class ControlComplexActivity extends BaseActivity {
 	 * valid Bluetooth Connection TODO Get results, show on screen
 	 */
 	private void transmitScript() {
-		rover.transmitRogoScript(scriptTextBox.getText().toString());
-		Toast toast = Toast.makeText(getApplicationContext(),
+		//rover.transmitRogoScript(scriptTextBox.getText().toString());
+				Toast toast = Toast.makeText(getApplicationContext(),
 				"Script Transmitted", Toast.LENGTH_SHORT);
 		toast.show();
+		BluetoothService bt = BluetoothService.getConnection();
+		try {
+			bt.transmitString(scriptTextBox.getText().toString());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

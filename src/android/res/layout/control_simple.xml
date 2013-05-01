@@ -54,4 +54,15 @@
         android:layout_toLeftOf="@+id/reverse"
         android:text="Left" />
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/text"
+        android:layout_marginTop="48dp"
+        android:text="Temporarily Disabled"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </RelativeLayout>

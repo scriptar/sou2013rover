@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
-import edu.sou.rover2013.utility.Bluetooth;
+import edu.sou.rover2013.utility.BluetoothService;
 import edu.sou.rover2013.utility.TCPService;
 
 /**
@@ -28,7 +28,7 @@ public class WiFiServerActivity extends BaseActivity {
 
 	private TextView console;
 	private EditText textPort;
-	private Bluetooth connection;
+	private BluetoothService connection;
 	private Thread sThread;
 
 	@Override
@@ -37,7 +37,7 @@ public class WiFiServerActivity extends BaseActivity {
 		setContentView(R.layout.wi_fi_server);
 
 		// Get wireless connection
-		connection = Bluetooth.getConnection();
+		connection = BluetoothService.getConnection();
 
 		// Inline Button Listener
 		final Button startButton = (Button) findViewById(R.id.startWifi);

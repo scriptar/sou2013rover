@@ -79,18 +79,18 @@ public class ControlSimpleActivity extends BaseActivity {
 	}
 
 	private void forward() {
-		rover.transmitRogoScript("fd 1");
+//		rover.transmitRogoScript("fd 1");
 	}
 
 	private void reverse() {
-		rover.transmitRogoScript("bk 1");
+//		rover.transmitRogoScript("bk 1");
 	}
 
 	private void left() {
-		rover.transmitRogoScript("lt 1");
+//		rover.transmitRogoScript("lt 1");
 	}
 
 	private void right() {
-		rover.transmitRogoScript("rt 1");
+//		rover.transmitRogoScript("rt 1");
 	}
 }

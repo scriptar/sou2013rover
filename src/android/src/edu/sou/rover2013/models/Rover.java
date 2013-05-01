@@ -3,11 +3,11 @@ package edu.sou.rover2013.models;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import edu.sou.rover2013.utility.Bluetooth;
+import edu.sou.rover2013.utility.BluetoothService;
 
 /**
- * This class represents the Rogo rover. Collected data will be stored here, as
- * well as the current connection. Uses the Bluetooth Service for communication.
+ * This class represents the Rogo rover. 
+ * Holds an established bluetooth Service for communication.
  * All rover/bluetooth communication passes through here. The model maintains a
  * log of actions and errors.
  * 
@@ -16,19 +16,13 @@ import edu.sou.rover2013.utility.Bluetooth;
  */
 public class Rover {
 
-	private Bluetooth bluetoothConnection;
-	private ArrayList<String> roverLog;
-
-	private static final int LOG = 0;
-	private static final int LOG_ERROR = 1;
+	private BluetoothService bluetoothConnection;
 
 	/**
 	 * Rover Constructor
 	 */
 	public Rover() {
-		bluetoothConnection = Bluetooth.getConnection();
-		roverLog = new ArrayList<String>(1000);
-		log(LOG, "Rover Object Created");
+		bluetoothConnection = BluetoothService.getConnection();
 	}
 
 	/**
@@ -40,37 +34,17 @@ public class Rover {
 	 *            constructed.
 	 */
 	public void transmitRogoScript(String scriptArg) {
-		log(LOG, "Sending Command '" + scriptArg + "'");
-		if (!bluetoothConnection.isConnected()) {
-			log(LOG_ERROR, "Bluetooth not connected");
-			return;
-		}
-		try {
-			bluetoothConnection.transmitString(scriptArg);
-			// TODO listen to rover for acknowledgment before declaring a
-			// success
-			log(LOG, "Send Suceeded");
-		} catch (IOException e) {
-			e.printStackTrace();
-			log(LOG_ERROR, "Transmission Failure");
-		} catch (Exception e) {
-			e.printStackTrace();
-			log(LOG_ERROR, "Bluetooth Connection Failure");
-		}
+
+			try {
+				bluetoothConnection.transmitString(scriptArg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 	}
 
-	/**
-	 * Use to write data to the rover log
-	 * 
-	 * @param log_type
-	 *            int indicating type of log message. LOG and LOG_ERROR
-	 * @param string
-	 *            String value to write to log
-	 */
-	private void log(int log_type, String string) {
-		Long longTime = System.currentTimeMillis() / 1000;
-		String time = longTime.toString();
-		roverLog.add(time + " " + log_type + ": " + string);
-	}
+
 
 }
