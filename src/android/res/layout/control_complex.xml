@@ -5,22 +5,66 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/complex_script"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:ems="10"
-        android:inputType="textMultiLine|textNoSuggestions"
-        android:text="&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&quot;" >
+        android:layout_height="0dp"
+        android:layout_weight="6" >
 
-        <requestFocus />
-    </EditText>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Current Script:"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/complex_script"
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:selectAllOnFocus="false"
+                android:text="&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&quot;" >
+
+                <requestFocus />
+            </EditText>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rover Output:"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ListView
+                android:id="@+id/listview_rover_output"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </ListView>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" >
+        android:layout_height="0dp"
+        android:layout_weight="4" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,7 +114,6 @@
                     android:layout_weight="1"
                     android:text="Program Flow..."
                     android:textSize="11sp" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -97,21 +140,21 @@
                     android:textSize="12sp" />
 
                 <Button
-                    android:id="@+id/complex_variable_math"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Variable Math..."
-                    android:textSize="11sp" />
-
-                <Button
                     android:id="@+id/complex_arithmetic"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Arithmetic..."
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/button_update_rover_output"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Update Rover Output"
                     android:textSize="9sp" />
 
             </LinearLayout>
@@ -142,10 +185,9 @@
                     android:id="@+id/spacer2"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:visibility="invisible" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -179,7 +221,6 @@
                     android:layout_weight="1"
                     android:text="Right"
                     android:textSize="12sp" />
-
             </LinearLayout>
         </LinearLayout>
 
@@ -227,7 +268,6 @@
                 android:layout_weight="1"
                 android:text="Send!"
                 android:textSize="12sp" />
-
         </LinearLayout>
     </LinearLayout>
 

@@ -3,7 +3,6 @@ package edu.sou.rover2013.activities;
 import java.util.ArrayList;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,11 +21,8 @@ import edu.sou.rover2013.R;
 import edu.sou.rover2013.utility.*;
 
 /**
- * View for establishing a bluetooth connection. Currently very cluttered, is in
- * testing mode. Will clean up massively, simplify, etc.
- * 
- * @author Ryan Dempsey
- * 
+ * View for establishing a bluetooth connection. 
+ * Currently cluttered
  */
 public class ConnectionActivity extends BaseActivity {
 
@@ -55,8 +51,6 @@ public class ConnectionActivity extends BaseActivity {
 
 		// Variables
 		connection = BluetoothService.getConnection();
-
-		// devices.clear();
 		devices = new ArrayList<BluetoothDevice>();
 		devicesArrayAdapter = new ArrayAdapter<BluetoothDevice>(this,
 				android.R.layout.simple_list_item_1, devices);
@@ -190,7 +184,7 @@ public class ConnectionActivity extends BaseActivity {
 		}
 	}
 
-	// simple way to throw alerts on the string.
+	// Simple way to throw alerts on the string.
 	private void letsToast(String string_arg) {
 		Toast toast = Toast.makeText(getApplicationContext(), string_arg,
 				Toast.LENGTH_SHORT);

@@ -3,9 +3,11 @@ package edu.sou.rover2013.activities;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
+import edu.sou.rover2013.utility.BluetoothService;
 
 /**
  * This activity allows users to control a connected rover in a manner similar
@@ -26,7 +28,10 @@ import edu.sou.rover2013.models.Rover;
 // TODO Add buttons for controlling the laser.
 // TODO Skin Interface
 public class ControlSimpleActivity extends BaseActivity {
-
+	
+	// *******************************
+	// Variables
+	// *******************************
 	// UI Elements
 	private Button forward;
 	private Button reverse;
@@ -41,15 +46,13 @@ public class ControlSimpleActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.control_simple);
 
-		rover = new Rover();
-
 		// *******************************
 		// Assigning UI Elements
 		// *******************************
-		forward = (Button) findViewById(R.id.forward);
-		reverse = (Button) findViewById(R.id.reverse);
-		left = (Button) findViewById(R.id.left);
-		right = (Button) findViewById(R.id.right);
+		forward = (Button) findViewById(R.id.button_forward);
+		reverse = (Button) findViewById(R.id.button_reverse);
+		left = (Button) findViewById(R.id.button_left);
+		right = (Button) findViewById(R.id.button_right);
 
 		// *******************************
 		// Button Listeners
@@ -75,22 +78,30 @@ public class ControlSimpleActivity extends BaseActivity {
 			}
 		});
 
-		// TODO Show alert if rover not connected by bluetooth.
+		// *******************************
+		// Further Activity Setup
+		// *******************************
+		// check for and get rover model
+		if (!BluetoothService.getConnection().isConnected()) {
+			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
+					Toast.LENGTH_SHORT).show();
+		} else {
+			rover = BluetoothService.getConnection().getRover();
+		}
 	}
 
+	// *******************************
+	// Button Actions
+	// *******************************
 	private void forward() {
-//		rover.transmitRogoScript("fd 1");
 	}
 
 	private void reverse() {
-//		rover.transmitRogoScript("bk 1");
 	}
 
 	private void left() {
-//		rover.transmitRogoScript("lt 1");
 	}
 
 	private void right() {
-//		rover.transmitRogoScript("rt 1");
 	}
 }

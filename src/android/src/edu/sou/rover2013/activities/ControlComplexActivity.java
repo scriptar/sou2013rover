@@ -1,7 +1,5 @@
 package edu.sou.rover2013.activities;
 
-import java.io.IOException;
-
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
@@ -14,8 +12,10 @@ import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 /**
@@ -28,31 +28,39 @@ import android.widget.Toast;
  */
 public class ControlComplexActivity extends BaseActivity {
 
-	// Storing this activities context for use in dialogs
+	// Storing this activity's context for use in dialogs
 	Context activityContext;
 
 	// UI Elements
 	private static EditText scriptTextBox;
-	private static Button button_laser;
-	private static Button button_logic;
-	private static Button button_variables;
-	private static Button button_program_flow;
-	private static Button button_pause;
-	private static Button button_tests;
-	private static Button button_variable_math;
-	private static Button button_arithmetic;
-	private static Button button_forward;
-	private static Button button_reverse;
-	private static Button button_left;
-	private static Button button_right;
-	private static Button button_save;
-	private static Button button_load;
-	private static Button button_clear;
-	private static Button button_send;
-
+	private static Button buttonLaser;
+	private static Button buttonLogic;
+	private static Button buttonVariables;
+	private static Button buttonProgramFlow;
+	private static Button buttonPause;
+	private static Button buttonTests;
+	private static Button buttonArithmetic;
+	private static Button buttonForward;
+	private static Button buttonReverse;
+	private static Button buttonLeft;
+	private static Button buttonRight;
+	private static Button buttonSave;
+	private static Button buttonLoad;
+	private static Button buttonClear;
+	private static Button buttonSend;
+	private static ListView listviewRoverOutput;
+	private Button buttonUpdateRoverOutput;
+	
+	// *******************************
+	// Class Variables
+	// *******************************
 	// Rover Model
 	private Rover rover;
+	//Rover Output Display
+	private ArrayAdapter<String> roverOutputArrayAdapter;
 
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Expanding XML
@@ -63,32 +71,33 @@ public class ControlComplexActivity extends BaseActivity {
 		// Assigning UI Elements
 		// *******************************
 		scriptTextBox = (EditText) findViewById(R.id.complex_script);
-		button_laser = (Button) findViewById(R.id.complex_laser);
-		button_logic = (Button) findViewById(R.id.complex_logic);
-		button_variables = (Button) findViewById(R.id.complex_variables);
-		button_program_flow = (Button) findViewById(R.id.complex_flow);
-		button_pause = (Button) findViewById(R.id.complex_pause);
-		button_tests = (Button) findViewById(R.id.complex_tests);
-		button_variable_math = (Button) findViewById(R.id.complex_variable_math);
-		button_arithmetic = (Button) findViewById(R.id.complex_arithmetic);
-		button_forward = (Button) findViewById(R.id.complex_forward);
-		button_reverse = (Button) findViewById(R.id.complex_reverse);
-		button_left = (Button) findViewById(R.id.complex_left);
-		button_right = (Button) findViewById(R.id.complex_right);
-		button_save = (Button) findViewById(R.id.complex_save);
-		button_load = (Button) findViewById(R.id.complex_load);
-		button_clear = (Button) findViewById(R.id.complex_clear);
-		button_send = (Button) findViewById(R.id.complex_transmit);
+		buttonLaser = (Button) findViewById(R.id.complex_laser);
+		buttonLogic = (Button) findViewById(R.id.complex_logic);
+		buttonVariables = (Button) findViewById(R.id.complex_variables);
+		buttonProgramFlow = (Button) findViewById(R.id.complex_flow);
+		buttonPause = (Button) findViewById(R.id.complex_pause);
+		buttonTests = (Button) findViewById(R.id.complex_tests);
+		buttonArithmetic = (Button) findViewById(R.id.complex_arithmetic);
+		buttonForward = (Button) findViewById(R.id.complex_forward);
+		buttonReverse = (Button) findViewById(R.id.complex_reverse);
+		buttonLeft = (Button) findViewById(R.id.complex_left);
+		buttonRight = (Button) findViewById(R.id.complex_right);
+		buttonSave = (Button) findViewById(R.id.complex_save);
+		buttonLoad = (Button) findViewById(R.id.complex_load);
+		buttonClear = (Button) findViewById(R.id.complex_clear);
+		buttonSend = (Button) findViewById(R.id.complex_transmit);
+		listviewRoverOutput = (ListView) findViewById(R.id.listview_rover_output);
+		buttonUpdateRoverOutput = (Button) findViewById(R.id.button_update_rover_output);
 
 		// *******************************
 		// Button Listeners
 		// *******************************
-		button_laser.setOnClickListener(new View.OnClickListener() {
+		buttonLaser.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 			}
 		});
-		button_logic.setOnClickListener(new View.OnClickListener() {
+		buttonLogic.setOnClickListener(new View.OnClickListener() {
 			// Creates a selector Dialog Box
 			final String selectTrue = "True";
 			final String selectFalse = "False";
@@ -119,7 +128,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_variables.setOnClickListener(new View.OnClickListener() {
+		buttonVariables.setOnClickListener(new View.OnClickListener() {
 			// Creates a selector Dialog Box
 			final CharSequence[] list = { "V0", "V1", "V2", "V3", "V4", "V5",
 					"V6", "V7", "V8", "V9", "V10" };
@@ -139,7 +148,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_program_flow.setOnClickListener(new View.OnClickListener() {
+		buttonProgramFlow.setOnClickListener(new View.OnClickListener() {
 			// Creates a selector Dialog Box
 			private final String selectIf = "If (Test) [Code]";
 			private final String selectElse = "If Else (Test) [Code]";
@@ -166,7 +175,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_pause.setOnClickListener(new View.OnClickListener() {
+		buttonPause.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
 						activityContext);
@@ -196,7 +205,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_tests.setOnClickListener(new View.OnClickListener() {
+		buttonTests.setOnClickListener(new View.OnClickListener() {
 			// Creates a selector Dialog Box
 			private final String selectEquals = "=";
 			private final String selectNotEquals = "<>";
@@ -235,38 +244,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_variable_math.setOnClickListener(new View.OnClickListener() {
-			// Creates a selector Dialog Box
-			private final String selectAdd = "Add a value to a Variable";
-			private final String selectSub = "Subtract a value from a Variable";
-			private final String selectMul = "Multiply a value with a Variable";
-			private final String selectDiv = "Divide a Variable by a value";
-			final CharSequence[] list = { selectAdd, selectSub, selectMul,
-					selectDiv };
-			public void onClick(View v) {
-				AlertDialog.Builder chooserBox = new AlertDialog.Builder(
-						activityContext);
-				chooserBox
-						.setTitle("Select a math operator to apply to a variable:");
-				chooserBox.setItems(list,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int item) {
-								if (list[item].equals(selectAdd)) {
-									scriptInsertAtCursor("Add V0 0 ");
-								} else if (list[item].equals(selectSub)) {
-									scriptInsertAtCursor("Sub V0 0 ");
-								} else if (list[item].equals(selectMul)) {
-									scriptInsertAtCursor("Mul V0 0 ");
-								} else if (list[item].equals(selectDiv)) {
-									scriptInsertAtCursor("Div V0 0 ");
-								}
-							}
-						});
-				AlertDialog alert = chooserBox.create();
-				alert.show();
-			}
-		});
-		button_arithmetic.setOnClickListener(new View.OnClickListener() {
+		buttonArithmetic.setOnClickListener(new View.OnClickListener() {
 			// Creates a selector Dialog Box
 			final CharSequence[] list = { "+", "-", "*", "/" };
 			public void onClick(View v) {
@@ -283,7 +261,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_forward.setOnClickListener(new View.OnClickListener() {
+		buttonForward.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
 						activityContext);
@@ -311,7 +289,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_reverse.setOnClickListener(new View.OnClickListener() {
+		buttonReverse.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
 						activityContext);
@@ -339,7 +317,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});	
-		button_left.setOnClickListener(new View.OnClickListener() {
+		buttonLeft.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
 						activityContext);
@@ -367,7 +345,7 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_right.setOnClickListener(new View.OnClickListener() {
+		buttonRight.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
 						activityContext);
@@ -395,17 +373,17 @@ public class ControlComplexActivity extends BaseActivity {
 				alert.show();
 			}
 		});
-		button_save.setOnClickListener(new View.OnClickListener() {
+		buttonSave.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 			}
 		});
-		button_load.setOnClickListener(new View.OnClickListener() {
+		buttonLoad.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 			}
 		});
-		button_clear.setOnClickListener(new View.OnClickListener() {
+		buttonClear.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				scriptClear();
 				Toast toast = Toast.makeText(getApplicationContext(),
@@ -413,15 +391,19 @@ public class ControlComplexActivity extends BaseActivity {
 				toast.show();
 			}
 		});
-		button_send.setOnClickListener(new View.OnClickListener() {
+		buttonSend.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				transmitScript();
-
+				roverOutputArrayAdapter.notifyDataSetChanged();
 			}
 		});
-
+		buttonUpdateRoverOutput.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				roverOutputArrayAdapter.notifyDataSetChanged();
+			}
+		});
 		// *******************************
-		// Activity Initialization
+		// Further Activity Setup
 		// *******************************
 		// Prevent keyboard auto-show
 		this.getWindow().setSoftInputMode(
@@ -430,9 +412,23 @@ public class ControlComplexActivity extends BaseActivity {
 		activityContext = this;
 		// Clear TextBox
 		scriptClear();
-		// Create Rover Model
-		rover = new Rover();
-	}
+		// set bluetooth context for ui updates
+
+		
+		// check for and get rover model
+		if(!BluetoothService.getConnection().isConnected()){
+			Toast.makeText(getApplicationContext(), "Warning: Not Connected" ,Toast.LENGTH_SHORT).show();
+			rover = null;
+			listviewRoverOutput.setAdapter(null);
+		}else {
+			rover = BluetoothService.getConnection().getRover();
+			// Attach rover output to listView
+			roverOutputArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, rover.getRoverOutput());
+			
+			listviewRoverOutput.setAdapter(roverOutputArrayAdapter);
+		}
+		
+}
 
 	/**
 	 * Clears the script text box
@@ -467,24 +463,15 @@ public class ControlComplexActivity extends BaseActivity {
 	}
 
 	/**
-	 * Sends the script text-box contents to the rover model. TODO Check for
-	 * valid Bluetooth Connection TODO Get results, show on screen
+	 * Sends the script text-box contents to the rover model. 
 	 */
 	private void transmitScript() {
-		//rover.transmitRogoScript(scriptTextBox.getText().toString());
-				Toast toast = Toast.makeText(getApplicationContext(),
-				"Script Transmitted", Toast.LENGTH_SHORT);
-		toast.show();
-		BluetoothService bt = BluetoothService.getConnection();
-		try {
-			bt.transmitString(scriptTextBox.getText().toString());
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(rover!=null){
+			rover.sendDataToRover(scriptTextBox.getText().toString());
+			Toast.makeText(getApplicationContext(),"Script Transmitted", Toast.LENGTH_SHORT).show();
+		}else{
+			Toast.makeText(getApplicationContext(),"Rover Not Connected", Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
 }
