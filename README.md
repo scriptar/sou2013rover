@@ -16,4 +16,4 @@ As a large amount of project-code will be executed on the resource-limited micro
 * Capstone Images - [LINK](https://docs.google.com/folder/d/0Bzl2vzrZm3IkNURIbDVTYmRTeEk/edit)
 * Current Reduced-Logo Command Set - [LINK](https://docs.google.com/document/d/1gFi20ar-1i4-kz14UMFK4BobkHcvZO1tLiEqi0gHT64/edit?usp=sharing)
 * (Private) Online Resources - [LINK](https://docs.google.com/document/d/1Orl2pIL6Vldwv50YXhdP3PAQiTSilbV3gZAWkrjK0FU/edit?usp=sharing)
-* Website - [LINK](webpages.sou.edu/~rogo)
+
