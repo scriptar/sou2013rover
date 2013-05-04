@@ -5,6 +5,7 @@
 
 #include "tree.h"
 #include "parse.h"
+#include "rover.h"
 
 PRIMTYPE prims[] = {
   { "", 0, 0, NULL  },
@@ -875,8 +876,10 @@ TNODE *execLeftNode(TNODE *current)
 
 TNODE *execLzAimNode(TNODE *current)
 {
-  if (DEBUG)
-    printf("\nLZAIM");
+  int degrees = evalNodeValueInt(evalNodeValue(current->left));
+  Serial.print("LZAIM ");
+  Serial.println(degrees);
+  LZAim(degrees);
   return current;
 }
 
