@@ -1,7 +1,10 @@
 package edu.sou.rover2013.activities;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
@@ -11,13 +14,9 @@ import edu.sou.rover2013.utility.BluetoothService;
 
 /**
  * This activity allows users to control a connected rover in a manner similar
- * to RC cars. The Bluetooth Singleton must have a connected
- * 
- * @author Ryan Dempsey
- * 
+ * to RC cars. The Bluetooth Singleton must have a connected 
  */
-// TODO change from single transmit on press to continuous movement when button
-// is held.
+
 // For example code, see:
 // http://stackoverflow.com/questions/4284224/android-hold-button-to-repeat-action
 // Possible Widgets? RepeatButton1, RepeatButton2
@@ -28,7 +27,7 @@ import edu.sou.rover2013.utility.BluetoothService;
 // TODO Add buttons for controlling the laser.
 // TODO Skin Interface
 public class ControlSimpleActivity extends BaseActivity {
-	
+
 	// *******************************
 	// Variables
 	// *******************************
@@ -57,25 +56,57 @@ public class ControlSimpleActivity extends BaseActivity {
 		// *******************************
 		// Button Listeners
 		// *******************************
-		forward.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				forward();
-			}
+		forward.setOnTouchListener(new OnTouchListener() {
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					forward();
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					stop();
+					return true;
+				}
+				return true;
+		    }
 		});
-		reverse.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				reverse();
-			}
+		reverse.setOnTouchListener(new OnTouchListener() {
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					reverse();
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					stop();
+					return true;
+				}
+				return true;
+		    }
 		});
-		left.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				left();
-			}
+		left.setOnTouchListener(new OnTouchListener() {
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					left();
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					stop();
+					return true;
+				}
+				return true;
+		    }
 		});
-		right.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				right();
-			}
+		right.setOnTouchListener(new OnTouchListener() {
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					right();
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					stop();
+					return true;
+				}
+				return true;
+		    }
 		});
 
 		// *******************************
@@ -90,18 +121,33 @@ public class ControlSimpleActivity extends BaseActivity {
 		}
 	}
 
+
 	// *******************************
 	// Button Actions
 	// *******************************
 	private void forward() {
+		Log.v("test", "Forward");
+		rover.sendDataToRover("fd 999");
 	}
 
 	private void reverse() {
+		Log.v("test", "Reverse");
+		rover.sendDataToRover("bk 999");
 	}
 
 	private void left() {
+		Log.v("test", "Left");
+		rover.sendDataToRover("lt 999");
 	}
 
 	private void right() {
+		Log.v("test", "Right");
+		rover.sendDataToRover("rt 999");
 	}
+
+	protected void stop() {
+		Log.v("test", "Stop");
+		rover.sendDataToRover("fd 0");
+	}
+
 }
