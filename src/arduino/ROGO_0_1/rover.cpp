@@ -20,9 +20,9 @@ ROVERSTATE rover = {0};
 // ***************************************
 void forward(int countF)
 {
-  Serial.print("Executing Forward: ");
-  Serial.println(countF);
-  
+  if(Serial.available()){
+    return;
+  }
   for(int i=0;i<=countF;i++){
     setR = 180; //servo1 full forward
     setL = 0; //servo2 full forward
@@ -41,9 +41,10 @@ void forward(int countF)
 
 void reverse(int countR)
 {
-  Serial.print("Executing Reverse: ");
-  Serial.println(countR);
-    for(int i=0;i<countR;i++){
+  if(Serial.available()){
+    return;
+  }
+    for(int i=0;i<=countR;i++){
       setR = 0; //servo1 full reverse
       setL = 180; //servo2 full reverse
            servoR.write(setR); //feed servos speed setting
@@ -55,6 +56,9 @@ void reverse(int countR)
 
 void left(int degreeL)
 {
+  if(Serial.available()){
+    return;
+  }
   setR = 180;
   setL = 180;
   for(int i=0;i<=degreeL;i++){
@@ -67,6 +71,9 @@ void left(int degreeL)
 
 void right(int degreeR)
 {
+  if(Serial.available()){
+    return;
+  }
   setR = 0;
   setL = 0;
   for(int i=0;i<=degreeR;i++){
