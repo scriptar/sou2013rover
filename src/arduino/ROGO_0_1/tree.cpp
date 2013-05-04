@@ -447,6 +447,8 @@ void execTree(TNODE *tree)
   TNODE *current = tree;
   while (current)
   {
+    if (Serial.available() > 0)
+      return;
     switch (current->ntype)
     {
     case NT_OP:
@@ -828,8 +830,11 @@ TNODE *execAndNode(TNODE *current)
 TNODE *execBackNode(TNODE *current)
 {
   int i = evalNodeValueInt(evalNodeValue(current->left));
-  Serial.print("BK ");
-  Serial.println(i);
+  if (DEBUG)
+  {
+    Serial.print("BK ");
+    Serial.println(i);
+  }
   reverse(i);
   return current;
 }
@@ -837,8 +842,11 @@ TNODE *execBackNode(TNODE *current)
 TNODE *execForwardNode(TNODE *current)
 {
   int i = evalNodeValueInt(evalNodeValue(current->left));
-  Serial.print("FD ");
-  Serial.println(i);
+  if (DEBUG)
+  {
+    Serial.print("FD ");
+    Serial.println(i);
+  }
   forward(i);
   return current;
 }
@@ -868,8 +876,11 @@ TNODE *execIfElseNode(TNODE *current)
 TNODE *execLeftNode(TNODE *current)
 {
   int degrees = evalNodeValueInt(evalNodeValue(current->left));
-  Serial.print("LT ");
-  Serial.println(degrees);
+  if (DEBUG)
+  {
+    Serial.print("LT ");
+    Serial.println(degrees);
+  }
   left(degrees);
   return current;
 }
@@ -877,8 +888,11 @@ TNODE *execLeftNode(TNODE *current)
 TNODE *execLzAimNode(TNODE *current)
 {
   int degrees = evalNodeValueInt(evalNodeValue(current->left));
-  Serial.print("LZAIM ");
-  Serial.println(degrees);
+  if (DEBUG)
+  {
+    Serial.print("LZAIM ");
+    Serial.println(degrees);
+  }
   LZAim(degrees);
   return current;
 }
@@ -924,8 +938,11 @@ TNODE *execRepeatNode(TNODE *current)
 TNODE *execRightNode(TNODE *current)
 {
   int degrees = evalNodeValueInt(evalNodeValue(current->left));
-  Serial.print("RT ");
-  Serial.println(degrees);
+  if (DEBUG)
+  {
+    Serial.print("RT ");
+    Serial.println(degrees);
+  }
   right(degrees);
   return current;
 }
