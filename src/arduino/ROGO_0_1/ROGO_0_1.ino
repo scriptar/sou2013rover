@@ -22,6 +22,7 @@ void setup()
 //  battCheck(); //Battery level check. HIGH = 3 blinks, MED = 2, LOW = 1, Led On if batteries need replaced. 
   pinMode(PIN_LIR_SENSOR_READ, INPUT);  // initialize the tcrt5000 pins as an input, and 
   pinMode(PIN_RIR_SENSOR_READ, INPUT);
+  pinMode(PIN_LZ_FIRE, OUTPUT);
   digitalWrite(PIN_LIR_SENSOR_READ, HIGH); //turn on the internal pullup resistors
   digitalWrite(PIN_RIR_SENSOR_READ, HIGH);
   NewPing::timer_ms(SENSOR_CHECK_SPEED, sensorSend);
@@ -61,6 +62,7 @@ void loop()
 	tree = makeParseTree(tree);
 	printTree(tree, 0);
 	Serial.print("\nExecuting Tree...\n");
+        LZFire(0);
 	execTree(tree);
 	destroyTree(tree);
   }

@@ -40,6 +40,7 @@
 #define PIN_SERVO_RIGHT          4 // By design, PWM is disabled on these pins because of Servo.h. 
 #define PIN_SERVO_LEFT           5 // http://arduino.cc/en/Reference/Servo
 #define PIN_SERVO_LASER          8
+#define PIN_LZ_FIRE              11 //Connected to small 1mW laser (Harmless)
 
 // ***************************************
 // Constant Declarations
@@ -67,6 +68,7 @@ void left(int degreeL);
 void right(int degreeR);
 void pause(int Us);
 void LZAim(int degreeLZ);
+void LZFire(int state);
 //void battCheck();
 void sensorCheck();
 void sensorSend();

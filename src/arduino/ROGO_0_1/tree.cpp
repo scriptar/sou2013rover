@@ -899,8 +899,10 @@ TNODE *execLzAimNode(TNODE *current)
 
 TNODE *execLzFireNode(TNODE *current)
 {
+  int state = evalNodeValueInt(evalNodeValue(current->left));
   if (DEBUG)
     printf("\nLZFIRE");
+  LZFire(state);
   return current;
 }
 
