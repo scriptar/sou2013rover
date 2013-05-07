@@ -2,11 +2,6 @@
 # If we are filtering out files we need, on accident, just remove the item from the following list.
 
 #################
-## Custom Android Dev
-#################
-project.properties
-
-#################
 ## Eclipse
 #################
 
