@@ -63,7 +63,7 @@ public class Rover {
 	 */
 	public ArrayList<String> getRoverData() {
 		if (roverOutput == null) {
-			roverOutput = new ArrayList<String>(20000);
+			roverOutput = new ArrayList<String>(2010);
 		}
 		return roverOutput;
 	}
@@ -86,9 +86,10 @@ public class Rover {
 		if (data.equals("")) {
 			return;
 		}
-		// TODO Error, too much data
-		if (roverOutput.size() > 199999) {
-			return;
+		// TODO Error, too much data, currently resets. Use different
+		// data structure?
+		if (roverOutput.size() >= 2000) {
+			roverOutput = new ArrayList<String>(100);
 		}
 		// Add to output Item
 		roverOutput.add(data);
