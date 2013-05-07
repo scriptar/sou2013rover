@@ -21,26 +21,33 @@ import edu.sou.rover2013.R;
 import edu.sou.rover2013.utility.*;
 
 /**
- * View for establishing a bluetooth connection. 
- * Currently cluttered
+ * Activity for establishing a bluetooth connection.
  */
+// TODO Have thread perform connection to prevent hang
+// TODO Don't allow connections until discovery reports that it is cancelled.
+// TODO Debug Connection Issues
+// TODO Load Current status on activity launch, and enable/disable buttons to fit.
+// TODO Show current status
+// TODO Show alert when connection succeeds
 public class ConnectionActivity extends BaseActivity {
 
-	// Constants
+	// *******************************
+	// Class Constants
+	// *******************************
 	protected static final int REQUEST_ENABLE_BT = 200;
 
+	// *******************************
 	// Class Variables
+	// *******************************
 	private BluetoothService connection;
 	private ArrayList<BluetoothDevice> devices;
-	private ArrayAdapter<BluetoothDevice> devicesArrayAdapter;
+	private ArrayAdapter<BluetoothDevice> devicesAdapter;
 	private BroadcastReceiver mReceiver;
 
 	// ***************************
 	// UI Elements
 	// ***************************
-	private TextView outputText;
-	private Button buttonEnableBluetooth;
-	private Button buttonDisableBluetooth;
+	private Button buttonResetConnection;
 	private Button buttonStartDiscovery;
 	private ListView listviewDevices;
 
@@ -49,100 +56,62 @@ public class ConnectionActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.connection);
 
-		// Variables
+		// Assign Variables
 		connection = BluetoothService.getConnection();
 		devices = new ArrayList<BluetoothDevice>();
-		devicesArrayAdapter = new ArrayAdapter<BluetoothDevice>(this,
+		devicesAdapter = new ArrayAdapter<BluetoothDevice>(this,
 				android.R.layout.simple_list_item_1, devices);
 
 		// ***************************
-		// Set UI Elements
+		// Assign UI Elements
 		// ***************************
-		outputText = (TextView) findViewById(R.id.outputText);
-		outputText.setText("");
-		buttonEnableBluetooth = (Button) findViewById(R.id.button_enable_bluetooth);
-		buttonDisableBluetooth = (Button) findViewById(R.id.button_disable_bluetooth);
+		buttonResetConnection = (Button) findViewById(R.id.button_reset);
 		buttonStartDiscovery = (Button) findViewById(R.id.button_start_discovery);
 		listviewDevices = (ListView) findViewById(R.id.listview_devices);
-		listviewDevices.setAdapter(devicesArrayAdapter);
-		// Allows only one item to be selected
+		listviewDevices.setAdapter(devicesAdapter);
+		// Allows only one selected item
 		listviewDevices.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		// Selected Item gets this color
+		// Sets selected item color
 		listviewDevices.setSelector(android.R.color.darker_gray);
+
+		// *******************************
+		// Button Listeners
+		// *******************************
+		/**
+		 * Begins Connection when item selected
+		 */
 		listviewDevices.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 				String item = ((TextView) view).getText().toString();
-				outputText.append("Connecting to: "+item+"\n");
-				Toast.makeText(getBaseContext(), "Connecting to: "+item, Toast.LENGTH_LONG).show();
-				//Cancels search if ongoing
-				   if (BluetoothAdapter.getDefaultAdapter().isDiscovering()) {
-					   BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-			        }
+				// Cancel discovery process
+				if (BluetoothAdapter.getDefaultAdapter().isDiscovering()) {
+					toast("Cancelling Discovery...");
+					BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+				}
+				toast("Connecting to: " + item);
 				connection.connectDevice(item);
+				buttonStartDiscovery.setEnabled(false);
+				listviewDevices.setEnabled(false);
 			}
 		});
 
-		// ***************************
-		// Button Listeners
-		// ***************************
-		// Enable Bluetooth
-		buttonEnableBluetooth.setOnClickListener(new View.OnClickListener() {
+		buttonResetConnection.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (!BluetoothService.isBluetoothCapable()) {
-					outputText.append("Bluetooth Not Supported\n");
-					return;
-				}
-				if (BluetoothService.isEnabled()) {
-					outputText.append("Bluetooth Already Enabled\n");
-					return;
-				}
-				outputText.append("Enabling Bluetooth...\n");
-				// connection.enableBluetooth();
-				if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-					Intent enableBtIntent = new Intent(
-							BluetoothAdapter.ACTION_REQUEST_ENABLE);
-					startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-				}
+				resetConnection();
+				toast("Connection Reset");
 			}
 		});
-		// Disable Bluetooth
-		buttonDisableBluetooth.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				if (!BluetoothService.isBluetoothCapable()) {
-					outputText.append("Bluetooth Not Supported\n");
-					return;
-				}
-				if (!BluetoothService.isEnabled()) {
-					outputText.append("Bluetooth Already Disabled\n");
-					return;
-				}
-				outputText.append("Disabling Bluetooth...\n");
-				connection.disableBluetooth();
-				outputText.append("Bluetooth Disabled\n");
-				letsToast("Bluetooth Disabled");
-			}
-		});
-		// Start Device Discovery
 		buttonStartDiscovery.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (!BluetoothService.isBluetoothCapable()) {
-					outputText.append("Bluetooth Not Supported\n");
-					return;
-				}
-				if (!BluetoothService.isEnabled()) {
-					outputText.append("Bluetooth Not Enabled\n");
-					return;
-				}
-				devices.clear();
-				BluetoothAdapter.getDefaultAdapter().startDiscovery();
-				outputText.append("Device Discovery Started\n");
-				letsToast("Device Discovery Started");
+				beginDeviceSearch();
 			}
+
 		});
 
 		// ***************************
-		// Broadcast Receiver
+		// Setup Broadcast Receiver
 		// ***************************
 		// Responds to broadcasts listing discovered devices
 		mReceiver = new BroadcastReceiver() {
@@ -153,44 +122,90 @@ public class ConnectionActivity extends BaseActivity {
 				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 					BluetoothDevice device = intent
 							.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					outputText.append(device.getName() + "\n"
-							+ device.getAddress() + "\n");
+					toast("Found " + device.getName() + "\n"
+							+ device.getAddress());
 					// http://developer.android.com/guide/topics/ui/declaring-layout.html#AdapterViews
 					devices.add(device);
+					devicesAdapter.notifyDataSetChanged();
 				} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
 						.equals(action)) {
-					outputText.append("Device Discovery Completed\n");
-					letsToast("Device Discovery Completed");
+					toast("Device Discovery Completed");
+					buttonStartDiscovery.setEnabled(true);
+					buttonResetConnection.setEnabled(true);
 				}
 			}
 		};
 		// Registering our custom broadcast receiver
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		registerReceiver(mReceiver, filter);
-
+	}
+	
+	// *******************************
+	// Button Methods
+	// *******************************
+	/**
+	 * Begins Bluetooth Device Search
+	 */
+	private void beginDeviceSearch() {
+		if (!BluetoothService.isBluetoothCapable()) {
+			toast("Bluetooth Not Supported");
+			return;
+		}
+		if (!BluetoothService.isEnabled()) {
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			toast("Enabling Bluetooth...");
+		}
+		resetConnection();
+		BluetoothAdapter.getDefaultAdapter().startDiscovery();
+		toast("Device Discovery Started...");
+		buttonStartDiscovery.setEnabled(false);
+		buttonResetConnection.setEnabled(false);		
 	}
 
-	// Takes action on return of Bluetooth enable activity.
+	/**
+	 * Resets the connection
+	 */
+	private void resetConnection() {
+		connection.reset();
+		devices.clear();
+		devicesAdapter.notifyDataSetChanged();
+		buttonStartDiscovery.setEnabled(true);
+		buttonResetConnection.setEnabled(true);	
+		listviewDevices.setEnabled(true);
+	}
+
+	// *******************************
+	// Additional Methods
+	// *******************************
+	/**
+	 * Takes action on return of Bluetooth enable activity
+	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_ENABLE_BT) {
 			if (resultCode == RESULT_OK) {
-				outputText.append("Bluetooth Enabled\n");
-				letsToast("Bluetooth Enabled");
+				toast("Bluetooth Enabled");
 			} else {
-				outputText.append("Bluetooth NOT Enabled\n");
-				letsToast("Bluetooth NOT Enabled");
+				toast("Bluetooth Not Enabled");
 			}
-		}
+		} 
 	}
 
-	// Simple way to throw alerts on the string.
-	private void letsToast(String string_arg) {
+	/**
+	 * Throws a short toast notification
+	 */
+	private void toast(String string_arg) {
 		Toast toast = Toast.makeText(getApplicationContext(), string_arg,
 				Toast.LENGTH_SHORT);
 		toast.show();
 	}
 
+	/**
+	 *Removes the broadcast receiver on activity close 
+	 */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

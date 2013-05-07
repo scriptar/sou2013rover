@@ -19,9 +19,9 @@ import android.util.Log;
 // TODO check for status before operations. Will fail if changing
 public class BluetoothService {
 
-	// *****************
+	// *******************************
 	// Class Constants
-	// *****************
+	// *******************************
 	// Singleton
 	private static BluetoothService singleton;
 	// Bluetooth ID to look for when searching for BlueSmirf Module
@@ -29,28 +29,34 @@ public class BluetoothService {
 			.fromString("00001101-0000-1000-8000-00805f9b34fb");
 	public static final int REQUEST_ENABLE_BT = 200;
 
-	// *****************
-	// Class Fields
-	// *****************
+	// *******************************
+	// Class Variables
+	// *******************************
 	private final BluetoothAdapter adapter;
 	private BluetoothSocket bluetoothSocket = null;
 	private InputStream inStream = null;
 	private OutputStream outStream = null;
-	// vars for reader thread
+	// vars for listener thread
 	private boolean stopWorker;
 	private int readBufferPosition;
 	private byte[] readBuffer;
 	private Thread workerThread;
-	// one rover model at a time, holds current rover model
+	// Current Rover Connection
 	private Rover rover = null;
 
+	// *******************************
+	// Constructors
+	// *******************************
 	/**
-	 * Constructor - Only accessed through Singleton
+	 * Accessed through Singleton
 	 */
 	private BluetoothService() {
 		adapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
+	// *******************************
+	// Additional Methods
+	// *******************************
 	/**
 	 * Returns Bluetooth Singleton
 	 */
@@ -97,12 +103,11 @@ public class BluetoothService {
 	 * @return Rover Connection established?
 	 */
 	public boolean isConnected() {
-		if (rover == null) {
+		if (rover == null || inStream == null || outStream == null
+				|| bluetoothSocket == null) {
 			return false;
-		} else if (bluetoothSocket.isConnected()) {
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 	public void connectDevice(String address) {
@@ -122,9 +127,9 @@ public class BluetoothService {
 
 	private void startDataListener() {
 		final Handler handler = new Handler();
-		//ASCII Newline char
+		// ASCII Newline char
 		final byte delimiter = 10;
-		//Vars
+		// Vars
 		stopWorker = false;
 		readBufferPosition = 0;
 		readBuffer = new byte[1024];
@@ -149,7 +154,8 @@ public class BluetoothService {
 
 									handler.post(new Runnable() {
 										public void run() {
-											String string=data.replace("\r","").replace("\n","");
+											String string = data.replace("\r",
+													"").replace("\n", "");
 											rover.parseRoverOutput(string);
 											Log.d("data", string);
 										}
@@ -176,17 +182,6 @@ public class BluetoothService {
 	public void enableBluetooth() {
 		if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
 			BluetoothAdapter.getDefaultAdapter().enable();
-		}
-	}
-
-	/**
-	 * Disables Bluetooth on Device
-	 */
-	public void disableBluetooth() {
-		if (BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-			BluetoothAdapter.getDefaultAdapter().disable();
-			rover = null;
-			stopWorker = true;
 		}
 	}
 
@@ -236,6 +231,29 @@ public class BluetoothService {
 	 * @return the current rover model
 	 */
 	public Rover getRover() {
+		if (rover == null) {
+			rover = new Rover(this);
+		}
 		return rover;
+	}
+
+	/**
+	 * Resets all connection information
+	 */
+	public void reset() {
+		try {
+			inStream = null;
+			outStream = null;
+			if (bluetoothSocket != null) {
+				bluetoothSocket.close();
+				bluetoothSocket = null;
+				
+			}
+			stopWorker = true;
+			rover = null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

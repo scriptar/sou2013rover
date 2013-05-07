@@ -43,17 +43,20 @@ public class Rover {
 	 *            Script to send to the Rogo Rover. Must be properly
 	 *            constructed.
 	 */
-	public void sendDataToRover(String scriptArg) {
-
+	public boolean sendDataToRover(String scriptArg) {
+		//exit if not connected
+		if(!connection.isConnected()){
+			return false;
+		}
 		try {
 			connection.transmitString(scriptArg);
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			// Transmit Failure
 		} catch (Exception e) {
 			e.printStackTrace();
-			// Transmit Failure
 		}
+		return false;
 	}
 
 	/**
@@ -121,6 +124,9 @@ public class Rover {
 	 * Data Packet Parser... Entries to be searched for go in here.
 	 */
 	private void consumeDataPacket() {
+		if (dataPacket == null){
+			return;
+		}
 		Iterator<String> iterator = dataPacket.iterator();
 		String string;
 		while (iterator.hasNext()) {

@@ -14,31 +14,26 @@ import edu.sou.rover2013.utility.BluetoothService;
 
 /**
  * This activity allows users to control a connected rover in a manner similar
- * to RC cars. The Bluetooth Singleton must have a connected 
+ * to RC cars.
  */
-
-// For example code, see:
-// http://stackoverflow.com/questions/4284224/android-hold-button-to-repeat-action
-// Possible Widgets? RepeatButton1, RepeatButton2
-// Alternate Solution, Have Start/Stop Functions.
 // TODO Show rover telemetry on screen, text and graphics
-// TODO Improve user interface... Replace buttons with large, easily pressed
-// arrow images that change appearance when pressed.
-// TODO Add buttons for controlling the laser.
-// TODO Skin Interface
+// TODO Improve user interface... Replace buttons with large images
+// TODO Add buttons for controlling the laser
 public class ControlSimpleActivity extends BaseActivity {
 
 	// *******************************
-	// Variables
+	// Class Variables
 	// *******************************
-	// UI Elements
-	private Button forward;
-	private Button reverse;
-	private Button left;
-	private Button right;
-
 	// Rover Model
 	private Rover rover;
+
+	// *******************************
+	// UI Element Variables
+	// *******************************
+	private Button buttonForward;
+	private Button buttonReverse;
+	private Button buttonLeft;
+	private Button buttonRight;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +43,17 @@ public class ControlSimpleActivity extends BaseActivity {
 		// *******************************
 		// Assigning UI Elements
 		// *******************************
-		forward = (Button) findViewById(R.id.button_forward);
-		reverse = (Button) findViewById(R.id.button_reverse);
-		left = (Button) findViewById(R.id.button_left);
-		right = (Button) findViewById(R.id.button_right);
+		buttonForward = (Button) findViewById(R.id.button_forward);
+		buttonReverse = (Button) findViewById(R.id.button_reverse);
+		buttonLeft = (Button) findViewById(R.id.button_left);
+		buttonRight = (Button) findViewById(R.id.button_right);
 
 		// *******************************
 		// Button Listeners
 		// *******************************
-		forward.setOnTouchListener(new OnTouchListener() {
-		    @Override
-		    public boolean onTouch(View v, MotionEvent event) {
+		buttonForward.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					forward();
 					return true;
@@ -67,11 +62,11 @@ public class ControlSimpleActivity extends BaseActivity {
 					return true;
 				}
 				return true;
-		    }
+			}
 		});
-		reverse.setOnTouchListener(new OnTouchListener() {
-		    @Override
-		    public boolean onTouch(View v, MotionEvent event) {
+		buttonReverse.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					reverse();
 					return true;
@@ -80,11 +75,11 @@ public class ControlSimpleActivity extends BaseActivity {
 					return true;
 				}
 				return true;
-		    }
+			}
 		});
-		left.setOnTouchListener(new OnTouchListener() {
-		    @Override
-		    public boolean onTouch(View v, MotionEvent event) {
+		buttonLeft.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					left();
 					return true;
@@ -93,11 +88,11 @@ public class ControlSimpleActivity extends BaseActivity {
 					return true;
 				}
 				return true;
-		    }
+			}
 		});
-		right.setOnTouchListener(new OnTouchListener() {
-		    @Override
-		    public boolean onTouch(View v, MotionEvent event) {
+		buttonRight.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					right();
 					return true;
@@ -106,24 +101,23 @@ public class ControlSimpleActivity extends BaseActivity {
 					return true;
 				}
 				return true;
-		    }
+			}
 		});
 
 		// *******************************
-		// Further Activity Setup
+		// Activity Setup
 		// *******************************
-		// check for and get rover model
+		// get rover model
+		rover = BluetoothService.getConnection().getRover();
+		// throw warning if not connected
 		if (!BluetoothService.getConnection().isConnected()) {
 			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
-					Toast.LENGTH_SHORT).show();
-		} else {
-			rover = BluetoothService.getConnection().getRover();
+					Toast.LENGTH_LONG).show();
 		}
 	}
 
-
 	// *******************************
-	// Button Actions
+	// Button Functions
 	// *******************************
 	private void forward() {
 		Log.v("test", "Forward");

@@ -19,19 +19,23 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 /**
- * 
- * This activity handles the construction of rogo scripts. Buttons, displays,
- * transmits. Must have valid bluetooth connection though
- * 
- * @author Ryan Dempsey
- * 
+ * This activity handles the construction of rogo scripts.
  */
 public class ControlComplexActivity extends BaseActivity {
 
-	// Storing this activity's context for use in dialogs
+	// *******************************
+	// Class Variables
+	// *******************************
+	// Storing this activity context
 	Context activityContext;
+	// Rover Model
+	private Rover rover;
+	// Rover Output Display
+	private ArrayAdapter<String> roverOutputArrayAdapter;
 
-	// UI Elements
+	// *******************************
+	// UI Element Variables
+	// *******************************
 	private static EditText scriptTextBox;
 	private static Button buttonLaser;
 	private static Button buttonLogic;
@@ -50,20 +54,9 @@ public class ControlComplexActivity extends BaseActivity {
 	private static Button buttonSend;
 	private static ListView listviewRoverOutput;
 	private Button buttonUpdateRoverOutput;
-	
-	// *******************************
-	// Class Variables
-	// *******************************
-	// Rover Model
-	private Rover rover;
-	//Rover Output Display
-	private ArrayAdapter<String> roverOutputArrayAdapter;
 
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// Expanding XML
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.control_complex);
 
@@ -86,8 +79,9 @@ public class ControlComplexActivity extends BaseActivity {
 		buttonLoad = (Button) findViewById(R.id.complex_load);
 		buttonClear = (Button) findViewById(R.id.complex_clear);
 		buttonSend = (Button) findViewById(R.id.complex_transmit);
-		listviewRoverOutput = (ListView) findViewById(R.id.listview_rover_output);
 		buttonUpdateRoverOutput = (Button) findViewById(R.id.button_update_rover_output);
+		listviewRoverOutput = (ListView) findViewById(R.id.listview_rover_output);
+		listviewRoverOutput.setAdapter(roverOutputArrayAdapter);
 
 		// *******************************
 		// Button Listeners
@@ -193,7 +187,6 @@ public class ControlComplexActivity extends BaseActivity {
 								scriptInsertAtCursor("Pause " + value + " ");
 							}
 						});
-
 				alert.setNegativeButton("Cancel",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
@@ -247,6 +240,7 @@ public class ControlComplexActivity extends BaseActivity {
 		buttonArithmetic.setOnClickListener(new View.OnClickListener() {
 			// Creates a selector Dialog Box
 			final CharSequence[] list = { "+", "-", "*", "/" };
+
 			public void onClick(View v) {
 				AlertDialog.Builder chooserBox = new AlertDialog.Builder(
 						activityContext);
@@ -254,7 +248,7 @@ public class ControlComplexActivity extends BaseActivity {
 				chooserBox.setItems(list,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int item) {
-								scriptInsertAtCursor(list[item]+" ");
+								scriptInsertAtCursor(list[item] + " ");
 							}
 						});
 				AlertDialog alert = chooserBox.create();
@@ -316,7 +310,7 @@ public class ControlComplexActivity extends BaseActivity {
 						});
 				alert.show();
 			}
-		});	
+		});
 		buttonLeft.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
@@ -375,12 +369,10 @@ public class ControlComplexActivity extends BaseActivity {
 		});
 		buttonSave.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
 			}
 		});
 		buttonLoad.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
 			}
 		});
 		buttonClear.setOnClickListener(new View.OnClickListener() {
@@ -402,33 +394,32 @@ public class ControlComplexActivity extends BaseActivity {
 				roverOutputArrayAdapter.notifyDataSetChanged();
 			}
 		});
+
 		// *******************************
-		// Further Activity Setup
+		// Activity Setup
 		// *******************************
+		// Assigning Context Variable
+		activityContext = this;
 		// Prevent keyboard auto-show
 		this.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		// Assigning Context Variable
-		activityContext = this;
 		// Clear TextBox
 		scriptClear();
-		// set bluetooth context for ui updates
-
-		
-		// check for and get rover model
-		if(!BluetoothService.getConnection().isConnected()){
-			Toast.makeText(getApplicationContext(), "Warning: Not Connected" ,Toast.LENGTH_SHORT).show();
-			rover = null;
-			listviewRoverOutput.setAdapter(null);
-		}else {
-			rover = BluetoothService.getConnection().getRover();
-			// Attach rover output to listView
-			roverOutputArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, rover.getRoverData());
-			
-			listviewRoverOutput.setAdapter(roverOutputArrayAdapter);
+		// get rover
+		rover = BluetoothService.getConnection().getRover();
+		// get rover output
+		roverOutputArrayAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, rover.getRoverData());
+		// throw warning if not connected
+		if (!BluetoothService.getConnection().isConnected()) {
+			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
+					Toast.LENGTH_LONG).show();
 		}
-		
-}
+	}
+
+	// *******************************
+	// Button Methods
+	// *******************************
 
 	/**
 	 * Clears the script text box
@@ -437,6 +428,25 @@ public class ControlComplexActivity extends BaseActivity {
 		scriptTextBox.getText().clear();
 	}
 
+	/**
+	 * Sends the script text-box contents to the rover model.
+	 */
+	private void transmitScript() {
+		Boolean transmitSuccess = rover.sendDataToRover(scriptTextBox.getText()
+				.toString());
+		if (transmitSuccess) {
+			Toast.makeText(getApplicationContext(), "Script Transmitted",
+					Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getApplicationContext(), "Script Not Transmitted",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	// *******************************
+	// Additional Methods
+	// *******************************
+	
 	/**
 	 * Appends the passed in string to the script text box.
 	 * 
@@ -462,16 +472,6 @@ public class ControlComplexActivity extends BaseActivity {
 		str.insert(scriptTextBox.getSelectionStart(), text, 0, len);
 	}
 
-	/**
-	 * Sends the script text-box contents to the rover model. 
-	 */
-	private void transmitScript() {
-		if(rover!=null){
-			rover.sendDataToRover(scriptTextBox.getText().toString());
-			Toast.makeText(getApplicationContext(),"Script Transmitted", Toast.LENGTH_SHORT).show();
-		}else{
-			Toast.makeText(getApplicationContext(),"Rover Not Connected", Toast.LENGTH_SHORT).show();
-		}
-	}
+
 
 }
