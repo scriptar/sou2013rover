@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+<style type="text/css">
+body {
+	font-family: 'Courier New', Courier, monospace;
+}
+</style>
+</head>
+<body>
+
+<script type="text/javascript" src="rogosim.js"></script>
+<script type="text/javascript">
+var tree, parser = ROGO.parser();
+parser.source = "V0 = 10 REPEAT 100 [FD V0 RT 90]";
+tree = parser.parse();
+document.write("<pre>" + parser.printTree(tree) + "</pre>");
+</script>
+</body>
+</html>
