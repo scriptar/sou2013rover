@@ -2,9 +2,7 @@ package edu.sou.rover2013.models;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import android.util.Log;
-import android.widget.ListView;
+import java.util.Iterator;
 
 import edu.sou.rover2013.utility.BluetoothService;
 
@@ -14,23 +12,32 @@ import edu.sou.rover2013.utility.BluetoothService;
  */
 public class Rover {
 
+	/*
+	 * Question: Do we need to keep all rover output? Any value to this?
+	 */
+
 	private BluetoothService connection;
 	private ArrayList<String> roverOutput;
+	private boolean inDataPacket = false;
+	private ArrayList<String> dataPacket;
+
+	// Rover Values
+	private int pingF;
+	private int irFR;
+	private int irFL;
 
 	/**
 	 * Rover Constructor
 	 * 
-	 * @param connectionArg
+	 * @param Bluetooth
+	 *            Service to be used when transmitting data
 	 */
 	public Rover(BluetoothService connectionArg) {
 		connection = connectionArg;
-		roverOutput = new ArrayList<String>(20000);
-
 	}
 
 	/**
-	 * Sends Rogo Script to the connected Rover. Scripts will have "start" and
-	 * "stop" lines appended for use when receiving on rover.
+	 * Sends Rogo Script to the connected Rover.
 	 * 
 	 * @param scriptArg
 	 *            Script to send to the Rogo Rover. Must be properly
@@ -46,26 +53,7 @@ public class Rover {
 		} catch (Exception e) {
 			e.printStackTrace();
 			// Transmit Failure
-
 		}
-
-	}
-
-	/**
-	 * Strings sent out by the rover are appended to the rover's output array
-	 * with this method.
-	 * 
-	 * @param data
-	 */
-	public void addToRoverOutput(String data) {
-		if (roverOutput == null) {
-			roverOutput = new ArrayList<String>(20000);
-		}
-		if (data.equals("")) {
-			return;
-		}
-		roverOutput.add(data);
-		
 	}
 
 	/**
@@ -73,11 +61,89 @@ public class Rover {
 	 * 
 	 * @return the arraylist containing communication received from the rover.
 	 */
-	public ArrayList<String> getRoverOutput() {
+	public ArrayList<String> getRoverData() {
 		if (roverOutput == null) {
 			roverOutput = new ArrayList<String>(20000);
 		}
 		return roverOutput;
+	}
+
+	/**
+	 * Any data transmitted by the rover should be piped into this method, which
+	 * will then parse through the output, and
+	 * 
+	 * TODO change from array to more suitable data structure
+	 * 
+	 * @param single
+	 *            line output coming from the rover
+	 */
+	public void parseRoverOutput(String data) {
+		// initialize if output log does not exist
+		if (roverOutput == null) {
+			roverOutput = getRoverData();
+		}
+		// skip blank lines
+		if (data.equals("")) {
+			return;
+		}
+		// TODO Error, too much data
+		if (roverOutput.size() > 199999) {
+			return;
+		}
+		// Add to output Item
+		roverOutput.add(data);
+
+		// TODO Error if too much packet data, currently resets. Use different
+		// data structure?
+		if (dataPacket != null && dataPacket.size() >= 80) {
+			dataPacket = new ArrayList<String>(100);
+		}
+
+		// If in data packet, save lines
+		if (inDataPacket) {
+			dataPacket.add(data);
+		}
+
+		// Check for start or stop of data packet.
+		if (data.equals("start")) {
+			inDataPacket = true;
+			dataPacket = new ArrayList<String>(100);
+			dataPacket.add(data);
+		} else if (data.equals("end")) {
+			inDataPacket = false;
+			// packet complete, now parse
+			consumeDataPacket();
+		}
+	}
+
+	/**
+	 * Data Packet Parser... Entries to be searched for go in here.
+	 */
+	private void consumeDataPacket() {
+		Iterator<String> iterator = dataPacket.iterator();
+		String string;
+		while (iterator.hasNext()) {
+			string = iterator.next();
+			if (string.equals("pingF")) {
+				pingF =((int) Double.parseDouble(iterator.next()));
+			} else if (string.equals("irFL")) {
+				irFL =((int) Double.parseDouble(iterator.next()));
+			} else if (string.equals("irFR")) {
+				irFR = ((int) Double.parseDouble(iterator.next()));
+			}
+		}
+	}
+
+	public int getInfaredFrontLeft() {
+		return irFL;
+	}
+
+	public int getInfaredFrontRight() {
+		return irFR;
+	}
+
+	public int gePingFront() {
+		return pingF;
 	}
 
 }

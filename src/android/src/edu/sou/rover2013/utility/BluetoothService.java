@@ -3,24 +3,15 @@ package edu.sou.rover2013.utility;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Set;
 import java.util.UUID;
 
 import edu.sou.rover2013.models.Rover;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * This class handles Bluetooth connections
@@ -43,7 +34,6 @@ public class BluetoothService {
 	// *****************
 	private final BluetoothAdapter adapter;
 	private BluetoothSocket bluetoothSocket = null;
-	private BluetoothServerSocket bluetoothServerSocket = null;
 	private InputStream inStream = null;
 	private OutputStream outStream = null;
 	// vars for reader thread
@@ -159,8 +149,9 @@ public class BluetoothService {
 
 									handler.post(new Runnable() {
 										public void run() {
-											rover.addToRoverOutput(data);
-											Log.d("data", data);
+											String string=data.replace("\r","").replace("\n","");
+											rover.parseRoverOutput(string);
+											Log.d("data", string);
 										}
 									});
 								} else {

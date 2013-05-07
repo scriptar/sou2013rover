@@ -104,7 +104,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Variables..."
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/complex_flow"
@@ -113,7 +113,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Program Flow..."
-                    android:textSize="11sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -146,7 +146,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Arithmetic..."
-                    android:textSize="9sp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/button_update_rover_output"
@@ -155,7 +155,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Update Rover Output"
-                    android:textSize="9sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

@@ -423,7 +423,7 @@ public class ControlComplexActivity extends BaseActivity {
 		}else {
 			rover = BluetoothService.getConnection().getRover();
 			// Attach rover output to listView
-			roverOutputArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, rover.getRoverOutput());
+			roverOutputArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, rover.getRoverData());
 			
 			listviewRoverOutput.setAdapter(roverOutputArrayAdapter);
 		}
