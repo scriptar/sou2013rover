@@ -29,6 +29,7 @@ import edu.sou.rover2013.utility.*;
 // TODO Load Current status on activity launch, and enable/disable buttons to fit.
 // TODO Show current status
 // TODO Show alert when connection succeeds
+// TODO Currently crashes when rover disconnected yet we push reset. Connection went void?
 public class ConnectionActivity extends BaseActivity {
 
 	// *******************************

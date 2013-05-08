@@ -1,21 +1,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="80dp"
+    android:layout_height="100dp"
     android:background="#dedede"
     android:orientation="vertical" >
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:gravity="left"
         android:paddingTop="10dip"
-        android:text="Sample text 1"
+        android:text="Rover Data"
         android:textColor="#606060" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sample text 2"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".4"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Forward Ping: " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Left Wheel: " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Right Wheel: " />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".6"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/text_forward_ping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Value" />
+
+            <TextView
+                android:id="@+id/text_fl_infrared"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Value" />
+
+            <TextView
+                android:id="@+id/text_fr_infrared"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Value" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
