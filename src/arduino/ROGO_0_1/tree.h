@@ -31,16 +31,16 @@ typedef enum {DT_UNKNOWN, DT_INT, DT_DBL} DataType;
 typedef struct treeNode {
 	NodeType ntype;
 	DataType dtype;
-	int varIdx;
+	short varIdx;
 	int nInteger;
 	double nRational;
 	struct treeNode *left;
 	struct treeNode *right;
 	struct treeNode *prev;
 	struct treeNode *next;
-	int primIdx;
-	int numargs;
-	int priority;
+	short primIdx;
+	//int numargs;
+	//int priority;
 } TNODE;
 
 #define NIL (TNODE *)0

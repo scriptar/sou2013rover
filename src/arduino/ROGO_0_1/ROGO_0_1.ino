@@ -53,8 +53,15 @@ void setup()
 // ***************************************
 void loop()
 {
-  sensorCheck(); 
-  delay(250);
+  static unsigned int d = 0;
+  delay(10);
+  d += 1;
+  if (d >= 25)
+  {
+    sensorCheck();
+    d = 0;
+  }
+  //delay(250);
   if(Serial.available()){
         
 	TEXTNODE *list = serialReadCommands();
@@ -65,6 +72,9 @@ void loop()
         LZFire(0);
 	execTree(tree);
 	destroyTree(tree);
+	//temporary hack: dump everything in the buffer...
+	while (Serial.available() > 0)
+		Serial.read();
   }
 }
 
