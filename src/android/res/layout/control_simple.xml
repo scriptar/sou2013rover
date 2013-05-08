@@ -5,63 +5,46 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ControlSimpleActivity" >
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="fill_parent"
-        android:layout_height="186dp"
-        android:text="Output" />
+    <!-- Include data Bar -->
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Controls:"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <include layout="@layout/data_bar" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom" >
+        android:gravity="center_horizontal" >
 
-        <Button
+        <ImageButton
             android:id="@+id/button_forward"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:text="Forward" />
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/arrow_button_metal_green_up" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/button_reverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/button_forward"
-            android:layout_below="@+id/button_forward"
-            android:text="Reverse" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
 
-        <Button
-            android:id="@+id/button_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/button_reverse"
-            android:layout_alignBottom="@+id/button_reverse"
-            android:layout_toRightOf="@+id/button_reverse"
-            android:text="Right" />
-
-        <Button
+        <ImageButton
             android:id="@+id/button_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/button_reverse"
-            android:layout_alignBottom="@+id/button_reverse"
-            android:layout_toLeftOf="@+id/button_reverse"
-            android:text="Left" />
-    </RelativeLayout>
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/arrow_button_metal_green_left" />
+
+        <ImageButton
+            android:id="@+id/button_reverse"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/arrow_button_metal_green_down" />
+
+        <ImageButton
+            android:id="@+id/button_right"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/arrow_button_metal_green_right" />
+    </LinearLayout>
 
 </LinearLayout>

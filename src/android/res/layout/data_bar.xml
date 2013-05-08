@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="80dp"
+    android:background="#dedede"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10dip"
+        android:text="Sample text 1"
+        android:textColor="#606060" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample text 2"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

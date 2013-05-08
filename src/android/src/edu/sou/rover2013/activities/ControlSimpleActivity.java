@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
@@ -19,6 +20,7 @@ import edu.sou.rover2013.utility.BluetoothService;
 // TODO Show rover telemetry on screen, text and graphics
 // TODO Improve user interface... Replace buttons with large images
 // TODO Add buttons for controlling the laser
+// TODO Don't allow more than one button press at a time.
 public class ControlSimpleActivity extends BaseActivity {
 
 	// *******************************
@@ -30,10 +32,10 @@ public class ControlSimpleActivity extends BaseActivity {
 	// *******************************
 	// UI Element Variables
 	// *******************************
-	private Button buttonForward;
-	private Button buttonReverse;
-	private Button buttonLeft;
-	private Button buttonRight;
+	private ImageButton buttonForward;
+	private ImageButton buttonReverse;
+	private ImageButton buttonLeft;
+	private ImageButton buttonRight;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +45,10 @@ public class ControlSimpleActivity extends BaseActivity {
 		// *******************************
 		// Assigning UI Elements
 		// *******************************
-		buttonForward = (Button) findViewById(R.id.button_forward);
-		buttonReverse = (Button) findViewById(R.id.button_reverse);
-		buttonLeft = (Button) findViewById(R.id.button_left);
-		buttonRight = (Button) findViewById(R.id.button_right);
+		buttonForward = (ImageButton) findViewById(R.id.button_forward);
+		buttonReverse = (ImageButton) findViewById(R.id.button_reverse);
+		buttonLeft = (ImageButton) findViewById(R.id.button_left);
+		buttonRight = (ImageButton) findViewById(R.id.button_right);
 
 		// *******************************
 		// Button Listeners
@@ -54,11 +56,16 @@ public class ControlSimpleActivity extends BaseActivity {
 		buttonForward.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					forward();
+					buttonForward
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					buttonForward
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_up);
 					return true;
 				}
 				return true;
@@ -69,9 +76,13 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					reverse();
+					buttonReverse
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					buttonReverse
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_down);
 					return true;
 				}
 				return true;
@@ -82,9 +93,13 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					left();
+					buttonLeft
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					buttonLeft
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_left);
 					return true;
 				}
 				return true;
@@ -95,9 +110,13 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					right();
+					buttonRight
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					buttonRight
+							.setBackgroundResource(R.drawable.arrow_button_metal_green_right);
 					return true;
 				}
 				return true;
