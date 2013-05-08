@@ -79,14 +79,17 @@ ROGO.parser = function (spec) {
 	makeFlatTree = function () {
 		var i,
 			p = ROGO.primitives,
-			node,
-			current,
+			tree = null,
+			node = null,
+			current = null,
 			isVarRE = /^V\d+$/,
-			isNumRE = /^\-?\d+\.?\d+?$/,
-			word,
+			isNumRE = /^(\-)?(\d)+(\.?\d+)?$/,
+			word = "",
 			wordList = [];
+		tree = null;
 		src = src.toUpperCase().replace(/[^A-Z0-9\.\+\-\*\/=<>\[\]]/g, ' '); //filter out unexpected chars
-		src = src.replace(/([A-Z0-9\.]+)/g, function(match, group1, offset, original) { return ' ' + group1 + ' '; }); //pad words with spaces
+		src = src.replace(/([A-Z0-9\.\-]+)/g, function(match, group1, offset, original) { return ' ' + group1 + ' '; }); //pad words with spaces
+		src = src.replace(/--/g, ' - -'); //fix minus/negative case
 		src = src.replace(/\s+/g, ' '); //convert all whitespace into single space
 		wordList = src.split(' ');
 		for (i = 0; i < wordList.length; i += 1) {
@@ -117,10 +120,10 @@ ROGO.parser = function (spec) {
 					node.ntype = ROGO.c.nodeType.NT_LIST_END;
 				} else {
 					//document.write("UNKNOWN: " + word + "<br />");
-					node = null;
+					//node = null;
 				}
-				if (!syntree) {
-					current = syntree = node;
+				if (!tree) {
+					current = tree = node;
 				} else {
 					current.next = node;
 					node.prev = current;
@@ -128,6 +131,7 @@ ROGO.parser = function (spec) {
 				}
 			}
 		}
+		return tree;
 	};
 	makeExpNode = function (parent, leftChild, rightChild)
 	{
@@ -217,8 +221,11 @@ ROGO.parser = function (spec) {
 						case ROGO.c.nodeType.NT_CONTROL:
 							opcmd = current;
 							left = current.next;
-							right = current.next.next;
+							right = (current.next != null ? current.next.next : null);
 							if (ROGO.primitives[opcmd.primkey].args == 1) {
+								/* unexpected missing argument, create one */
+								if (left == null)
+									left = ROGO.treeNode();
 								makeExpNode(opcmd, left, null);
 								opcmd.next = left.next;
 								if (opcmd.next != null)
@@ -349,7 +356,7 @@ ROGO.parser = function (spec) {
 	obj.parse = function (args) {
 		args = args || {};
 		src = (typeof args.source === "string" ? args.source : (typeof args === "string" ? args : (typeof obj.source === "string" ? obj.source : "")));
-		makeFlatTree();
+		syntree = makeFlatTree();
 		//document.write("<pre>" + obj.printTree(syntree) + "</pre><hr />");
 		syntree = makeParseTree(syntree);
 		return syntree;
