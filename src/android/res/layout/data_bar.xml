@@ -1,73 +1,70 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="100dp"
+    android:layout_height="80dp"
     android:background="#dedede"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
         android:gravity="left"
-        android:paddingTop="10dip"
         android:text="Rover Data"
         android:textColor="#606060" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".4"
-            android:orientation="vertical" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Forward Ping: " />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Forward Ping: " />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Left Wheel: " />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Left Wheel: " />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Right Wheel: " />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Right Wheel: " />
+    </LinearLayout>
 
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".6"
-            android:orientation="vertical" >
+        <TextView
+            android:id="@+id/text_forward_ping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
 
-            <TextView
-                android:id="@+id/text_forward_ping"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Value" />
+        <TextView
+            android:id="@+id/text_fl_infrared"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
 
-            <TextView
-                android:id="@+id/text_fl_infrared"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Value" />
-
-            <TextView
-                android:id="@+id/text_fr_infrared"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Value" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/text_fr_infrared"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
     </LinearLayout>
 
 </LinearLayout>
