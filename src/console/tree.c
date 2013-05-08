@@ -73,7 +73,7 @@ TNODE *makeFlatTree(const TEXTNODE *list)
 TNODE *makeParseTree(TNODE *tree)
 {
 	//set parent and child nodes...
-	short priority;
+	short priority, nodePriority;
 	TNODE *current = NULL;
 	TNODE *opcmd = NULL;
 	TNODE *left = NULL;
@@ -131,14 +131,17 @@ TNODE *makeParseTree(TNODE *tree)
 		current = tree;
 		while (current)
 		{
-			if (current->priority == priority)
+			nodePriority = (current->primIdx != -1 ? prims[current->primIdx].priority : 0);
+			if (nodePriority == priority)
 			{
 				switch (current->ntype)
 				{
 					case NT_OP:
 						//swap 1st and 2nd to make the op the current
 						opcmd = current;
-						if (opcmd->numargs != 1) // (don't swap if op is is a "NOT")
+						//"numargs" not stored in nodes anymore, now comes from primitives array
+						//if (opcmd->numargs != 1) // (don't swap if op is is a "NOT")
+						if (prims[opcmd->primIdx].numargs != 1) // (don't swap if op is is a "NOT")
 						{
 							left = current->prev;
 							opcmd->prev = left->prev;
@@ -156,9 +159,17 @@ TNODE *makeParseTree(TNODE *tree)
 					case NT_CONTROL:
 						opcmd = current;
 						left = current->next;
-						right = current->next->next;
-						if (opcmd->numargs == 1)
+						right = (current->next != NULL ? current->next->next : NULL);
+						if (prims[opcmd->primIdx].numargs == 1)
 						{
+							/* unexpected missing argument, create one */
+							if (left == NULL)
+							{
+								TEXTNODE *tmp = getNewTextNode("0");
+								tmp->type = NUM;
+								left = newTreeNode(tmp);
+								free(tmp);
+							}
 							makeExpNode(opcmd, left, NULL);
 							opcmd->next = left->next;
 							if (opcmd->next != NULL)
@@ -166,7 +177,7 @@ TNODE *makeParseTree(TNODE *tree)
 							left->prev = NULL;
 							left->next = NULL;
 						}
-						else if (opcmd->numargs == 2)
+						else if (prims[opcmd->primIdx].numargs == 2)
 						{
 							makeExpNode(opcmd, left, right);
 							if (left != NULL)
@@ -392,13 +403,14 @@ TNODE *newTreeNode(const TEXTNODE *node)
 	newNode->prev = NULL;
 	newNode->next = NULL;
 	newNode->primIdx = primIdx;
-	newNode->numargs = 0;
-	newNode->priority = 0;
-	if (pos != NULL)
-	{
-		newNode->numargs = pos->numargs;
-		newNode->priority = pos->priority;
-	}
+	/* "numargs" and "priority" now stored in primitives array */
+	//newNode->numargs = 0;
+	//newNode->priority = 0;
+	//if (pos != NULL)
+	//{
+	//	newNode->numargs = pos->numargs;
+	//	newNode->priority = pos->priority;
+	//}
 	return newNode;
 }
 
@@ -718,8 +730,9 @@ TNODE *exec(TNODE *current, char fcn)
 		newNode->prev = NULL;
 		newNode->next = NULL;
 		newNode->primIdx = -1;
-		newNode->numargs = 0;
-		newNode->priority = 0;
+		/* "numargs" and "priority" now in primitive array */
+		//newNode->numargs = 0;
+		//newNode->priority = 0;
 		return newNode;
 	}
 }
@@ -853,8 +866,9 @@ TNODE *execLeftNode(TNODE *current)
 
 TNODE *execLzAimNode(TNODE *current)
 {
+	int degrees = evalNodeValueInt(evalNodeValue(current->left));
 	if (DEBUG)
-		printf("\nLZAIM");
+		printf("\nLZAIM %d", degrees);
 	return current;
 }
 

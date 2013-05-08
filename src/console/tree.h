@@ -36,9 +36,9 @@ typedef struct treeNode {
 	struct treeNode *right;
 	struct treeNode *prev;
 	struct treeNode *next;
-	int primIdx;
-	short numargs;
-	short priority;
+	short primIdx;
+	//short numargs;
+	//short priority;
 } TNODE;
 
 #define NIL (TNODE *)0
