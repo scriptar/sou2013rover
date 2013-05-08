@@ -23,6 +23,7 @@ void forward(int countF)
   
   for(int i=0;i<=countF;i++){
     if(Serial.available()){
+      pause(0);
       return;
     }
     setR = 180; //servo1 full forward
@@ -44,6 +45,7 @@ void reverse(int countR)
 {
     for(int i=0;i<=countR;i++){
       if(Serial.available()){
+        pause(0);
         return;
       }      
       setR = 0; //servo1 full reverse
@@ -61,6 +63,7 @@ void left(int degreeL)
   setL = 180;
   for(int i=0;i<=degreeL;i++){
     if(Serial.available()){
+      pause(0);
       return;
     }
     servoR.write(setR); 
@@ -76,6 +79,7 @@ void right(int degreeR)
   setL = 0;
   for(int i=0;i<=degreeR;i++){
     if(Serial.available()){
+      pause(0);
       return;
     }
     servoR.write(setR);
