@@ -20,7 +20,7 @@
 /*
    TCRT5000 sensor connected to Arduino analog input
    TCRT5000 pins: (see datasheet http://www.vishay.com/docs/83760/tcrt5000.pdf )
-     C = Arduino analog input pin A1
+     C = Arduino analog input pin A5 for left, A4 for right
      E = GND
      A = 100 ohm resistor, other end of resistor to 5V
      C = GND
