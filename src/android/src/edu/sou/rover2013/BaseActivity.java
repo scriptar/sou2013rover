@@ -87,11 +87,6 @@ public abstract class BaseActivity extends Activity {
 			startActivity(intent);
 			finish();
 			return true;
-		case R.id.telemetry_settings:
-			intent = new Intent(this, TelemetryActivity.class);
-			startActivity(intent);
-			finish();
-			return true;
 		case R.id.control_mode_settings:
 			// Display Selection List
 			// User can select one of two options, and appropriate control mode
@@ -126,6 +121,11 @@ public abstract class BaseActivity extends Activity {
 			AlertDialog alert = chooserBox.create();
 			alert.show();
 			return true;
+		case R.id.telemetry_settings:
+			intent = new Intent(this, TelemetryActivity.class);
+			startActivity(intent);
+			finish();
+			return true;
 		case R.id.exit:
 			// Exited Dialog
 			this.finish();
@@ -157,10 +157,12 @@ public abstract class BaseActivity extends Activity {
 		super.onDestroy();
 		unregisterReceiver(receiver);
 	}
-	
+
 	/**
 	 * Throws a short toast message onto the users screen
-	 * @param The message to display
+	 * 
+	 * @param The
+	 *            message to display
 	 */
 	protected void toast(String string_arg) {
 		Toast toast = Toast.makeText(getApplicationContext(), string_arg,
