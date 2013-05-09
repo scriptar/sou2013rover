@@ -20,8 +20,8 @@ ROVERSTATE rover = {0};
 // ***************************************
 void forward(int countF)
 {
-  
-  for(int i=0;i<=countF;i++){
+  int countF4 = countF * 4;
+  for(int i=0;i<=countF4;i++){
     if(Serial.available()){
       pause(0);
       return;
@@ -32,10 +32,10 @@ void forward(int countF)
     if(safetyFlagUltra && safetyFlagIR){
         servoR.write(setR); //feed servos speed setting
         servoL.write(setL); 
-        delay(100);
+        delay(50);
       }
     else{
-        pause(1000);
+        pause(150);
       }
   }
   pause(250);
@@ -52,7 +52,7 @@ void reverse(int countR)
       setL = 180; //servo2 full reverse
            servoR.write(setR); //feed servos speed setting
            servoL.write(setL); 
-           delay(100);
+           delay(200); // added 150ms to compensate for no sensor checking in this loop
     }
     pause(250);
 }
@@ -68,7 +68,7 @@ void left(int degreeL)
     }
     servoR.write(setR); 
     servoL.write(setL);
-    delay(5);
+    delay(6);
   }
   pause(250);
 }
@@ -84,7 +84,7 @@ void right(int degreeR)
     }
     servoR.write(setR);
     servoL.write(setL);
-    delay(5);
+    delay(6);
   }
   pause(250);
 }
@@ -173,7 +173,7 @@ void sensorSend()
 }
 void pingCheck()
 {
-  unsigned int uS =   sonar.ping_median();  // Send ping. Possible sensor value to android app
+  unsigned int uS =   sonar.ping();  // Send ping. Possible sensor value to android app
   rover.pingRangeF = uS / US_ROUNDTRIP_CM; // Convert ping time to distance in cm and print result (0 = outside set distance range)
   if(rover.pingRangeF == 0)
   {
@@ -204,7 +204,7 @@ void irCheck()
 //  Serial.print(rover.irFL); //Print the state of the tcrt5000
 //  Serial.print(", ");
 //  Serial.println(rover.irFR);
-  if(rover.irFL > 850 | rover.irFR > 850)
+  if(rover.irFL > 650 | rover.irFR > 650)
   {
     safetyFlagIR = false;
   }
