@@ -7,17 +7,32 @@ import edu.sou.rover2013.activities.ControlWebActivity;
 import edu.sou.rover2013.activities.TelemetryActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 
 /**
  * Pulling common activity code for our application into a parent abstract
- * class. When writing a new activity, extend this rather than Activity to
- * inherit standard menu bar and actions.
+ * class. When writing a new ROGO activity, extend this rather than Activity to
+ * inherit standard menu bar and methods.
  */
 public abstract class BaseActivity extends Activity {
+
+	// *******************************
+	// Class Constants
+	// *******************************
+	public final static int UPDATE_GUI = 220;
+	
+	// *******************************
+	// Class Fields
+	// *******************************
+	private BroadcastReceiver receiver;
 
 	@Override
 	/**
@@ -26,6 +41,30 @@ public abstract class BaseActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.main_menu, menu);
+
+		// ***************************
+		// Setup Broadcast Receiver
+		// ***************************
+		// Responds to broadcasts
+		// Look into using LocalBroadcastManager to limit broadcasts to application
+		receiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				String action = intent.getAction();
+				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+					broadcastReceiverBluetoothDeviceFound(intent);
+				} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
+						.equals(action)) {
+					broadcastReceiverBluetoothDeviceDiscoveryDone();
+				}
+			}
+		};
+		// Registering our custom broadcast receiver
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(BluetoothDevice.ACTION_FOUND);
+		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+		registerReceiver(receiver, filter);
+
 		return true;
 	}
 
@@ -69,7 +108,7 @@ public abstract class BaseActivity extends Activity {
 								ControlComplexActivity.class);
 						startActivity(intent);
 						finish();
-					}else if (list[item].equals(webMode)) {
+					} else if (list[item].equals(webMode)) {
 						Intent intent = new Intent(getApplicationContext(),
 								ControlWebActivity.class);
 						startActivity(intent);
@@ -81,11 +120,33 @@ public abstract class BaseActivity extends Activity {
 			alert.show();
 			return true;
 		case R.id.exit:
-			//Exited Dialog
+			// Exited Dialog
 			this.finish();
 		default:
-			//Nothing Selected
+			// Nothing Selected
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	// *******************************
+	// Broadcast Receiver Methods
+	// *******************************
+	protected void broadcastReceiverBluetoothDeviceDiscoveryDone(){
+		//Override and use if you want action on Bluetooth Device Discovery
+	}
+	protected void broadcastReceiverBluetoothDeviceFound(Intent intent){
+		//Override and use if you want action on bluetooth device found
+	}
+	
+	// *******************************
+	// Additional Methods
+	// *******************************
+	/**
+	 * Removes the broadcast receiver on activity close
+	 */
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(receiver);
 	}
 }

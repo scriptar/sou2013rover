@@ -26,10 +26,12 @@ import edu.sou.rover2013.utility.*;
 // TODO Have thread perform connection to prevent hang
 // TODO Don't allow connections until discovery reports that it is cancelled.
 // TODO Debug Connection Issues
-// TODO Load Current status on activity launch, and enable/disable buttons to fit.
+// TODO Load Current status on activity launch, and enable/disable buttons to
+// fit.
 // TODO Show current status
 // TODO Show alert when connection succeeds
-// TODO Currently crashes when rover disconnected yet we push reset. Connection went void?
+// TODO Currently crashes when rover disconnected yet we push reset. Connection
+// went void?
 public class ConnectionActivity extends BaseActivity {
 
 	// *******************************
@@ -38,12 +40,11 @@ public class ConnectionActivity extends BaseActivity {
 	protected static final int REQUEST_ENABLE_BT = 200;
 
 	// *******************************
-	// Class Variables
+	// Class Fields
 	// *******************************
 	private BluetoothService connection;
 	private ArrayList<BluetoothDevice> devices;
 	private ArrayAdapter<BluetoothDevice> devicesAdapter;
-	private BroadcastReceiver mReceiver;
 
 	// ***************************
 	// UI Elements
@@ -111,38 +112,8 @@ public class ConnectionActivity extends BaseActivity {
 
 		});
 
-		// ***************************
-		// Setup Broadcast Receiver
-		// ***************************
-		// Responds to broadcasts listing discovered devices
-		mReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				String action = intent.getAction();
-				// When a device is found
-				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-					BluetoothDevice device = intent
-							.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					toast("Found " + device.getName() + "\n"
-							+ device.getAddress());
-					// http://developer.android.com/guide/topics/ui/declaring-layout.html#AdapterViews
-					devices.add(device);
-					devicesAdapter.notifyDataSetChanged();
-				} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
-						.equals(action)) {
-					toast("Device Discovery Completed");
-					buttonStartDiscovery.setEnabled(true);
-					buttonResetConnection.setEnabled(true);
-				}
-			}
-		};
-		// Registering our custom broadcast receiver
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(BluetoothDevice.ACTION_FOUND);
-		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		registerReceiver(mReceiver, filter);
 	}
-	
+
 	// *******************************
 	// Button Methods
 	// *******************************
@@ -164,7 +135,7 @@ public class ConnectionActivity extends BaseActivity {
 		BluetoothAdapter.getDefaultAdapter().startDiscovery();
 		toast("Device Discovery Started...");
 		buttonStartDiscovery.setEnabled(false);
-		buttonResetConnection.setEnabled(false);		
+		buttonResetConnection.setEnabled(false);
 	}
 
 	/**
@@ -175,7 +146,7 @@ public class ConnectionActivity extends BaseActivity {
 		devices.clear();
 		devicesAdapter.notifyDataSetChanged();
 		buttonStartDiscovery.setEnabled(true);
-		buttonResetConnection.setEnabled(true);	
+		buttonResetConnection.setEnabled(true);
 		listviewDevices.setEnabled(true);
 	}
 
@@ -192,7 +163,7 @@ public class ConnectionActivity extends BaseActivity {
 			} else {
 				toast("Bluetooth Not Enabled");
 			}
-		} 
+		}
 	}
 
 	/**
@@ -204,12 +175,20 @@ public class ConnectionActivity extends BaseActivity {
 		toast.show();
 	}
 
-	/**
-	 *Removes the broadcast receiver on activity close 
-	 */
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unregisterReceiver(mReceiver);
+	// *******************************
+	// Broadcast Receiver Methods
+	// *******************************
+	protected void broadcastReceiverBluetoothDeviceDiscoveryDone() {
+		toast("Device Discovery Completed");
+		buttonStartDiscovery.setEnabled(true);
+		buttonResetConnection.setEnabled(true);
 	}
+
+	protected void broadcastReceiverBluetoothDeviceFound(Intent intent) {
+		BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+		toast("Found " + device.getName() + "\n" + device.getAddress());
+		devices.add(device);
+		devicesAdapter.notifyDataSetChanged();
+	}
+
 }
