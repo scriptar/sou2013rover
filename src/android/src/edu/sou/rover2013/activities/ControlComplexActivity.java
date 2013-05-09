@@ -8,14 +8,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -30,8 +30,9 @@ public class ControlComplexActivity extends BaseActivity {
 	Context activityContext;
 	// Rover Model
 	private Rover rover;
-	// Rover Output Display
-	private ArrayAdapter<String> roverOutputArrayAdapter;
+
+	protected static final long TIME_DELAY = 50;
+	Handler handler = new Handler();
 
 	// *******************************
 	// UI Element Variables
@@ -52,8 +53,9 @@ public class ControlComplexActivity extends BaseActivity {
 	private static Button buttonLoad;
 	private static Button buttonClear;
 	private static Button buttonSend;
-	private static ListView listviewRoverOutput;
-	private Button buttonUpdateRoverOutput;
+	private static TextView pingForward;
+	private static TextView leftWheel;
+	private static TextView rightWheel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +81,9 @@ public class ControlComplexActivity extends BaseActivity {
 		buttonLoad = (Button) findViewById(R.id.complex_load);
 		buttonClear = (Button) findViewById(R.id.complex_clear);
 		buttonSend = (Button) findViewById(R.id.complex_transmit);
-		buttonUpdateRoverOutput = (Button) findViewById(R.id.button_update_rover_output);
-		listviewRoverOutput = (ListView) findViewById(R.id.listview_rover_output);
-		listviewRoverOutput.setAdapter(roverOutputArrayAdapter);
+		pingForward = (TextView) findViewById(R.id.text_forward_ping);
+		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
+		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
 
 		// *******************************
 		// Button Listeners
@@ -386,12 +388,6 @@ public class ControlComplexActivity extends BaseActivity {
 		buttonSend.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				transmitScript();
-				roverOutputArrayAdapter.notifyDataSetChanged();
-			}
-		});
-		buttonUpdateRoverOutput.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				roverOutputArrayAdapter.notifyDataSetChanged();
 			}
 		});
 
@@ -407,14 +403,13 @@ public class ControlComplexActivity extends BaseActivity {
 		scriptClear();
 		// get rover
 		rover = BluetoothService.getConnection().getRover();
-		// get rover output
-		roverOutputArrayAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, rover.getRoverData());
 		// throw warning if not connected
 		if (!BluetoothService.getConnection().isConnected()) {
 			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
 					Toast.LENGTH_LONG).show();
 		}
+		handler.post(updateTextRunnable);
+
 	}
 
 	// *******************************
@@ -442,11 +437,11 @@ public class ControlComplexActivity extends BaseActivity {
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	// *******************************
 	// Additional Methods
 	// *******************************
-	
+
 	/**
 	 * Appends the passed in string to the script text box.
 	 * 
@@ -472,6 +467,13 @@ public class ControlComplexActivity extends BaseActivity {
 		str.insert(scriptTextBox.getSelectionStart(), text, 0, len);
 	}
 
-
+	Runnable updateTextRunnable = new Runnable() {
+		public void run() {
+			pingForward.setText(String.valueOf(rover.getPingFront()));
+			leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
+			rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
+			handler.postDelayed(this, TIME_DELAY);
+		}
+	};
 
 }

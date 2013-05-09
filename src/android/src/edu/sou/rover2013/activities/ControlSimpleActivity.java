@@ -1,11 +1,13 @@
 package edu.sou.rover2013.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
@@ -27,6 +29,8 @@ public class ControlSimpleActivity extends BaseActivity {
 	// *******************************
 	// Rover Model
 	private Rover rover;
+	protected static final long TIME_DELAY = 50;
+	Handler handler = new Handler();
 
 	// *******************************
 	// UI Element Variables
@@ -35,7 +39,10 @@ public class ControlSimpleActivity extends BaseActivity {
 	private ImageButton buttonReverse;
 	private ImageButton buttonLeft;
 	private ImageButton buttonRight;
-
+	private static TextView pingForward;
+	private static TextView leftWheel;
+	private static TextView rightWheel;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,6 +55,9 @@ public class ControlSimpleActivity extends BaseActivity {
 		buttonReverse = (ImageButton) findViewById(R.id.button_reverse);
 		buttonLeft = (ImageButton) findViewById(R.id.button_left);
 		buttonRight = (ImageButton) findViewById(R.id.button_right);
+		pingForward = (TextView) findViewById(R.id.text_forward_ping);
+		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
+		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
 
 		// *******************************
 		// Button Listeners
@@ -132,6 +142,8 @@ public class ControlSimpleActivity extends BaseActivity {
 			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
 					Toast.LENGTH_LONG).show();
 		}
+		handler.post(updateTextRunnable);
+
 	}
 
 	// *******************************
@@ -161,5 +173,16 @@ public class ControlSimpleActivity extends BaseActivity {
 		Log.v("test", "Stop");
 		rover.sendDataToRover("fd 0");
 	}
+	
+	Runnable updateTextRunnable = new Runnable() {
+		public void run() {
+				pingForward.setText(String.valueOf(rover.getPingFront()));
+				leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
+				rightWheel
+						.setText(String.valueOf(rover.getInfaredFrontRight()));
+				handler.postDelayed(this, TIME_DELAY);
+		}
+	};
 
+	
 }

@@ -26,6 +26,7 @@ public class Rover {
 	private int irFR;
 	private int irFL;
 
+
 	/**
 	 * Rover Constructor
 	 * 
@@ -139,6 +140,8 @@ public class Rover {
 				irFR = ((int) Double.parseDouble(iterator.next()));
 			}
 		}
+
+		
 	}
 
 	public int getInfaredFrontLeft() {
@@ -149,8 +152,8 @@ public class Rover {
 		return irFR;
 	}
 
-	public int gePingFront() {
+	public int getPingFront() {
 		return pingF;
 	}
-
+	
 }

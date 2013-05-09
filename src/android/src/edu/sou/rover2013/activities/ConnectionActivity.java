@@ -3,10 +3,7 @@ package edu.sou.rover2013.activities;
 import java.util.ArrayList;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,7 +21,7 @@ import edu.sou.rover2013.utility.*;
  * Activity for establishing a bluetooth connection.
  */
 // TODO Have thread perform connection to prevent hang
-// TODO Don't allow connections until discovery reports that it is cancelled.
+// TODO Don't allow connections until discovery reports that it is cancelled/completed.
 // TODO Debug Connection Issues
 // TODO Load Current status on activity launch, and enable/disable buttons to
 // fit.
@@ -32,6 +29,7 @@ import edu.sou.rover2013.utility.*;
 // TODO Show alert when connection succeeds
 // TODO Currently crashes when rover disconnected yet we push reset. Connection
 // went void?
+// TODO Show Device Name, rather than Address
 public class ConnectionActivity extends BaseActivity {
 
 	// *******************************

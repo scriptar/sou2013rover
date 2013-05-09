@@ -12,57 +12,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6" >
+        android:layout_weight="6"
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="Current Script:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/complex_script"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
             android:layout_weight="1"
-            android:orientation="vertical" >
+            android:ems="10"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:selectAllOnFocus="false"
+            android:text="&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&quot;"
+            android:typeface="monospace" />
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:text="Current Script:"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <EditText
-                android:id="@+id/complex_script"
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textMultiLine|textNoSuggestions"
-                android:selectAllOnFocus="false"
-                android:text="&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&quot;"
-                android:typeface="monospace" >
-
-                <requestFocus />
-            </EditText>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:text="Rover Output:"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ListView
-                android:id="@+id/listview_rover_output"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </ListView>
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

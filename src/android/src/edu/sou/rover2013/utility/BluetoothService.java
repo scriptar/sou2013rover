@@ -151,7 +151,6 @@ public class BluetoothService {
 									final String data = new String(
 											encodedBytes, "US-ASCII");
 									readBufferPosition = 0;
-
 									handler.post(new Runnable() {
 										public void run() {
 											String string = data.replace("\r",

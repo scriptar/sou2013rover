@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -27,26 +28,23 @@ public abstract class BaseActivity extends Activity {
 	// *******************************
 	// Class Constants
 	// *******************************
-	public final static int UPDATE_GUI = 220;
-	
+	public final static String UPDATE_GUI = "UpdateGUI";
+
 	// *******************************
 	// Class Fields
 	// *******************************
 	private BroadcastReceiver receiver;
 
 	@Override
-	/**
-	 *  Inflate the menu; adds items to the action bar if it is present.
-	 */
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.main_menu, menu);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
 		// ***************************
 		// Setup Broadcast Receiver
 		// ***************************
 		// Responds to broadcasts
-		// Look into using LocalBroadcastManager to limit broadcasts to application
+		// Look into using LocalBroadcastManager to limit broadcasts to
+		// application
 		receiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
@@ -64,7 +62,15 @@ public abstract class BaseActivity extends Activity {
 		filter.addAction(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		registerReceiver(receiver, filter);
+	}
 
+	@Override
+	/**
+	 *  Inflate the menu; adds items to the action bar if it is present.
+	 */
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
 
@@ -131,13 +137,14 @@ public abstract class BaseActivity extends Activity {
 	// *******************************
 	// Broadcast Receiver Methods
 	// *******************************
-	protected void broadcastReceiverBluetoothDeviceDiscoveryDone(){
-		//Override and use if you want action on Bluetooth Device Discovery
+	protected void broadcastReceiverBluetoothDeviceDiscoveryDone() {
+		// Override and use if you want action on Bluetooth Device Discovery
 	}
-	protected void broadcastReceiverBluetoothDeviceFound(Intent intent){
-		//Override and use if you want action on bluetooth device found
+
+	protected void broadcastReceiverBluetoothDeviceFound(Intent intent) {
+		// Override and use if you want action on bluetooth device found
 	}
-	
+
 	// *******************************
 	// Additional Methods
 	// *******************************
@@ -149,4 +156,5 @@ public abstract class BaseActivity extends Activity {
 		super.onDestroy();
 		unregisterReceiver(receiver);
 	}
+
 }
