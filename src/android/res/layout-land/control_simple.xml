@@ -13,14 +13,22 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/metal_texture3"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            layout="@layout/directional_pad" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical" >
 
             <ImageButton
                 android:id="@+id/ImageButton01"
@@ -56,11 +64,6 @@
                 android:src="@drawable/arrow_button_metal_silver_blanktransie" />
 
         </LinearLayout>
-
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/directional_pad" />
 
     </LinearLayout>
 

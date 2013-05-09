@@ -18,8 +18,7 @@ import edu.sou.rover2013.utility.BluetoothService;
  * This activity allows users to control a connected rover in a manner similar
  * to RC cars.
  */
-// TODO Show rover telemetry on screen, text and graphics
-// TODO Improve user interface... Replace buttons with large images
+// TODO Show rover telemetry graphics
 // TODO Add buttons for controlling the laser
 // TODO Don't allow more than one button press at a time.
 public class ControlSimpleActivity extends BaseActivity {
@@ -69,12 +68,12 @@ public class ControlSimpleActivity extends BaseActivity {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					forward();
 					buttonForward
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
 					buttonForward
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_up);
+							.setImageResource(R.drawable.arrow_button_metal_silver_uptransie);
 					return true;
 				}
 				return true;
@@ -86,12 +85,12 @@ public class ControlSimpleActivity extends BaseActivity {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					reverse();
 					buttonReverse
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
 					buttonReverse
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_down);
+							.setImageResource(R.drawable.arrow_button_metal_silver_downtransie);
 					return true;
 				}
 				return true;
@@ -103,12 +102,12 @@ public class ControlSimpleActivity extends BaseActivity {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					left();
 					buttonLeft
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
 					buttonLeft
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_left);
+							.setImageResource(R.drawable.arrow_button_metal_silver_lefttransie);
 					return true;
 				}
 				return true;
@@ -120,12 +119,12 @@ public class ControlSimpleActivity extends BaseActivity {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					right();
 					buttonRight
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_blank);
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
 					buttonRight
-							.setBackgroundResource(R.drawable.arrow_button_metal_green_right);
+							.setImageResource(R.drawable.arrow_button_metal_silver_righttransie);
 					return true;
 				}
 				return true;
