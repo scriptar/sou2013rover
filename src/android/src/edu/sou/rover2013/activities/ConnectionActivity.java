@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.utility.*;
@@ -162,15 +161,6 @@ public class ConnectionActivity extends BaseActivity {
 				toast("Bluetooth Not Enabled");
 			}
 		}
-	}
-
-	/**
-	 * Throws a short toast notification
-	 */
-	private void toast(String string_arg) {
-		Toast toast = Toast.makeText(getApplicationContext(), string_arg,
-				Toast.LENGTH_SHORT);
-		toast.show();
 	}
 
 	// *******************************

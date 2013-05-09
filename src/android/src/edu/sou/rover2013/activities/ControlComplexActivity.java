@@ -4,6 +4,7 @@ import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
 import edu.sou.rover2013.utility.BluetoothService;
+import edu.sou.rover2013.utility.TextStorage;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * This activity handles the construction of rogo scripts.
@@ -371,18 +371,26 @@ public class ControlComplexActivity extends BaseActivity {
 		});
 		buttonSave.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				if (!TextStorage.isStorageWritable()) {
+					toast("Application Storage Not Writeable");
+					return;
+				}
+				toast("Save Code Goes Here");
 			}
 		});
 		buttonLoad.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				if (!TextStorage.isStorageReadable()) {
+					toast("Application Storage Not Readable");
+					return;
+				}
+				toast("Load Code Goes Here");
 			}
 		});
 		buttonClear.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				scriptClear();
-				Toast toast = Toast.makeText(getApplicationContext(),
-						"Script Cleared", Toast.LENGTH_SHORT);
-				toast.show();
+				toast("Script Cleared");
 			}
 		});
 		buttonSend.setOnClickListener(new View.OnClickListener() {
@@ -405,8 +413,7 @@ public class ControlComplexActivity extends BaseActivity {
 		rover = BluetoothService.getConnection().getRover();
 		// throw warning if not connected
 		if (!BluetoothService.getConnection().isConnected()) {
-			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
-					Toast.LENGTH_LONG).show();
+			toast("Warning: Not Connected");
 		}
 		handler.post(updateTextRunnable);
 
@@ -430,28 +437,15 @@ public class ControlComplexActivity extends BaseActivity {
 		Boolean transmitSuccess = rover.sendDataToRover(scriptTextBox.getText()
 				.toString());
 		if (transmitSuccess) {
-			Toast.makeText(getApplicationContext(), "Script Transmitted",
-					Toast.LENGTH_SHORT).show();
+			toast("Script Transmitted");
 		} else {
-			Toast.makeText(getApplicationContext(), "Script Not Transmitted",
-					Toast.LENGTH_SHORT).show();
+			toast("Script Not Transmitted");
 		}
 	}
 
 	// *******************************
 	// Additional Methods
 	// *******************************
-
-	/**
-	 * Appends the passed in string to the script text box.
-	 * 
-	 * @param string
-	 *            Value to append
-	 */
-	@SuppressWarnings("unused")
-	private void scriptAppend(String string) {
-		scriptTextBox.getEditableText().append(string);
-	}
 
 	/**
 	 * Inserts the passed-in string to the script at the current cursor

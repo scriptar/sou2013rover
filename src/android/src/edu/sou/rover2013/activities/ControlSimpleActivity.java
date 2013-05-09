@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
@@ -138,8 +137,7 @@ public class ControlSimpleActivity extends BaseActivity {
 		rover = BluetoothService.getConnection().getRover();
 		// throw warning if not connected
 		if (!BluetoothService.getConnection().isConnected()) {
-			Toast.makeText(getApplicationContext(), "Warning: Not Connected",
-					Toast.LENGTH_LONG).show();
+			toast("Warning: Not Connected");
 		}
 		handler.post(updateTextRunnable);
 

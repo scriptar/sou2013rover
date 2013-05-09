@@ -17,6 +17,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * Pulling common activity code for our application into a parent abstract
@@ -155,6 +156,16 @@ public abstract class BaseActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(receiver);
+	}
+	
+	/**
+	 * Throws a short toast message onto the users screen
+	 * @param The message to display
+	 */
+	protected void toast(String string_arg) {
+		Toast toast = Toast.makeText(getApplicationContext(), string_arg,
+				Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 }
