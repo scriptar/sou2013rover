@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <!-- Include data Bar -->
-
     <include layout="@layout/data_bar" />
 
     <LinearLayout
@@ -33,7 +31,6 @@
             android:selectAllOnFocus="false"
             android:text="&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&quot;"
             android:typeface="monospace" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -83,7 +80,7 @@
 
                 <Button
                     android:id="@+id/complex_flow"
-                    style="?android:attr/buttonStyleSmall"
+                    style="?android:attr/buttonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -95,6 +92,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/complex_pause"
@@ -121,15 +123,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Arithmetic..."
-                    android:textSize="12sp" />
-
-                <Button
-                    android:id="@+id/button_update_rover_output"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Update Rover Output"
                     android:textSize="12sp" />
             </LinearLayout>
 
