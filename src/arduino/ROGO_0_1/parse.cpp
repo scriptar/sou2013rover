@@ -21,13 +21,15 @@ TEXTNODE *serialReadCommands(void)
 		for (i = 0; i < MAXSTR; i++)
 			linebuf[i] = '\0';
 		i = 0;
-		delay(100);
+		delay(10);
 		while (Serial.available() > 0)
 		{
-			linebuf[i++] = Serial.read();
+			if (Serial.peek() == '\7')
+				return list;
+  			linebuf[i++] = Serial.read();
 			if (i == MAXSTR)
 				break;
-			delay(30);
+			delay(10);
 		}
 		if (!i)
 			break;

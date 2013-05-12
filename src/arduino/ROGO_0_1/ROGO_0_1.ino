@@ -62,19 +62,28 @@ void loop()
     d = 0;
   }
   //delay(250);
-  if(Serial.available()){
-        
-	TEXTNODE *list = serialReadCommands();
-	TNODE *tree = makeFlatTree(list);
-	tree = makeParseTree(tree);
-	printTree(tree, 0);
-	Serial.print("\nExecuting Tree...\n");
-        LZFire(0);
-	execTree(tree);
-	destroyTree(tree);
-	//temporary hack: dump everything in the buffer...
-	while (Serial.available() > 0)
-		Serial.read();
+  if(Serial.available())
+  {
+    TEXTNODE *list = serialReadCommands();
+    if (Serial.peek() == '\7')
+    {
+      destroyTextList(list);
+      Serial.print("\nDumping Tree...\n");
+    }
+    else
+    {
+      TNODE *tree = makeFlatTree(list);
+      tree = makeParseTree(tree);
+      printTree(tree, 0);
+      Serial.print("\nExecuting Tree...\n");
+      LZFire(0);
+      execTree(tree);
+      destroyTree(tree);
+      //temporary hack: dump everything in the buffer...
+    }
+    while (Serial.available() > 0)
+      if (Serial.read() == '\7')
+        break;
   }
 }
 
