@@ -168,7 +168,7 @@ public class ControlSimpleActivity extends BaseActivity {
 
 	protected void stop() {
 		Log.v("test", "Stop");
-		rover.sendDataToRover("fd 0");
+		rover.sendDataToRover(String.valueOf('\7'));
 	}
 	
 	Runnable updateTextRunnable = new Runnable() {
