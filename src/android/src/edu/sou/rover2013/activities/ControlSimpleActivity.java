@@ -148,21 +148,25 @@ public class ControlSimpleActivity extends BaseActivity {
 	// *******************************
 	private void forward() {
 		Log.v("test", "Forward");
+		rover.sendDataToRover(String.valueOf('\7'));
 		rover.sendDataToRover("fd 999");
 	}
 
 	private void reverse() {
 		Log.v("test", "Reverse");
+		rover.sendDataToRover(String.valueOf('\7'));
 		rover.sendDataToRover("bk 999");
 	}
 
 	private void left() {
 		Log.v("test", "Left");
+		rover.sendDataToRover(String.valueOf('\7'));
 		rover.sendDataToRover("lt 999");
 	}
 
 	private void right() {
 		Log.v("test", "Right");
+		rover.sendDataToRover(String.valueOf('\7'));
 		rover.sendDataToRover("rt 999");
 	}
 
