@@ -1,5 +1,6 @@
 package edu.sou.rover2013.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -7,9 +8,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
+import edu.sou.rover2013.models.Rover;
+import edu.sou.rover2013.utility.*;
 
+@SuppressLint("SetJavaScriptEnabled")
 public class ControlWebActivity extends BaseActivity {
 
+	private Rover rover;
+
+	
 	// UI Elements
 	private static WebView webView;
 	private static Button button1;
@@ -77,8 +84,20 @@ public class ControlWebActivity extends BaseActivity {
 		// *******************************
 		// Other Setup
 		// *******************************
+		
+		
+
+		// *******************************
+		// Activity Setup
+		// *******************************
+		// get rover model
+		rover = BluetoothService.getConnection().getRover();
+		// throw warning if not connected
+		if (!BluetoothService.getConnection().isConnected()) {
+			toast("Warning: Not Connected");
+		}
 		webView.getSettings().setJavaScriptEnabled(true);
-	
+		webView.addJavascriptInterface(new WebAppInterface(this, rover), "Android");
 	}
 
 }
