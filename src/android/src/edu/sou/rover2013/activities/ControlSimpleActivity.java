@@ -173,10 +173,6 @@ public class ControlSimpleActivity extends BaseActivity {
 	protected void stop() {
 		Log.v("test", "Stop");
 		rover.sendDataToRover(String.valueOf('\7'));
-		buttonForward.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
-		buttonReverse.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
-		buttonLeft.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
-		buttonRight.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 	}
 	
 	Runnable updateTextRunnable = new Runnable() {
