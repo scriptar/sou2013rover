@@ -61,7 +61,9 @@ public class ControlWebActivity extends BaseActivity {
 
 		// Simplest usage: note that an exception will NOT be thrown
 		// if there is an error loading this page (see below).
-		webView.loadUrl("http://webpages.sou.edu/~rogo/");
+		webView.loadUrl("http://webpages.sou.edu/~rogo/droid/");
+		//Future Site:
+		//webView.loadUrl("http://rogo.sou.edu/droid/");
 
 		// OR, you can also load from an HTML string:
 		// String summary =
