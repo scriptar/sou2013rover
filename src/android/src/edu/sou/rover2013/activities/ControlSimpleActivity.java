@@ -148,31 +148,35 @@ public class ControlSimpleActivity extends BaseActivity {
 	// *******************************
 	private void forward() {
 		Log.v("test", "Forward");
-		rover.sendDataToRover(String.valueOf('\7'));
+		stop();
 		rover.sendDataToRover("fd 999");
 	}
 
 	private void reverse() {
 		Log.v("test", "Reverse");
-		rover.sendDataToRover(String.valueOf('\7'));
+		stop();
 		rover.sendDataToRover("bk 999");
 	}
 
 	private void left() {
 		Log.v("test", "Left");
-		rover.sendDataToRover(String.valueOf('\7'));
+		stop();
 		rover.sendDataToRover("lt 999");
 	}
 
 	private void right() {
 		Log.v("test", "Right");
-		rover.sendDataToRover(String.valueOf('\7'));
+		stop();
 		rover.sendDataToRover("rt 999");
 	}
 
 	protected void stop() {
 		Log.v("test", "Stop");
 		rover.sendDataToRover(String.valueOf('\7'));
+		buttonForward.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
+		buttonReverse.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
+		buttonLeft.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
+		buttonRight.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 	}
 	
 	Runnable updateTextRunnable = new Runnable() {
