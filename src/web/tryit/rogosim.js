@@ -1,7 +1,22 @@
 var ROGO = {};
 
+if (typeof console !== "object") {
+	var console = function () {
+		var msg = [];
+		return {
+			log: function () {
+				var i;
+				for (i = 0; i < arguments.length; i += 1) {
+					msg.push(String(arguments[i]));
+				}
+			}
+		};
+	};
+}
+
 /* constants */
 ROGO.c = {
+	NUM_ROGOVARS: 10,
 	priority: {
 		STOP_PRIORITY: 0,
 		CONTROL_PRIORITY: 1,
@@ -367,17 +382,134 @@ ROGO.parser = function (spec) {
 /* executor */
 ROGO.executor = function (spec) {
 	var p = ROGO.primitives,
+	rogo_vars = [],
 	execTree = function (current) {
-		
+		while (current) {
+			switch (current.ntype) {
+				case ROGO.c.nodeType.NT_OP:
+				case ROGO.c.nodeType.NT_CONTROL:
+					if (current.primIdx != -1)
+						ROGO.primitives[current.primkey].func(current);
+					else
+						console.log("OP/CMD?");
+					break;
+				case ROGO.c.nodeType.NT_NUM:
+					console.log(current.nval);
+					break;
+				case ROGO.c.nodeType.NT_VAR:
+					console.log("V[" + current.varIdx + "]");
+					break;
+				case ROGO.c.nodeType.NT_LIST_START:
+					execTree(current.left);
+					if (current.left != null) {
+						current.nval = current.left.nval;
+					}
+					break;
+				case ROGO.c.nodeType.NT_LIST_END:
+					console.log("]");
+					break;
+				default:
+					console.log("???");
+					break;
+			}
+			current = current.next;
+		}
+	},
+	loadVar = function (current) {
+		if (current.varidx != -1 && current.varidx <= ROGO.c.NUM_ROGOVARS) {
+			current.nval = rogo_vars[current.varidx];
+			console.log("Loading Variable #" + current.varidx + ". Value: " + current.nval);
+		}
+		return current;
 	},
 	execNode = function (current, fcn) {
-		
+		var nval = 0, nleft = 0, nright = 0;
+		console.log(fcn + " called");
+		//left?
+		if (current.left != null) {
+			if (current.left.primkey.length > 0) {
+				ROGO.primitives[current.left.primkey].func(current.left);
+			}
+			loadVar(current.left);
+			nleft = current.left.nval;
+		}
+		//right?
+		if (current.right != null) {
+			if (current.right.primkey.length > 0) {
+				ROGO.primitives[current.right.primkey].func(current.right);
+			}
+			loadVar(current.right);
+			nright = current.right.nval;
+		}
+		//do it
+		switch(fcn) {
+			case 'sub': //subtract
+				nval = nleft - nright;
+				break;
+			case 'add': //add
+				nval = nleft + nright;
+				break;
+			case 'mul': //multiply
+				nval = nleft * nright;
+				break;
+			case 'div': //divide
+				if (nright != 0)
+					nval = nleft / nright;
+				break;
+			case 'gt': //greater
+				nval = (nleft > nright);
+				break; 
+			case 'lt': //less
+				nval = (nleft < nright);
+				break; 
+			case 'assign': //assign
+				nval = nright;
+				if (current.left.varidx != -1 && current.left.varidx <= ROGO.c.NUM_ROGOVARS)
+					rogo_vars[current.left.varidx] = nval;
+				break;
+			case 'eq': //eq
+				nval = (nleft == nright);
+				break;
+			case 'neq': //neq
+				nval = (nleft != nright);
+				break;
+			case 'lte': //lte
+				nval = (nleft <= nright);
+				break;
+			case 'gte': //gte
+				nval = (nleft >= nright);
+				break;
+			case 'and': //and
+				nval = (nleft && nright);
+				break;
+			case 'or': //or
+				nval = (nleft || nright);
+				break;
+			case 'not': //not
+				nval = !nleft;
+				break;
+			default:
+				break;
+		}
+		console.log(fcn + " " + String(nleft) + ", " + String(nright) + " => " + nval);
+		current.nval = nval;
+		return current;
 	},
-	evalNodeValue = function () {
-		
+	
+	evalNodeValue = function (current) {
+		var node;
+		if (current.ntype == ROGO.c.nodeType.NT_LIST_START && current.left != null)
+			current = evalNodeValue(current.left);
+		if (current.primkey.length > 0)
+			node = ROGO.primitives[current.primkey].func(current);
+		else if (current.varidx != -1)
+			node = loadVar(current);
+		else
+			node = current;
+		return node;
 	},
 	evalNodeValueInt = function (current) {
-		
+		return parseInt(current.nval, 10);
 	};
 	/* primitive functions */
 	/* operators */
@@ -392,47 +524,60 @@ ROGO.executor = function (spec) {
 	p["=="].func = function (current) { return execNode(current, "eq") };
 	p[">"].func = function (current) { return execNode(current, "gt") };
 	p[">="].func = function (current) { return execNode(current, "gte") };
-	p["and"].func = function (current) { return execNode(current, "and") };
-	p["not"].func = function (current) { return execNode(current, "not") };
-	p["or"].func = function (current) { return execNode(current, "or") };
+	p["AND"].func = function (current) { return execNode(current, "and") };
+	p["NOT"].func = function (current) { return execNode(current, "not") };
+	p["OR"].func = function (current) { return execNode(current, "or") };
 	/* control statements */
-	p["if"].func = function (current) {
+	p["IF"].func = function (current) {
 		if (evalNodeValueInt(evalNodeValue(current.left))) {
 			//test successful
+			console.log("Test successful.");
 			execTree(current.right);
+			
 		} else {
 			//test failed
+			console.log("Test failed.");
 		}
 	};
-	p["repeat"].func = function (current) { 
+	p["REPEAT"].func = function (current) { 
 		var i = evalNodeValueInt(evalNodeValue(current.left));
+		console.log("for(1.." + i + ") {");
 		for (; i > 0; i--) {
 			execTree(current.right);
 		}
+		console.log("}");
 	};
 	/* movement commands */
-	p["forward"].func = p["fd"].func = function (current) {
+	p["FORWARD"].func = p["FD"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
+		console.log("FD " + i);
 		return current;
 	};
-	p["back"].func = p["bk"].func = function (current) {
+	p["BACK"].func = p["BK"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
+		console.log("BK " + i);
 		return current;
 	};
-	p["left"].func = p["lt"].func = function (current) {
+	p["LEFT"].func = p["LT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
+		console.log("LT " + i);
 		return current;
 	};
-	p["right"].func = p["rt"].func = function (current) {
+	p["RIGHT"].func = p["RT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
+		console.log("RT " + i);
 		return current;
+	};
+	return {
+		exec: function (tree) {
+			execTree(tree);
+		}
 	};
 };
 
 /* main */
 ROGO.interpreter = function (spec) {
 	var source,
-		variables = [],
 		tree = {};
 	return {
 		load: function (args) {

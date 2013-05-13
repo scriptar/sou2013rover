@@ -20,11 +20,12 @@ body {
 <script type="text/javascript">
 var tree, parser = ROGO.parser();
 parseCmds = function (f) {
-	parser.source = "V0 = 10 REPEAT 100 [FD V0 RT 90]";
+	parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
 	if (f.source.value.length == 0)
 		f.source.value = parser.source;
 	tree = parser.parse(f.source.value);
 	f.tree.value = parser.printTree(tree);
+	ROGO.executor().exec(tree);
 	parser.destroyTree(tree);
 	return false;
 };
