@@ -9,7 +9,7 @@ body {
 </style>
 </head>
 <body>
-<form onsubmit="return parseCmds(this);">
+<form method="post" onsubmit="return parseCmds(this);">
   <div>Enter ROGO Commands:</div>
   <textarea name="source" rows="5" cols="50"></textarea>
   <div><input type="submit" value="Parse" /> <input type="reset" value="Reset" /></div>
@@ -23,10 +23,19 @@ parseCmds = function (f) {
 	parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
 	if (f.source.value.length == 0)
 		f.source.value = parser.source;
-	tree = parser.parse(f.source.value);
-	f.tree.value = parser.printTree(tree);
-	ROGO.executor().exec(tree);
-	parser.destroyTree(tree);
+	try {
+		tree = parser.parse(f.source.value);
+		f.tree.value = parser.printTree(tree);
+		ROGO.executor().exec(tree);
+		parser.destroyTree(tree);
+		if (typeof Android === "object") {
+			//Android.showAlert("This is a \"Web Mode\" message...");
+			//Android.sendSourceToAdvancedMode(parser.source);
+			Android.sendSourceToRover(parser.source);
+		}
+	catch (err) {
+		alert("Android Error:\n" + err.message);
+	}
 	return false;
 };
 </script>
