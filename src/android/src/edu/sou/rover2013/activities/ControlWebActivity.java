@@ -74,6 +74,11 @@ public class ControlWebActivity extends BaseActivity {
 		// See the JavaDocs for loadData() and loadDataWithBaseURL() for more
 		// info.
 
+		// *******************************
+		// Other Setup
+		// *******************************
+		webView.getSettings().setJavaScriptEnabled(true);
+	
 	}
 
 }
