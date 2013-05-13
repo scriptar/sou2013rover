@@ -22,7 +22,7 @@
             android:layout_marginTop="102dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/rogo_logo_4" />
+            android:src="@drawable/rogo_logo" />
 
     </FrameLayout>
 
