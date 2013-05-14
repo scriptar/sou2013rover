@@ -513,20 +513,20 @@ ROGO.executor = function (spec) {
 	};
 	/* primitive functions */
 	/* operators */
-	p["-"].func = function (current) { return execNode(current, "sub") };
-	p["+"].func = function (current) { return execNode(current, "add") };
-	p["*"].func = function (current) { return execNode(current, "mul") };
-	p["/"].func = function (current) { return execNode(current, "div") };
-	p["<"].func = function (current) { return execNode(current, "lt") };
-	p["<="].func = function (current) { return execNode(current, "lte") };
-	p["<>"].func = function (current) { return execNode(current, "neq") };
-	p["="].func = function (current) { return execNode(current, "assign") };
-	p["=="].func = function (current) { return execNode(current, "eq") };
-	p[">"].func = function (current) { return execNode(current, "gt") };
-	p[">="].func = function (current) { return execNode(current, "gte") };
-	p["AND"].func = function (current) { return execNode(current, "and") };
-	p["NOT"].func = function (current) { return execNode(current, "not") };
-	p["OR"].func = function (current) { return execNode(current, "or") };
+	p["-"].func = function (current) { return execNode(current, "sub"); };
+	p["+"].func = function (current) { return execNode(current, "add"); };
+	p["*"].func = function (current) { return execNode(current, "mul"); };
+	p["/"].func = function (current) { return execNode(current, "div"); };
+	p["<"].func = function (current) { return execNode(current, "lt"); };
+	p["<="].func = function (current) { return execNode(current, "lte"); };
+	p["<>"].func = function (current) { return execNode(current, "neq"); };
+	p["="].func = function (current) { return execNode(current, "assign"); };
+	p["=="].func = function (current) { return execNode(current, "eq"); };
+	p[">"].func = function (current) { return execNode(current, "gt"); };
+	p[">="].func = function (current) { return execNode(current, "gte"); };
+	p["AND"].func = function (current) { return execNode(current, "and"); };
+	p["NOT"].func = function (current) { return execNode(current, "not"); };
+	p["OR"].func = function (current) { return execNode(current, "or"); };
 	/* control statements */
 	p["IF"].func = function (current) {
 		if (evalNodeValueInt(evalNodeValue(current.left))) {
@@ -568,6 +568,8 @@ ROGO.executor = function (spec) {
 		console.log("RT " + i);
 		return current;
 	};
+	p["LZAIM"].func = function (current) { return current; };
+	p["LZFIRE"].func = function (current) { return current; };
 	return {
 		exec: function (tree) {
 			execTree(tree);

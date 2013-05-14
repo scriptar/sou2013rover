@@ -1,43 +1,230 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title></title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=us-ascii" />
+<title>ROGO Web Mode for Android</title>
 <style type="text/css">
+/*<![CDATA[*/
 body {
 	font-family: 'Courier New', Courier, monospace;
 }
+#cmds1 {
+	width: 190px;
+	float: left;
+	margin-right: 40px;
+}
+#cmds2 {
+	float: left;
+	width: 200px;
+}
+#source, #tree {
+	width: 450px;
+}
+#cmds1 fieldset, #cmds2 fieldset {
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+#cmds1 fieldset legend, #cmds2 fieldset legend {
+	font-weight: bold;
+}
+input, select {
+	font-size: 15pt;
+}
+#cmds1 input {
+	width: 90px;
+}
+#programflow {
+}
+#direction {
+}
+#laser {
+}
+#numpad {
+}
+#numpad input {
+	width: 40px;
+	height: 40px;
+	font-size: 15pt;
+}
+#numpad input#numPlus {
+	height: 80px;
+}
+#numpad input#space {
+	height: 200px;
+}
+#numpad input#numE {
+	height: 80px;
+	font-size: 18pt;
+}
+#numpad input#num0 {
+	width: 80px;
+}
+.clear {
+	clear: both;
+}
+/*]]>*/
 </style>
 </head>
 <body>
 <form method="post" onsubmit="return parseCmds(this);">
-  <div>Enter ROGO Commands:</div>
-  <textarea name="source" rows="5" cols="50"></textarea>
-  <div><input type="submit" value="Parse" /> <input type="reset" value="Reset" /></div>
-  <textarea name="tree" rows="20" cols="50"></textarea>
+  <h3>Enter ROGO Commands:</h3>
+  <div id="cmds1">
+    <fieldset id="direction">
+      <legend>Direction</legend>
+      <div>
+        <input type="button" value="Forward" onclick="addCmd(this.form, 'FD');" />
+      </div>
+      <div>
+        <input type="button" value="Left" onclick="addCmd(this.form, 'LT');" />
+        <input type="button" value="Right" onclick="addCmd(this.form, 'RT');" />
+      </div>
+      <div>
+        <input type="button" value="Back" onclick="addCmd(this.form, 'BK');" />
+      </div>
+    </fieldset>
+    <fieldset id="programflow">
+      <legend>Program Flow</legend>
+      <div>
+        <input type="button" value="Repeat" onclick="addCmd(this.form, 'REPEAT');" />
+        <input type="button" value="If" onclick="addCmd(this.form, 'IF');" />
+      </div>
+      <div>
+        <input type="button" value="[" onclick="addCmd(this.form, '[');" />
+        <input type="button" value="]" onclick="addCmd(this.form, ']');" />
+      </div>
+    </fieldset>
+    <fieldset id="test">
+      <legend>Test</legend>
+      <div>
+        <input type="button" value="&lt; (LT)" onclick="addCmd(this.form, '&lt;');" />
+		<input type="button" value="&gt; (GT)" onclick="addCmd(this.form, '&gt;');" />
+      </div>
+	  <div>
+        <input type="button" value="&lt;= (LTE)" onclick="addCmd(this.form, '&lt;=');" />
+		<input type="button" value="&gt;= (GTE)" onclick="addCmd(this.form, '&gt;=');" />
+      </div>
+	  <div>
+        <input type="button" value="== (EQ)" onclick="addCmd(this.form, '==');" />
+		<input type="button" value="&lt;&gt; (NEQ)" onclick="addCmd(this.form, '&lt;&gt;');" />
+      </div>
+	  <div>
+        <input type="button" value="AND" onclick="addCmd(this.form, 'AND');" />
+		<input type="button" value="OR" onclick="addCmd(this.form, 'OR');" />
+      </div>
+      <div>
+        <input type="button" value="NOT" onclick="addCmd(this.form, 'NOT');" />
+      </div>
+    </fieldset>
+  </div>
+  <div id="cmds2">
+    <fieldset id="numpad">
+      <legend>Key Pad</legend>
+      <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td><input type="button" value="V" onclick="addCmd(this.form, 'V');" /></td>
+          <td><input type="button" value="/" onclick="addCmd(this.form, '/');" /></td>
+          <td><input type="button" value="*" onclick="addCmd(this.form, '*');" /></td>
+          <td><input type="button" value="-" onclick="addCmd(this.form, '-');" /></td>
+		  <td rowspan="5"><input id="space" type="button" value=" " onclick="addCmd(this.form, '');" /></td>
+        </tr>
+        <tr>
+          <td><input type="button" value="7" onclick="addCmd(this.form, '7');" /></td>
+          <td><input type="button" value="8" onclick="addCmd(this.form, '8');" /></td>
+          <td><input type="button" value="9" onclick="addCmd(this.form, '9');" /></td>
+          <td rowspan="2"><input id="numPlus" type="button" value="+" onclick="addCmd(this.form, '+');" /></td>
+        </tr>
+        <tr>
+          <td><input type="button" value="4" onclick="addCmd(this.form, '4');" /></td>
+          <td><input type="button" value="5" onclick="addCmd(this.form, '5');" /></td>
+          <td><input type="button" value="6" onclick="addCmd(this.form, '6');" /></td>
+        </tr>
+        <tr>
+          <td><input type="button" value="1" onclick="addCmd(this.form, '1');" /></td>
+          <td><input type="button" value="2" onclick="addCmd(this.form, '2');" /></td>
+          <td><input type="button" value="3" onclick="addCmd(this.form, '3');" /></td>
+          <td rowspan="2"><input id="numE" type="button" value="&crarr;" onclick="addCmd(this.form, '\n');" /></td>
+        </tr>
+        <tr>
+          <td colspan="2"><input id="num0" type="button" value="0" onclick="addCmd(this.form, '0');" /></td>
+          <td><input type="button" value="." onclick="addCmd(this.form, '.');" /></td>
+        </tr>
+      </table>
+    </fieldset>
+    <fieldset>
+      <legend>Variables</legend>
+      <div>
+        <select name="vars" onchange="addCmd(this.form, this[this.selectedIndex].value);this.selectedIndex = 0;">
+          <option value="" selected="selected">Select Variable</option>
+          <option value="V0">Variable 0</option>
+          <option value="V1">Variable 1</option>
+          <option value="V2">Variable 2</option>
+          <option value="V3">Variable 3</option>
+          <option value="V4">Variable 4</option>
+          <option value="V5">Variable 5</option>
+          <option value="V6">Variable 6</option>
+          <option value="V7">Variable 7</option>
+          <option value="V8">Variable 8</option>
+          <option value="V9">Variable 9</option>
+        </select>
+      </div>
+	  <div><input type="button" value="Assign" onclick="addCmd(this.form, '=');" /></div>
+    </fieldset>
+	<fieldset id="laser">
+      <legend>Laser</legend>
+      <div>
+        <input type="button" value="Aim" onclick="addCmd(this.form, 'LZAIM');" />
+        <input type="button" value="Fire" onclick="addCmd(this.form, 'LZFIRE');" />
+      </div>
+    </fieldset>
+  </div>
+  <div class="clear"></div>
+  <textarea id="source" name="source" rows="5" cols="40"></textarea>
+  <div>
+    <input type="submit" value="Run ROGO Program" />
+    <input type="reset" value="Reset" onclick="clearCode();" />
+  </div>
+  <textarea id="tree" name="tree" rows="20" cols="40"></textarea>
 </form>
-
-<script type="text/javascript" src="../_assets/js/rogosim.js"></script>
+<script type="text/javascript" src="rogosim.js"></script>
 <script type="text/javascript">
-var tree, parser = ROGO.parser();
-parseCmds = function (f) {
-	parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
-	if (f.source.value.length == 0)
-		f.source.value = parser.source;
-	try {
-		tree = parser.parse(f.source.value);
-		f.tree.value = parser.printTree(tree);
-		ROGO.executor().exec(tree);
-		parser.destroyTree(tree);
-		if (typeof Android === "object") {
-			//Android.showAlert("This is a \"Web Mode\" message...");
-			//Android.sendSourceToAdvancedMode(parser.source);
-			Android.sendSourceToRover(parser.source);
-		}
-	catch (err) {
-		alert("Android Error:\n" + err.message);
-	}
-	return false;
+//<![CDATA[
+var code = [], tree, parser = ROGO.parser();
+clearCode = function () {
+	code = [];
 };
+addCmd = function (f, cmd) {
+	var last = "";
+	if (code.length > 0)
+		last = code[code.length - 1];
+	if (/[\-0-9\.]/.test(cmd) && (/^(\-){0,1}(\d+)?(\.){0,1}(\d+)?$/.test(last) || last == "V")) {
+		code[code.length - 1] += cmd;
+	} else {
+		code.push(cmd);
+	}
+    f.source.value = code.join(" ").replace(/\n /, "\n");
+};
+parseCmds = function (f) {
+    parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
+    if (f.source.value.length == 0)
+        f.source.value = parser.source;
+    try {
+        tree = parser.parse(f.source.value);
+        f.tree.value = parser.printTree(tree);
+        ROGO.executor().exec(tree);
+        parser.destroyTree(tree);
+        if (typeof Android === "object") {
+            //Android.showAlert("This is a \"Web Mode\" message...");
+            //Android.sendSourceToAdvancedMode(parser.source);
+            Android.sendSourceToRover(parser.source);
+        }
+    } catch (err) {
+        alert("Android Error:\n" + err.message);
+    }
+    return false;
+};
+//]]>
 </script>
 </body>
 </html>
