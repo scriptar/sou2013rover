@@ -12,14 +12,14 @@ import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
 import edu.sou.rover2013.utility.BluetoothService;
+import edu.sou.rover2013.widgets.DigitalTextBox;
 
 /**
  * This activity allows users to control a connected rover in a manner similar
  * to RC cars.
  */
 // TODO Show rover telemetry graphics
-// TODO Add buttons for controlling the laser
-// TODO Don't allow more than one button press at a time.
+// TODO Store/get Laser Angle from Rover Model
 public class ControlSimpleActivity extends BaseActivity {
 
 	// *******************************
@@ -27,8 +27,8 @@ public class ControlSimpleActivity extends BaseActivity {
 	// *******************************
 	// Rover Model
 	private Rover rover;
-	protected static final long TIME_DELAY = 50;
-	Handler handler = new Handler();
+	private static final long TIME_DELAY = 50;
+	private Handler handler = new Handler();
 
 	// *******************************
 	// UI Element Variables
@@ -37,10 +37,14 @@ public class ControlSimpleActivity extends BaseActivity {
 	private ImageButton buttonReverse;
 	private ImageButton buttonLeft;
 	private ImageButton buttonRight;
+	private ImageButton buttonLaserFire;
+	private ImageButton buttonLaserUp;
+	private ImageButton buttonLaserDown;
 	private static TextView pingForward;
 	private static TextView leftWheel;
 	private static TextView rightWheel;
-	
+	private static DigitalTextBox textLaserAngle;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,10 +56,14 @@ public class ControlSimpleActivity extends BaseActivity {
 		buttonForward = (ImageButton) findViewById(R.id.button_forward);
 		buttonReverse = (ImageButton) findViewById(R.id.button_reverse);
 		buttonLeft = (ImageButton) findViewById(R.id.button_left);
+		buttonLaserFire = (ImageButton) findViewById(R.id.button_laserfire);
+		buttonLaserUp = (ImageButton) findViewById(R.id.button_laserup);
+		buttonLaserDown = (ImageButton) findViewById(R.id.button_laserdown);
 		buttonRight = (ImageButton) findViewById(R.id.button_right);
 		pingForward = (TextView) findViewById(R.id.text_forward_ping);
 		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
 		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
+		textLaserAngle = (DigitalTextBox) findViewById(R.id.text_laser_angle);
 
 		// *******************************
 		// Button Listeners
@@ -66,11 +74,14 @@ public class ControlSimpleActivity extends BaseActivity {
 
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					forward();
+					Log.v("test", "Forward");
+
 					buttonForward
 							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					Log.v("test", "Forward Stop");
 					buttonForward
 							.setImageResource(R.drawable.arrow_button_metal_silver_uptransie);
 					return true;
@@ -83,11 +94,13 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					reverse();
+					Log.v("test", "Reverse");
 					buttonReverse
 							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					Log.v("test", "Reverse Stop");
 					buttonReverse
 							.setImageResource(R.drawable.arrow_button_metal_silver_downtransie);
 					return true;
@@ -100,11 +113,13 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					left();
+					Log.v("test", "Left");
 					buttonLeft
 							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					Log.v("test", "Left Stop");
 					buttonLeft
 							.setImageResource(R.drawable.arrow_button_metal_silver_lefttransie);
 					return true;
@@ -117,13 +132,68 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					right();
+					Log.v("test", "Right");
 					buttonRight
 							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					stop();
+					Log.v("test", "Right Stop");
 					buttonRight
 							.setImageResource(R.drawable.arrow_button_metal_silver_righttransie);
+					return true;
+				}
+				return true;
+			}
+		});
+		buttonLaserFire.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					startFire();
+					Log.v("test", "Fire");
+					buttonLaserFire
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					stopFire();
+					Log.v("test", "Fire Stop");
+					buttonLaserFire
+							.setImageResource(R.drawable.arrow_button_metal_silver_lasertransie);
+					return true;
+				}
+				return true;
+			}
+		});
+		buttonLaserUp.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					laserUp();
+					Log.v("test", "Aim Up: "+(rover.getLaserAngle()));
+					buttonLaserUp
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					buttonLaserUp
+							.setImageResource(R.drawable.arrow_button_metal_silver_aimuptransie);
+					return true;
+				}
+				return true;
+			}
+		});
+		buttonLaserDown.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					laserDown();
+					Log.v("test", "Aim Down: "+(rover.getLaserAngle()));
+					buttonLaserDown
+							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					buttonLaserDown
+							.setImageResource(R.drawable.arrow_button_metal_silver_aimdowntransie);
 					return true;
 				}
 				return true;
@@ -139,51 +209,80 @@ public class ControlSimpleActivity extends BaseActivity {
 		if (!BluetoothService.getConnection().isConnected()) {
 			toast("Warning: Not Connected");
 		}
+		// Begin updating
 		handler.post(updateTextRunnable);
-
+		textLaserAngle.setText(String.valueOf(rover.getLaserAngle()));
 	}
 
 	// *******************************
 	// Button Functions
 	// *******************************
 	private void forward() {
-		Log.v("test", "Forward");
 		stop();
 		rover.sendDataToRover("fd 999");
 	}
 
 	private void reverse() {
-		Log.v("test", "Reverse");
 		stop();
 		rover.sendDataToRover("bk 999");
 	}
 
 	private void left() {
-		Log.v("test", "Left");
 		stop();
 		rover.sendDataToRover("lt 999");
 	}
 
 	private void right() {
-		Log.v("test", "Right");
 		stop();
 		rover.sendDataToRover("rt 999");
 	}
 
-	protected void stop() {
-		Log.v("test", "Stop");
+	private void stop() {
 		rover.sendDataToRover(String.valueOf('\7'));
 	}
+
+	private void startFire() {
+		stop();
+		rover.sendDataToRover("lzfire(1)");
+	}
+
+	private void stopFire() {
+		stop();
+		rover.sendDataToRover("lzfire(0)");
+	}
 	
+	private void laserUp() {
+		stop();
+		int laserAngle = rover.getLaserAngle();
+		laserAngle += 5;
+		if (laserAngle > 90){
+			laserAngle = 90;
+		}
+		rover.setLaserAngle(laserAngle);
+		textLaserAngle.setText(String.valueOf(laserAngle));
+		rover.sendDataToRover("lzaim("+laserAngle+")");
+	}
+
+	private void laserDown() {
+		stop();
+		int laserAngle = rover.getLaserAngle();
+		laserAngle -= 5;
+		if (laserAngle < 0){
+			laserAngle = 0;
+		}
+		rover.setLaserAngle(laserAngle);
+		textLaserAngle.setText(String.valueOf(laserAngle));
+		rover.sendDataToRover("lzaim("+laserAngle+")");
+	}
+
+	// GUI Updater
 	Runnable updateTextRunnable = new Runnable() {
 		public void run() {
-				pingForward.setText(String.valueOf(rover.getPingFront()));
-				leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
-				rightWheel
-						.setText(String.valueOf(rover.getInfaredFrontRight()));
-				handler.postDelayed(this, TIME_DELAY);
+			pingForward.setText(String.valueOf(rover.getPingFront()));
+			leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
+			rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
+			handler.postDelayed(this, TIME_DELAY);
 		}
 	};
 
-	
 }

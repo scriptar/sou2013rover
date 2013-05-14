@@ -25,6 +25,7 @@ public class Rover {
 	private int pingF;
 	private int irFR;
 	private int irFL;
+	private int laserAngle = 0;
 
 
 	/**
@@ -154,6 +155,14 @@ public class Rover {
 
 	public int getPingFront() {
 		return pingF;
+	}
+
+	public int getLaserAngle() {
+		return laserAngle ;
+	}
+
+	public void setLaserAngle(int laserAngleArg) {
+		laserAngle = laserAngleArg;
 	}
 	
 }

@@ -31,37 +31,46 @@
             android:orientation="vertical" >
 
             <ImageButton
-                android:id="@+id/ImageButton01"
+                android:id="@+id/button_laserfire"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerInside"
-                android:src="@drawable/arrow_button_metal_silver_blanktransie" />
+                android:src="@drawable/arrow_button_metal_silver_lasertransie" />
+
+            <edu.sou.rover2013.widgets.DigitalTextBox
+                android:id="@+id/text_laser_angle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="DigitalTextBox"
+                android:textSize="60sp" />
 
             <ImageButton
-                android:id="@+id/ImageButton02"
+                android:id="@+id/button_laserup"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerInside"
-                android:src="@drawable/arrow_button_metal_silver_blanktransie" />
+                android:src="@drawable/arrow_button_metal_silver_aimuptransie" />
 
             <ImageButton
-                android:id="@+id/ImageButton03"
+                android:id="@+id/button_laserdown"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerInside"
-                android:src="@drawable/arrow_button_metal_silver_blanktransie" />
+                android:src="@drawable/arrow_button_metal_silver_aimdowntransie" />
 
         </LinearLayout>
 
