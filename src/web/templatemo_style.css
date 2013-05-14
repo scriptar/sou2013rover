@@ -5,7 +5,7 @@ body{
 	color: #ddd;
 	font-size: 12px;
 	line-height: 1.6em; 
-	font-family: "Courier" sans-serif;
+	font-family: "Courier New", Courier, monospace;
 	background-color: #000;
 }
 
@@ -97,7 +97,6 @@ img { margin: 0; padding: 0; border: none }
 	height: 487px;
 	margin-right: 20px;
 }
-
 .section a.slider_nav_btn { position: absolute; top: 0; width: 50px; height: 46px; display: block; background-image: url(images/slider_nav_btn.jpg);  text-indent: -10000px }
 .section a.home_btn { right: 50px; background-position: 102px 0 }
 .section a.previous_btn { right: 100px; background-position: 0 0 }
