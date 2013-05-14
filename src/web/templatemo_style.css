@@ -97,7 +97,7 @@ img { margin: 0; padding: 0; border: none }
 	height: 487px;
 	margin-right: 20px;
 }
-.section a.slider_nav_btn { position: absolute; top: 0; width: 50px; height: 46px; display: block; background-image: url(images/slider_nav_btn.jpg);  text-indent: -10000px }
+.section a.slider_nav_btn { position: absolute; top: 0; width: 50px; height: 46px; display: block; background-image: url(_assets/images/slider_nav_btn.jpg);  text-indent: -10000px }
 .section a.home_btn { right: 50px; background-position: 102px 0 }
 .section a.previous_btn { right: 100px; background-position: 0 0 }
 .section a.next_btn { right: 0px; background-position: 50px 0 }
@@ -146,15 +146,15 @@ img { margin: 0; padding: 0; border: none }
 
 #gallery li.no_margin_right { margin-right: 0 }
 
-#contact_form { padding: 0; width: 330px }
+#request_form { padding: 0; width: 330px }
 
-#contact_form form { margin: 0px; padding: 0px; }
+#request_form form { margin: 0px; padding: 0px; }
 
-#contact_form form .input_field { width: 150px; padding: 5px; color: #CCC; border: 1px solid #666;  background: #222; margin-bottom: 10px; }
+#request_form form .input_field { width: 150px; padding: 5px; color: #CCC; border: 1px solid #666;  background: #222; margin-bottom: 10px; }
 
-#contact_form form label { display: block;font-size: 11px }
+#request_form form label { display: block;font-size: 11px }
 
-#contact_form form textarea { 
+#request_form form textarea { 
 	clear: both; 
 	width: 320px; height: 120px; 
 	padding: 5px; 
@@ -165,6 +165,6 @@ img { margin: 0; padding: 0; border: none }
 	margin-bottom: 10px;
 }
 
-#contact_form form .submit_btn { font-size: 12px; background: #333; color: #CCC; cursor:pointer; border: 1px solid #666; padding: 5px 10px; }
+#request_form form .submit_btn { font-size: 12px; background: #333; color: #CCC; cursor:pointer; border: 1px solid #666; padding: 5px 10px; }
 
 .no_mr { margin-right: 0 }
