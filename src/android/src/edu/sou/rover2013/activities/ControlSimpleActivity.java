@@ -207,7 +207,7 @@ public class ControlSimpleActivity extends BaseActivity {
 		rover = BluetoothService.getConnection().getRover();
 		// throw warning if not connected
 		if (!BluetoothService.getConnection().isConnected()) {
-			toast("Warning: Not Connected");
+			toast("Warning: Rover Not Connected");
 		}
 		// Begin updating
 		handler.post(updateTextRunnable);

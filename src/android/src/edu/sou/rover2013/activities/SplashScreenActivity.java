@@ -23,6 +23,7 @@ public class SplashScreenActivity extends BaseActivity {
 	private static Button buttonConnect;
 	private static Button buttonControl;
 	private static Button buttonProgram;
+	private static Button buttonWeb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class SplashScreenActivity extends BaseActivity {
 		buttonConnect = (Button) findViewById(R.id.button_connect);
 		buttonControl = (Button) findViewById(R.id.button_control);
 		buttonProgram = (Button) findViewById(R.id.button_program);
-
+		buttonWeb = (Button) findViewById(R.id.button_web);
 		// *******************************
 		// Button Listeners
 		// *******************************
@@ -54,6 +55,12 @@ public class SplashScreenActivity extends BaseActivity {
 		buttonProgram.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent(getApplicationContext(), ControlComplexActivity.class);
+				startActivity(intent);
+			}
+		});
+		buttonWeb.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), ControlWebActivity.class);
 				startActivity(intent);
 			}
 		});

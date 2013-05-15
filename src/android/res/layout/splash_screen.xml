@@ -55,6 +55,13 @@
             android:layout_weight="1"
             android:text="3) Program Rover!" />
 
+        <Button
+            android:id="@+id/button_web"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="4) Share Rover!" />
+
     </LinearLayout>
 
 </LinearLayout>
