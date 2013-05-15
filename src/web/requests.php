@@ -21,26 +21,28 @@
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ROGO Requests</title>
 <link href="templatemo_style.css" type="text/css" rel="stylesheet" /> 
-<head></head>
+</head>
 <body>
 <div id="request_form">
 <?php
 	if (isset($_POST["didsubmit"])) {
-		echo "<p style=\"text-decoration: italic;\">Thank you for submitting your request.</p>";
+		echo "<p style=\"font-style: italic;\"><strong style=\"color: #FF0;\">Thank you</strong> for your feedback!<br />~The ROGO Team</p>";
 	} else {
 ?>
-	<p>Got an idea? Let us know.</p>
+	<p><em>What could we do that would make ROGO even better? Please give us feedback.</em></p>
 	<form method="post" name="about" action="requests.php">
 		<dl>
-			<dt><label for="author">Name:</label></dt>
+			<dt><label for="author">Your Name:</label></dt>
 			<dd><input name="author" type="text" class="input_field" id="author" maxlength="100" /></dd>
-			<dt><label for="email">Email:</label></dt>
-			<dd><input name="email" type="text" class="input_field" id="email" maxlength="150" /></dd>
-			<dt><label for="text">Message:</label></dt>
+			<dt><label for="email">E-mail Address:</label></dt>
+			<dd><input name="email" type="text" class="input_field" id="email" maxlength="150" /> (will be private)</dd>
+			<dt><label for="text">Comments or Ideas:</label></dt>
 			<dd><textarea id="text" name="message" rows="0" cols="0"></textarea></dd>
 		</dl>
-		<input type="submit" class="submit_btn" name="submit" id="submit" value="Send" />
+		<div style="clear: both; text-align: center;"><input type="submit" class="submit_btn" name="submit" id="submit" value="Send" /></div>
 		<input type="hidden" name="didsubmit" value="1" />
 	</form>
 <?php
