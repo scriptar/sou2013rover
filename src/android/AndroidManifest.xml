@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.ConnectionActivity"
-            android:label="@string/title_activity_screen__bluetooth" >
+            android:label="@string/title_activity_screen__bluetooth" 
+        	android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.TelemetryActivity"

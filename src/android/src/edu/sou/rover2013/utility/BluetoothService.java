@@ -12,6 +12,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * This class handles Bluetooth connections
@@ -34,6 +35,8 @@ public class BluetoothService {
 	// *******************************
 	private final BluetoothAdapter adapter;
 	private BluetoothSocket bluetoothSocket = null;
+	// Bluetooth Device
+	BluetoothDevice device;
 	private InputStream inStream = null;
 	private OutputStream outStream = null;
 	// vars for listener thread
@@ -111,17 +114,17 @@ public class BluetoothService {
 	}
 
 	public void connectDevice(String address) {
-		BluetoothDevice device = adapter.getRemoteDevice(address);
+		device = adapter.getRemoteDevice(address);
 		// Connection Attempt
+
 		try {
 			bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid);
 			bluetoothSocket.connect();
 			outStream = bluetoothSocket.getOutputStream();
 			inStream = bluetoothSocket.getInputStream();
-			rover = new Rover(this);
+			rover = new Rover(BluetoothService.getConnection());
 			startDataListener();
 		} catch (IOException e) {
-
 		}
 	}
 
@@ -246,7 +249,7 @@ public class BluetoothService {
 			if (bluetoothSocket != null) {
 				bluetoothSocket.close();
 				bluetoothSocket = null;
-				
+
 			}
 			stopWorker = true;
 			rover = null;

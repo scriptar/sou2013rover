@@ -9,7 +9,14 @@
     android:scrollbars="vertical"
     tools:context=".ConnectionActivity" >
 
-    <Button android:id="@+id/button_start_discovery" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" android:text="Start Device Discovery" />
+    <Button
+        android:id="@+id/button_start_discovery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/listview_devices"
+        android:text="Start Rover Discovery" />
 
     <ListView
         android:id="@+id/listview_devices"
@@ -18,7 +25,6 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:choiceMode="singleChoice" >
-
     </ListView>
 
     <Button
@@ -26,16 +32,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/button_start_discovery"
         android:layout_below="@+id/button_start_discovery"
         android:text="Reset Connection" />
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button_reset"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/textView2"
+        android:lines="1"
+        android:text="Disconnected"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button_reset"
-        android:text="Discovered Devices:"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/text_status"
+        android:text="Discovered Rovers:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/text_status"
+        android:text="Connection Status: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
