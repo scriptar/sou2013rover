@@ -9,7 +9,7 @@ require_once "ConfigManager.class.php";
 class DbConn {
 	private $conn, $host, $dbname, $un, $pwd, $debug;
 	
-	public function __construct($host = "localhost", $dbname = "rogo", $un = "", $pwd = "") {
+	public function __construct($host = "localhost", $dbname = "rogobase", $un = "", $pwd = "") {
 		$this->debug = "";
 		if ($host == "localhost" && strlen($un) == 0 && strlen($pwd) == 0) {
 			$cfg = new ConfigManager();
