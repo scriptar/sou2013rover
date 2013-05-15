@@ -146,17 +146,20 @@ img { margin: 0; padding: 0; border: none }
 
 #gallery li.no_margin_right { margin-right: 0 }
 
-#request_form { padding: 0; width: 330px }
+#request_form { padding: 0; width: 100% }
+
+#request_form dt { float: left; clear: left; width: 25%; margin-right: 10px; text-align: right; font-size: 11px; }
+#request_form dd { float: left; clear: right; margin-left: 0; width: 70%; }
 
 #request_form form { margin: 0px; padding: 0px; }
 
-#request_form form .input_field { width: 150px; padding: 5px; color: #CCC; border: 1px solid #666;  background: #222; margin-bottom: 10px; }
+#request_form form .input_field { width: 60%; padding: 5px; color: #CCC; border: 1px solid #666;  background: #222; margin-bottom: 10px; }
 
-#request_form form label { display: block;font-size: 11px }
+/*#request_form form label { display: block;font-size: 11px }*/
 
 #request_form form textarea { 
 	clear: both; 
-	width: 320px; height: 120px; 
+	width: 80%; height: 120px; 
 	padding: 5px; 
 	color: #CCC;
 	border: 1px solid #666; 

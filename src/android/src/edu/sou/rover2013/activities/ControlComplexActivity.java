@@ -30,9 +30,7 @@ public class ControlComplexActivity extends BaseActivity {
 	Context activityContext;
 	// Rover Model
 	private Rover rover;
-
-	protected static final long TIME_DELAY = 50;
-	Handler handler = new Handler();
+	private UIUpdater mUIUpdater;
 
 	// *******************************
 	// UI Element Variables
@@ -415,8 +413,13 @@ public class ControlComplexActivity extends BaseActivity {
 		if (!BluetoothService.getConnection().isConnected()) {
 			toast("Warning: Rover Not Connected");
 		}
-		handler.post(updateTextRunnable);
-
+		//Start Updater
+		mUIUpdater = new UIUpdater(new Runnable() {
+	         @Override 
+	         public void run() {
+	        	 updateGUI();
+	         }
+	    }, 90);
 	}
 
 	// *******************************
@@ -461,13 +464,23 @@ public class ControlComplexActivity extends BaseActivity {
 		str.insert(scriptTextBox.getSelectionStart(), text, 0, len);
 	}
 
-	Runnable updateTextRunnable = new Runnable() {
-		public void run() {
-			pingForward.setText(String.valueOf(rover.getPingFront()));
-			leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
-			rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
-			handler.postDelayed(this, TIME_DELAY);
-		}
-	};
+	// GUI Updater
+	public void updateGUI() {
+		pingForward.setText(String.valueOf(rover.getPingFront()));
+		leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
+		rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mUIUpdater.startUpdates();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mUIUpdater.stopUpdates();
+	}
+	
 }
