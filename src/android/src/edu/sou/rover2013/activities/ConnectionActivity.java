@@ -20,16 +20,10 @@ import edu.sou.rover2013.utility.*;
  * Activity for establishing a bluetooth connection.
  */
 // TODO Have thread perform connection to prevent hang
-// TODO Don't allow connections until discovery reports that it is
-// cancelled/completed.
 // TODO Debug Connection Issues
-// TODO Load Current status on activity launch, and enable/disable buttons to
-// fit.
-// TODO Show current status
+// TODO Load status on activity launch.
 // TODO Show alert when connection succeeds
-// TODO Currently crashes when rover disconnected yet we push reset. Connection
-// went void?
-// TODO Show Device Name, rather than Address
+
 public class ConnectionActivity extends BaseActivity {
 
 	// *******************************

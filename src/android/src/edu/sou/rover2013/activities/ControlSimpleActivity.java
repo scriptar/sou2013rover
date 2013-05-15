@@ -1,7 +1,6 @@
 package edu.sou.rover2013.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +18,6 @@ import edu.sou.rover2013.widgets.DigitalTextBox;
  * to RC cars.
  */
 // TODO Show rover telemetry graphics
-// TODO Store/get Laser Angle from Rover Model
 public class ControlSimpleActivity extends BaseActivity {
 
 	// *******************************
@@ -27,8 +25,6 @@ public class ControlSimpleActivity extends BaseActivity {
 	// *******************************
 	// Rover Model
 	private Rover rover;
-	private static final long TIME_DELAY = 50;
-	private Handler handler = new Handler();
 
 	// *******************************
 	// UI Element Variables
@@ -40,6 +36,8 @@ public class ControlSimpleActivity extends BaseActivity {
 	private ImageButton buttonLaserFire;
 	private ImageButton buttonLaserUp;
 	private ImageButton buttonLaserDown;
+
+	private UIUpdater mUIUpdater;
 	private static TextView pingForward;
 	private static TextView leftWheel;
 	private static TextView rightWheel;
@@ -170,7 +168,7 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					laserUp();
-					Log.v("test", "Aim Up: "+(rover.getLaserAngle()));
+					Log.v("test", "Aim Up: " + (rover.getLaserAngle()));
 					buttonLaserUp
 							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
@@ -187,7 +185,7 @@ public class ControlSimpleActivity extends BaseActivity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					laserDown();
-					Log.v("test", "Aim Down: "+(rover.getLaserAngle()));
+					Log.v("test", "Aim Down: " + (rover.getLaserAngle()));
 					buttonLaserDown
 							.setImageResource(R.drawable.arrow_button_metal_silver_blanktransie);
 					return true;
@@ -210,7 +208,14 @@ public class ControlSimpleActivity extends BaseActivity {
 			toast("Warning: Rover Not Connected");
 		}
 		// Begin updating
-		handler.post(updateTextRunnable);
+		mUIUpdater = new UIUpdater(new Runnable() {
+	         @Override 
+	         public void run() {
+	        	 updateGUI();
+	         }
+	    }, 90);
+	        
+		// Fill Laser Field
 		textLaserAngle.setText(String.valueOf(rover.getLaserAngle()));
 	}
 
@@ -250,39 +255,47 @@ public class ControlSimpleActivity extends BaseActivity {
 		stop();
 		rover.sendDataToRover("lzfire(0)");
 	}
-	
+
 	private void laserUp() {
 		stop();
 		int laserAngle = rover.getLaserAngle();
 		laserAngle += 5;
-		if (laserAngle > 90){
+		if (laserAngle > 90) {
 			laserAngle = 90;
 		}
 		rover.setLaserAngle(laserAngle);
 		textLaserAngle.setText(String.valueOf(laserAngle));
-		rover.sendDataToRover("lzaim("+laserAngle+")");
+		rover.sendDataToRover("lzaim(" + laserAngle + ")");
 	}
 
 	private void laserDown() {
 		stop();
 		int laserAngle = rover.getLaserAngle();
 		laserAngle -= 5;
-		if (laserAngle < 0){
+		if (laserAngle < 0) {
 			laserAngle = 0;
 		}
 		rover.setLaserAngle(laserAngle);
 		textLaserAngle.setText(String.valueOf(laserAngle));
-		rover.sendDataToRover("lzaim("+laserAngle+")");
+		rover.sendDataToRover("lzaim(" + laserAngle + ")");
 	}
 
 	// GUI Updater
-	Runnable updateTextRunnable = new Runnable() {
-		public void run() {
-			pingForward.setText(String.valueOf(rover.getPingFront()));
-			leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
-			rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
-			handler.postDelayed(this, TIME_DELAY);
-		}
-	};
+	public void updateGUI() {
+		pingForward.setText(String.valueOf(rover.getPingFront()));
+		leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
+		rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mUIUpdater.startUpdates();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mUIUpdater.stopUpdates();
+	}
 }
