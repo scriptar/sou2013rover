@@ -14,7 +14,7 @@ class ConfigManager {
 	public function __construct($config = '') {
 		$files = array(
 			$config,
-			(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '/home/SOU$/rogo/public_html') . '/includes/' . $this->configFile,
+			realpath(dirname(__FILE__) . '/' . $this->configFile),
 			$this->configFile
 		);
 		foreach ($files as $file) {
