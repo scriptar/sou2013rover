@@ -5,16 +5,22 @@
 <style type="text/css">
 body {
 	font-family: 'Courier New', Courier, monospace;
+	background-color: #000;
+	color: #FFF;
 }
 </style>
+<link rel="stylesheet" type="text/css" media="screen" href="../_assets/css/test.css" />
 </head>
 <body>
 <form onsubmit="return parseCmds(this);">
   <div>Enter ROGO Commands:</div>
   <textarea name="source" rows="5" cols="50"></textarea>
-  <div><input type="submit" value="Parse" /> <input type="reset" value="Reset" /></div>
-  <textarea name="tree" rows="20" cols="50"></textarea>
+  <div><input type="submit" value="Go" /> <input type="reset" value="Reset" /></div>
+  <div><img class="left" style="display: inline; position: relative; left: 210px; top: 400px;" id="rogo" src="../_assets/images/rogo.png" alt="ROGO"></div>
+  <textarea id="tree" style="display: none;" name="tree" rows="10" cols="50"></textarea>
 </form>
+
+
 
 <script type="text/javascript" src="rogosim.js"></script>
 <script type="text/javascript">
@@ -25,10 +31,42 @@ parseCmds = function (f) {
 		f.source.value = parser.source;
 	tree = parser.parse(f.source.value);
 	f.tree.value = parser.printTree(tree);
+	document.getElementById("tree").style.display = "block";
 	ROGO.executor().exec(tree);
 	parser.destroyTree(tree);
 	return false;
 };
+
+var goRogo = function () {
+	var r = document.getElementById("rogo"),
+	x = 0, y = 0, max_x = 400, max_y = 200,
+	v = [
+		{x:0,y:0,cl:""},
+		{x:1,y:0,cl:"right"},
+		{x:0,y:-1,cl:"up"},
+		{x:-1,y:0,cl:"left"},
+		{x:0,y:1,cl:"down"}
+	],
+	vDir = {stop:0,right:1,up:2,left:3,down:4},
+	speed = 5,
+	dir = vDir.right;
+	r.style.display = "inline";
+	r.style.position = "relative";
+	setInterval(function () {
+		x += speed * v[dir].x;
+		y += speed * v[dir].y;
+		if (x > max_x)	{dir = vDir.down; x = max_x;}
+		if (x < 0) {dir = vDir.up; x = 0;}
+		if (y > max_y) {dir = vDir.left; y = max_y;}
+		if (y < 0) {dir = vDir.right; y = 0;}
+		r.className = v[dir].cl;
+		r.style.left = x + "px";
+		r.style.top = y + "px";
+	}, 50);
+};
+
+window.onload = goRogo;
+
 </script>
 </body>
 </html>
