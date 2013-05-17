@@ -14,7 +14,8 @@ body {
 <body>
 <form onsubmit="return parseCmds(this);">
   <div>Enter ROGO Commands:</div>
-  <textarea name="source" rows="2" cols="50">repeat 2 [repeat 8 [fd 5 rt 45] lt 180]</textarea>
+  <textarea name="source" rows="2" cols="60">forward 10 right 90 back 10 left 180 bk 10 rt 90 bk 10
+V0=2 V1=8 V2=45 repeat V0 [repeat V1 [fd 5 rt V2] lt 180]</textarea>
   <div><input type="submit" value="Go" /> <input type="reset" value="Reset" /></div>
   <div><img class="up" style="display: inline; position: relative; left: 150px; top: 100px;" id="rogo" src="../_assets/images/rogo.png" alt="ROGO"></div>
   <textarea id="tree" style="display: none;" name="tree" rows="4" cols="50"></textarea>
