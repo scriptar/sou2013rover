@@ -1,16 +1,16 @@
 var ROGO = {};
 
 if (typeof console !== "object") {
-	var console = function () {
-		var msg = [];
-		return {
-			log: function () {
-				var i;
-				for (i = 0; i < arguments.length; i += 1) {
-					msg.push(String(arguments[i]));
-				}
-			}
-		};
+	var console = {
+		msg: []
+	};
+}
+if (typeof console.log !== "function") {
+	console.log = function () {
+		var i;
+		for (i = 0; i < arguments.length; i += 1) {
+			console.msg.push(String(arguments[i]));
+		}
 	};
 }
 
@@ -104,6 +104,7 @@ ROGO.parser = function (spec) {
 		tree = null;
 		src = src.toUpperCase().replace(/[^A-Z0-9\.\+\-\*\/=<>\[\]]/g, ' '); //filter out unexpected chars
 		src = src.replace(/([A-Z0-9\.\-]+)/g, function(match, group1, offset, original) { return ' ' + group1 + ' '; }); //pad words with spaces
+		src = src.replace(/[\[]/g, ' [ ').replace(/[\]]/g, ' ] '); //pad brackets with spaces
 		src = src.replace(/--/g, ' - -'); //fix minus/negative case
 		src = src.replace(/\s+/g, ' '); //convert all whitespace into single space
 		wordList = src.split(' ');
@@ -383,6 +384,8 @@ ROGO.parser = function (spec) {
 ROGO.executor = function (spec) {
 	var p = ROGO.primitives,
 	rogo_vars = [],
+	rover = spec.rover || null,
+	_current = null,
 	execTree = function (current) {
 		while (current) {
 			switch (current.ntype) {
@@ -495,7 +498,6 @@ ROGO.executor = function (spec) {
 		current.nval = nval;
 		return current;
 	},
-	
 	evalNodeValue = function (current) {
 		var node;
 		if (current.ntype == ROGO.c.nodeType.NT_LIST_START && current.left != null)
@@ -551,21 +553,29 @@ ROGO.executor = function (spec) {
 	p["FORWARD"].func = p["FD"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("FD " + i);
+		if (typeof rover === "object")
+			rover.addQueue({cmd: "fd", params: [i]});
 		return current;
 	};
 	p["BACK"].func = p["BK"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("BK " + i);
+		if (typeof rover === "object")
+			rover.addQueue({cmd: "bk", params: [i]})
 		return current;
 	};
 	p["LEFT"].func = p["LT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("LT " + i);
+		if (typeof rover === "object")
+			rover.addQueue({cmd: "lt", params: [i]})
 		return current;
 	};
 	p["RIGHT"].func = p["RT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("RT " + i);
+		if (typeof rover === "object")
+			rover.addQueue({cmd: "rt", params: [i]})
 		return current;
 	};
 	p["LZAIM"].func = function (current) { return current; };
@@ -575,6 +585,161 @@ ROGO.executor = function (spec) {
 			execTree(tree);
 		}
 	};
+};
+
+/* virtual ROGO rover state */
+ROGO.rover = function (spec) {
+	var objRef = {},
+		domRef = null,
+		parser = ROGO.parser(),
+		tree = null,
+		executor = ROGO.executor({rover: objRef}),
+		list = [],
+		transformStyleProperty = "transform",
+		initial = {x: 150, y: 100},
+		current = {x: 0, y: 0, heading: 0, time: 0, increment: 0, travelling: false, rotating: false},
+		destination = {time: 0, heading: 0},
+		vel = 0,
+	draw = function () {
+		domRef.style.left = (parseInt(initial.x + current.x, 10) || 0) + "px";
+		domRef.style.top = 200 - (parseInt(initial.y + current.y, 10) || 0) + "px";
+		domRef.style[transformStyleProperty] = "rotate(" + current.heading + "deg)";
+	},
+	destinationReached = function () {
+		var reached = true;
+		if (current.travelling)
+			reached = (destination.time <= current.time);
+		else if (current.rotating)
+			reached = (destination.heading == current.heading);
+		return reached;
+	},
+	move = function () {
+		var reached = destinationReached(), theta;
+		if (!reached) {
+			current.time += 0.5;
+			if (current.travelling) {
+				theta = (current.heading - (current.increment > 0 ? 0 : 180)) * Math.PI / 180.0;
+				current.x = (vel * Math.sin(theta) * current.time);
+				current.y = (vel * Math.cos(theta) * current.time);
+			}
+			if (current.rotating) {
+				current.heading += current.increment;
+			}
+			setTimeout(move, 10);
+		} else {
+			vel = 0;
+			current.increment = 0;
+			current.travelling = false;
+			current.rotating = false;
+			current.time = 0;
+			destination.time = 0;
+		}
+		draw();
+		return reached;
+	},
+	go = function (cmd, units, degrees) {
+		initial.x += current.x;
+		initial.y += current.y;
+		current.x = 0;
+		current.y = 0;
+		switch (cmd) {
+			case "FD":
+				destination.time = units;
+				current.travelling = true;
+				current.increment = 1;
+				break;
+			case "BK":
+				destination.time = units;
+				current.travelling = true;
+				current.increment = -1;
+				break;
+			case "RT":
+				destination.heading = current.heading + degrees;
+				current.rotating = true;
+				current.increment = 1;
+				break;
+			case "LT":
+				destination.heading = current.heading - degrees;
+				current.rotating = true;
+				current.increment = -1;
+				break;
+		}
+		vel = 10;
+		move();
+	},
+	fd = function (arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go("FD", parseInt(arr[0], 10), 0);
+	},
+	bk = function (arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go("BK", parseInt(arr[0], 10), 0);
+	},
+	lt = function (arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go("LT", 0, parseInt(arr[0], 10) % 360);
+	},
+	rt = function (arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go("RT", 0, parseInt(arr[0], 10) % 360);
+	},
+	run = function () {
+		var instruction;
+		if (current.travelling || current.rotating) {
+			setTimeout(run, 100);
+			//console.log("Waiting...");
+		} else if (list.length > 0) {
+			instruction = list.pop();
+			//console.log("Running: " + instruction.cmd + " " + instruction.params[0]);
+			switch (instruction.cmd) {
+				case "fd": fd(instruction.params); break;
+				case "bk": bk(instruction.params); break;
+				case "rt": rt(instruction.params); break;
+				case "lt": lt(instruction.params); break;
+			}
+			run();
+		}
+	};
+	objRef.addQueue = function (instruction) {
+		list.push(instruction);
+	};
+	objRef.exec = function (src) {
+		if (tree)
+			parser.destroyTree(tree);
+		tree = parser.parse(src);
+		executor.exec(tree);
+		list.reverse();
+		run();
+	};
+	objRef.setID = function (id) {
+		var i,
+			props = ["transform", "-ms-transform", "-moz-transform", "-webkit-transform", "-o-transform"];
+		domRef = document.getElementById(id);
+		domRef.style.display = "inline";
+		domRef.style.position = "relative";
+		for (i = 0; i < props.length; i++) {
+			if (typeof domRef.style[props[i]] !== "undefined") {
+				transformStyleProperty = props[i];
+				break;
+			}
+		}
+	};
+	objRef.forward = function (units) {
+		fd([units]);
+	};
+	objRef.back = function (units) {
+		bk([units]);
+	};
+	objRef.left = function (degrees) {
+		lt([degrees]);
+	};
+	objRef.right = function (degrees) {
+		rt([degrees]);
+	}
+	objRef.isMoving = function () {
+		return current.travelling || current.rotating;
+	};
+	return objRef;
 };
 
 /* main */

@@ -14,19 +14,24 @@ body {
 <body>
 <form onsubmit="return parseCmds(this);">
   <div>Enter ROGO Commands:</div>
-  <textarea name="source" rows="5" cols="50"></textarea>
+  <textarea name="source" rows="2" cols="50">repeat 2 [repeat 8 [fd 5 rt 45] lt 180]</textarea>
   <div><input type="submit" value="Go" /> <input type="reset" value="Reset" /></div>
-  <div><img class="left" style="display: inline; position: relative; left: 210px; top: 400px;" id="rogo" src="../_assets/images/rogo.png" alt="ROGO"></div>
-  <textarea id="tree" style="display: none;" name="tree" rows="10" cols="50"></textarea>
+  <div><img class="up" style="display: inline; position: relative; left: 150px; top: 100px;" id="rogo" src="../_assets/images/rogo.png" alt="ROGO"></div>
+  <textarea id="tree" style="display: none;" name="tree" rows="4" cols="50"></textarea>
 </form>
 
 
 
 <script type="text/javascript" src="rogosim.js"></script>
 <script type="text/javascript">
-var tree, parser = ROGO.parser();
+//var tree, parser = ROGO.parser();
+var rover = ROGO.rover();
+rover.setID("rogo");
+//rover.right(180);
+//rover.forward(20);
+//rover
 parseCmds = function (f) {
-	parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
+	/*parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
 	if (f.source.value.length == 0)
 		f.source.value = parser.source;
 	tree = parser.parse(f.source.value);
@@ -34,12 +39,15 @@ parseCmds = function (f) {
 	document.getElementById("tree").style.display = "block";
 	ROGO.executor().exec(tree);
 	parser.destroyTree(tree);
+	*/
+	if (f.source.value.length > 0)
+		rover.exec(f.source.value);
 	return false;
 };
-
+/*
 var goRogo = function () {
 	var r = document.getElementById("rogo"),
-	x = 0, y = 0, max_x = 400, max_y = 200,
+	x = 0, y = 0, max_x = 400, max_y = 125,
 	v = [
 		{x:0,y:0,cl:""},
 		{x:1,y:0,cl:"right"},
@@ -49,10 +57,8 @@ var goRogo = function () {
 	],
 	vDir = {stop:0,right:1,up:2,left:3,down:4},
 	speed = 5,
-	dir = vDir.right;
-	r.style.display = "inline";
-	r.style.position = "relative";
-	setInterval(function () {
+	dir = vDir.right,
+	move = function () {
 		x += speed * v[dir].x;
 		y += speed * v[dir].y;
 		if (x > max_x)	{dir = vDir.down; x = max_x;}
@@ -62,11 +68,14 @@ var goRogo = function () {
 		r.className = v[dir].cl;
 		r.style.left = x + "px";
 		r.style.top = y + "px";
-	}, 50);
+	};
+	r.style.display = "inline";
+	r.style.position = "relative";
+	setInterval(move, 50);
 };
 
 window.onload = goRogo;
-
+*/
 </script>
 </body>
 </html>
