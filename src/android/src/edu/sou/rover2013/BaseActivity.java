@@ -4,6 +4,7 @@ import edu.sou.rover2013.activities.ConnectionActivity;
 import edu.sou.rover2013.activities.ControlComplexActivity;
 import edu.sou.rover2013.activities.ControlSimpleActivity;
 import edu.sou.rover2013.activities.ControlWebActivity;
+import edu.sou.rover2013.activities.TelemetryActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -120,11 +121,11 @@ public abstract class BaseActivity extends Activity {
 			AlertDialog alert = chooserBox.create();
 			alert.show();
 			return true;
-//		case R.id.telemetry_settings:
-//			intent = new Intent(this, TelemetryActivity.class);
-//			startActivity(intent);
-//			finish();
-//			return true;
+		case R.id.telemetry_settings:
+			intent = new Intent(this, TelemetryActivity.class);
+			startActivity(intent);
+			finish();
+			return true;
 		case R.id.exit:
 			// Exited Dialog
 			this.finish();

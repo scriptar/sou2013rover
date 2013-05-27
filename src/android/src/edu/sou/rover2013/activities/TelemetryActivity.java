@@ -6,8 +6,6 @@ import edu.sou.rover2013.R;
 
 /**
  *  Will display information regarding rover output/sensors here.
- * 
- * @author Ryan Dempsey
  */
 public class TelemetryActivity extends BaseActivity {
 

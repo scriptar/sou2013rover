@@ -197,7 +197,6 @@ public class ControlComplexActivity extends BaseActivity {
 								// Nothing Happens if closed
 							}
 						});
-
 				alert.show();
 			}
 		});
