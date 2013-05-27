@@ -27,7 +27,8 @@ public class Rover {
 	private int irFL;
 	private double battLow; // Board, Sensor Power Supply -- Shown in Voltage
 	private double battHigh; // Servo/Bluetooth/Laser Power Supply -- Shown in
-								// Voltage
+	private int freeRam;
+
 	private int laserAngle = 0;
 
 	/**
@@ -141,11 +142,14 @@ public class Rover {
 				irFL = ((int) Double.parseDouble(iterator.next()));
 			} else if (string.equals("irFR")) {
 				irFR = ((int) Double.parseDouble(iterator.next()));
-			} else if (string.equals("battLow")) {
+			} else if (string.equals("bLevelLow")) {
 				battLow = (Double.parseDouble(iterator.next()));
-			} else if (string.equals("battHigh")) {
+			} else if (string.equals("bLevelHigh")) {
 				battHigh = (Double.parseDouble(iterator.next()));
+			} else if (string.equals("freeRam")) {
+				freeRam = ((int) Double.parseDouble(iterator.next()));
 			}
+
 		}
 
 	}
@@ -165,13 +169,17 @@ public class Rover {
 	public int getLaserAngle() {
 		return laserAngle;
 	}
-	
-	public double getBattLow(){
+
+	public double getBattLow() {
 		return battLow;
 	}
-	
-	public double getBattHigh(){
+
+	public double getBattHigh() {
 		return battHigh;
+	}
+
+	public int getFreeRam() {
+		return freeRam;
 	}
 
 	public void setLaserAngle(int laserAngleArg) {
