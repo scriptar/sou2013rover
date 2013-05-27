@@ -123,8 +123,6 @@ void battCheck()
 {
   //Battery Monitor
   //warning led attached to pin 6
-//  double bLevelLowLocal = 0; // Low Output Board Driver
-//  double bLevelHighLocal = 0; // High Output Servo/Laser Driver
   rover.bLevelLow = analogRead(PIN_BATT_SENSE_LOW); //Read analog input in var
   rover.bLevelHigh = analogRead(PIN_BATT_SENSE_HIGH);
   rover.bLevelLow *= .0049; //convert to corresponding input voltage value
