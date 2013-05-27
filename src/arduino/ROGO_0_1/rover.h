@@ -37,11 +37,12 @@
 //#define PIN_BLUETOOTH_TRANSMIT 1
 #define PIN_ULTRA_ECHO           10 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define PIN_ULTRA_TRIGGER        9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define PIN_BATT_LED_INDICATOR   7  // Indicator for battery check
+#define PIN_LED_INDICATOR        7  // Indicator for battery check
 #define PIN_SERVO_RIGHT          4  // By design, PWM is disabled on these pins because of Servo.h. 
 #define PIN_SERVO_LEFT           5  // http://arduino.cc/en/Reference/Servo
 #define PIN_SERVO_LASER          8
 #define PIN_LZ_FIRE              11 // Connected to laser. CHECK FOR SAFETY SWITCH.
+#define PIN_BUZZER               6  // set a pin for buzzer output
 
 // ***************************************
 // Constant Declarations
@@ -50,11 +51,12 @@
 #define SERVO_MAX 2000 // Servo Maximum Pulse Width. Maybe need to adjust/test this more. 1500 = stopped
 #define SERVO_MIN 1000 // Servo Minimum Pulse Width. Maybe need to adjust/test this more
 #define SENSOR_CHECK_SPEED 500 // How frequently are we going to send out sensor data (in milliseconds). 50ms would be 20 times a second.
+#define UNIT_CALIBRATION 50 // Adjust this value to calibrate the movement units
 
 /*** type definitions ***/
 typedef struct rover_state {
 	double x, y, heading, irFL, irFR, irBL, irBR, bLevelLow, bLevelHigh;
-        unsigned int pingRangeF, pingRangeR;
+        unsigned int pingRangeF, pingRangeR, freeRam;
         
 }ROVERSTATE;
 
@@ -76,5 +78,5 @@ void sensorCheck();
 void sensorSend();
 void pingCheck();
 void irCheck();
-int freeRam();
+void memCheck();
 #endif

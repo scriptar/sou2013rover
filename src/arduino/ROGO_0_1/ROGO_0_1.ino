@@ -7,6 +7,7 @@
 #include "parse.h"
 #include "tree.h"
 #include "rover.h"
+#include "pitches.h"
 #include <Servo.h>
 #include <NewPing.h>
 
@@ -22,7 +23,8 @@ void setup()
   pinMode(PIN_LIR_SENSOR_READ, INPUT);  // initialize the tcrt5000 pins as an input, and 
   pinMode(PIN_RIR_SENSOR_READ, INPUT);
   pinMode(PIN_LZ_FIRE, OUTPUT);
-  pinMode(PIN_BATT_LED_INDICATOR, OUTPUT);
+  pinMode(PIN_BUZZER, OUTPUT); // set a pin for buzzer output
+  pinMode(PIN_LED_INDICATOR, OUTPUT);
   digitalWrite(PIN_LIR_SENSOR_READ, HIGH); //turn on the internal pullup resistors
   digitalWrite(PIN_RIR_SENSOR_READ, HIGH);
   servoLZ.write(0);

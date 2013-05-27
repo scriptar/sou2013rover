@@ -4,6 +4,7 @@
 
 #include <WProgram.h>
 #include "rover.h"
+#include "pitches.h"
 
 Servo servoR; //create servo objects
 Servo servoL;
@@ -32,14 +33,22 @@ void forward(int countF)
     setL = 0; //servo2 full forward
     sensorCheck();
     sensorSend();
-//    Serial.println(freeRam());
     if(safetyFlagUltra && safetyFlagIR){
         servoR.write(setR); //feed servos speed setting
         servoL.write(setL); 
-        delay(50);
+        delay(UNIT_CALIBRATION);
       }
-    else{
-        pause(150);
+    else {
+        pause(0);
+        tone(PIN_BUZZER, NOTE_C6, 250);
+        digitalWrite(PIN_LED_INDICATOR, HIGH);
+        delay(350);
+        noTone(PIN_BUZZER);
+        tone(PIN_BUZZER, NOTE_C4, 250);
+        digitalWrite(PIN_LED_INDICATOR, LOW);
+        delay(350);
+        noTone(PIN_BUZZER); 
+        Serial.println("sensorTrip");
       }
   }
   pause(250);
@@ -54,9 +63,9 @@ void reverse(int countR)
       }      
       setR = 0; //servo1 full reverse
       setL = 180; //servo2 full reverse
-           servoR.write(setR); //feed servos speed setting
-           servoL.write(setL); 
-           delay(200); // added 150ms to make up for no sensor check
+      servoR.write(setR); //feed servos speed setting
+      servoL.write(setL); 
+      delay(UNIT_CALIBRATION + 150); // added 150ms to make up 
     }
     pause(250);
 }
@@ -129,11 +138,11 @@ void battCheck()
   rover.bLevelHigh *= .0049;
   if(rover.bLevelLow < 2.5 || rover.bLevelHigh < 2.5) //check if below 2.5 input volts(5v), warning led on
   {
-    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
+    digitalWrite(PIN_LED_INDICATOR, HIGH); 
   }
   else
   {
-    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
+    digitalWrite(PIN_LED_INDICATOR, LOW);
   }
 }
 
@@ -142,6 +151,7 @@ void sensorCheck()
   pingCheck();
   irCheck();
   battCheck();
+  memCheck();
 }
 
 void sensorSend()
@@ -157,11 +167,14 @@ void sensorSend()
     Serial.println(rover.irFL);
     Serial.println(F("irFR"));
     Serial.println(rover.irFR);
-    Serial.println(F("battLow"));
+    Serial.println(F("bLevelLow"));
     Serial.println((rover.bLevelLow * 2));
-    Serial.println(F("battHigh"));
+    Serial.println(F("bLevelHigh"));
     Serial.println((rover.bLevelHigh * 2));
+    Serial.println(F("freeMem"));
+    Serial.println(rover.freeRam);
     Serial.println(F("end"));
+    
   }
 }
 void pingCheck()
@@ -171,6 +184,7 @@ void pingCheck()
   if(rover.pingRangeF == 0)
   {
 //    Serial.println("Out of Range");
+    rover.pingRangeF = 9999;
     safetyFlagUltra = true;
   } 
 
@@ -179,7 +193,16 @@ void pingCheck()
 //    Serial.print("Ping: ");
 //    Serial.print(rover.pingRangeF); // Ping returned, uS result in ping_result, convert to cm with US_ROUNDTRIP_CM.
 //    Serial.println("cm, STOP!!!");
-    safetyFlagUltra = false; 
+    safetyFlagUltra = false;
+//    tone(PIN_BUZZER, NOTE_C6, 250);
+//    digitalWrite(PIN_LED_INDICATOR, HIGH);
+//    delay(350);
+//    noTone(PIN_BUZZER);
+//    tone(PIN_BUZZER, NOTE_C4, 250);
+//    digitalWrite(PIN_LED_INDICATOR, LOW);
+//    delay(350);
+//    noTone(PIN_BUZZER); 
+//    Serial.println("sensorTrip");
   }
   else
   {
@@ -207,8 +230,9 @@ void irCheck()
   }
 }
 
-int freeRam () {
+void memCheck () {
   extern int __heap_start, *__brkval; 
   int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+  rover.freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
+
