@@ -29,18 +29,19 @@
 // ***************************************
 // Arduino Pin Declarations                //Note: PWM disabled on Pin
 // *************************************** //      3, 9, 10 and 11.
-#define PIN_BATT_SENSE          A0
+#define PIN_BATT_SENSE_LOW      A0
+#define PIN_BATT_SENSE_HIGH     A1
 #define PIN_LIR_SENSOR_READ     A5
 #define PIN_RIR_SENSOR_READ     A4
 //#define PIN_BLUETOOTH_RECEIVE  0
 //#define PIN_BLUETOOTH_TRANSMIT 1
 #define PIN_ULTRA_ECHO           10 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define PIN_ULTRA_TRIGGER        9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-//#define PIN_BATT_LED_INDICATOR   6 // Indicator for battery check
-#define PIN_SERVO_RIGHT          4 // By design, PWM is disabled on these pins because of Servo.h. 
-#define PIN_SERVO_LEFT           5 // http://arduino.cc/en/Reference/Servo
+#define PIN_BATT_LED_INDICATOR   7  // Indicator for battery check
+#define PIN_SERVO_RIGHT          4  // By design, PWM is disabled on these pins because of Servo.h. 
+#define PIN_SERVO_LEFT           5  // http://arduino.cc/en/Reference/Servo
 #define PIN_SERVO_LASER          8
-#define PIN_LZ_FIRE              11 //Connected to small 1mW laser (Harmless)
+#define PIN_LZ_FIRE              11 // Connected to laser. CHECK FOR SAFETY SWITCH.
 
 // ***************************************
 // Constant Declarations
@@ -52,8 +53,9 @@
 
 /*** type definitions ***/
 typedef struct rover_state {
-	double x, y, heading, irFL, irFR, irBL, irBR;
+	double x, y, heading, irFL, irFR, irBL, irBR, bLevelLow, bLevelHigh;
         unsigned int pingRangeF, pingRangeR;
+        
 }ROVERSTATE;
 
 /*** variables ***/
@@ -69,9 +71,10 @@ void right(int degreeR);
 void pause(int Us);
 void LZAim(int degreeLZ);
 void LZFire(int state);
-//void battCheck();
+void battCheck();
 void sensorCheck();
 void sensorSend();
 void pingCheck();
 void irCheck();
+int freeRam();
 #endif

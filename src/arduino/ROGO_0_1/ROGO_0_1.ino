@@ -1,4 +1,4 @@
-/*
+/* 
   Official ROGO rover sketch.
  
   Project Information:
@@ -18,14 +18,12 @@ void setup()
   Serial.begin(115200);
   servoR.attach(PIN_SERVO_RIGHT,SERVO_MIN, SERVO_MAX); //attach right servo to pin 7
   servoL.attach(PIN_SERVO_LEFT,SERVO_MIN,SERVO_MAX); //attach left servo to pin 8
-  servoLZ.attach(PIN_SERVO_LASER,600,2380);
-//  battCheck(); //Battery level check. HIGH = 3 blinks, MED = 2, LOW = 1, Led On if batteries need replaced. 
+  servoLZ.attach(PIN_SERVO_LASER,600,2380); 
   pinMode(PIN_LIR_SENSOR_READ, INPUT);  // initialize the tcrt5000 pins as an input, and 
   pinMode(PIN_RIR_SENSOR_READ, INPUT);
   pinMode(PIN_LZ_FIRE, OUTPUT);
   digitalWrite(PIN_LIR_SENSOR_READ, HIGH); //turn on the internal pullup resistors
   digitalWrite(PIN_RIR_SENSOR_READ, HIGH);
-  NewPing::timer_ms(SENSOR_CHECK_SPEED, sensorSend);
   servoLZ.write(0);
 }
 
@@ -59,9 +57,11 @@ void loop()
   if (d >= 25)
   {
     sensorCheck();
+    sensorSend();
     d = 0;
   }
   //delay(250);
+  
   if(Serial.available())
   {
     TEXTNODE *list = serialReadCommands();
@@ -86,4 +86,5 @@ void loop()
         break;
   }
 }
+
 

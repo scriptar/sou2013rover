@@ -10,6 +10,8 @@ Servo servoL;
 Servo servoLZ;
 int setR = 90; //set servo speed to 0
 int setL = 90;
+static unsigned long sendThresh = SENSOR_CHECK_SPEED;
+unsigned long currentSend = 0;
 boolean safetyFlagUltra = true;
 boolean safetyFlagIR = true;
 NewPing sonar(PIN_ULTRA_TRIGGER, PIN_ULTRA_ECHO, ULTRA_MAX_DISTANCE); // NewPing setup of pins and maximum distance.
@@ -29,6 +31,8 @@ void forward(int countF)
     setR = 180; //servo1 full forward
     setL = 0; //servo2 full forward
     sensorCheck();
+    sensorSend();
+//    Serial.println(freeRam());
     if(safetyFlagUltra && safetyFlagIR){
         servoR.write(setR); //feed servos speed setting
         servoL.write(setL); 
@@ -115,65 +119,56 @@ void LZFire(int state)
     digitalWrite(PIN_LZ_FIRE, LOW);
   }
 }
-//void battCheck()
-//{
-//  //Battery Monitor
-//  //warning led attached to pin 6
-//  float bLevel = 0; //Battery Level
-//  bLevel = analogRead(PIN_BATT_SENSE); //Read analog input in var
-//  bLevel = bLevel * .0049; //convert to corresponding input voltage value
-//  if(bLevel >= 4.0) //check if above 4.0 input volts (8v), three blinks
-//  {
-//    for (int i=0; i <= 3; i++){
-//      digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
-//      delay(125);
-//      digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
-//      delay(125);
-//    }
-//  }
-//  if(bLevel >= 3.0 && bLevel < 4.0) //check if between 3.0 and 4.0 input volts (6-8v), two blinks
-//  {
-//    for (int i=0; i <= 2; i++){
-//      digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
-//      delay(125);
-//      digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
-//      delay(125);
-//    }
-//  }
-//  if(bLevel >= 2.6 && bLevel < 3.0) //check if between 2.6 and 3.0 input volts (5.2-6v), one blink
-//  {
-//    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
-//    delay(125);
-//    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
-//    delay(125);
-//  }
-//  if(bLevel < 2.5) //check if below 2.5 input volts(5v), warning led on
-//  {
-//    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
-//  }
-//  //  Serial.println(2 * bLevel);  //possible sensor value to android app
-//}
+void battCheck()
+{
+  //Battery Monitor
+  //warning led attached to pin 6
+//  double bLevelLowLocal = 0; // Low Output Board Driver
+//  double bLevelHighLocal = 0; // High Output Servo/Laser Driver
+  rover.bLevelLow = analogRead(PIN_BATT_SENSE_LOW); //Read analog input in var
+  rover.bLevelHigh = analogRead(PIN_BATT_SENSE_HIGH);
+  rover.bLevelLow *= .0049; //convert to corresponding input voltage value
+  rover.bLevelHigh *= .0049;
+  if(rover.bLevelLow < 2.5 || rover.bLevelHigh < 2.5) //check if below 2.5 input volts(5v), warning led on
+  {
+    digitalWrite(PIN_BATT_LED_INDICATOR, HIGH); 
+  }
+  else
+  {
+    digitalWrite(PIN_BATT_LED_INDICATOR, LOW);
+  }
+}
 
 void sensorCheck()
 {
   pingCheck();
   irCheck();
+  battCheck();
 }
 
 void sensorSend()
 {
-  Serial.println("start");
-  Serial.println("pingF");
-  Serial.println(rover.pingRangeF);
-  Serial.println("irFL");
-  Serial.println(rover.irFL);
-  Serial.println("irFR");
-  Serial.println(rover.irFR);
-  Serial.println("end");
+  
+  if(millis() >= currentSend)
+  {
+    currentSend += sendThresh;
+    Serial.println(F("start"));
+    Serial.println(F("pingF"));
+    Serial.println(rover.pingRangeF);
+    Serial.println(F("irFL"));
+    Serial.println(rover.irFL);
+    Serial.println(F("irFR"));
+    Serial.println(rover.irFR);
+    Serial.println(F("battLow"));
+    Serial.println((rover.bLevelLow * 2));
+    Serial.println(F("battHigh"));
+    Serial.println((rover.bLevelHigh * 2));
+    Serial.println(F("end"));
+  }
 }
 void pingCheck()
 {
-  unsigned int uS =   sonar.ping();  // Send ping. Possible sensor value to android app
+  unsigned int uS =   sonar.ping();  // Send ping.
   rover.pingRangeF = uS / US_ROUNDTRIP_CM; // Convert ping time to distance in cm and print result (0 = outside set distance range)
   if(rover.pingRangeF == 0)
   {
@@ -212,4 +207,10 @@ void irCheck()
   {
     safetyFlagIR = true;
   }
+}
+
+int freeRam () {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
