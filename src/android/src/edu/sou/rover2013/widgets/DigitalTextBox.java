@@ -26,11 +26,9 @@ public class DigitalTextBox extends TextView {
 	}
 
 	public void init() {
-
 		Typeface tf = Typeface.createFromAsset(getContext().getAssets(),
 				"font/ds_digital/ds_digib.ttf");
 		setTypeface(tf, 1);
 		setTextColor(Color.RED);
-		
 	}
 }

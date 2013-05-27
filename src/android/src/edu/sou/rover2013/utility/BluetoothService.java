@@ -256,6 +256,5 @@ public class BluetoothService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }

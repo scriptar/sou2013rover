@@ -14,10 +14,13 @@ import edu.sou.rover2013.utility.BluetoothService;
 import edu.sou.rover2013.widgets.DigitalTextBox;
 
 /**
+ * 
  * This activity allows users to control a connected rover in a manner similar
  * to RC cars.
+ * 
  */
 // TODO Show rover telemetry graphics
+// TODO Have laser slowly move up and down on button hold
 public class ControlSimpleActivity extends BaseActivity {
 
 	// *******************************
@@ -36,6 +39,9 @@ public class ControlSimpleActivity extends BaseActivity {
 	private ImageButton buttonLaserFire;
 	private ImageButton buttonLaserUp;
 	private ImageButton buttonLaserDown;
+	private static TextView battHigh;
+	private static TextView battLow;
+	
 
 	private UIUpdater mUIUpdater;
 	private static TextView pingForward;
@@ -62,6 +68,8 @@ public class ControlSimpleActivity extends BaseActivity {
 		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
 		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
 		textLaserAngle = (DigitalTextBox) findViewById(R.id.text_laser_angle);
+		battHigh = (TextView) findViewById(R.id.text_high_batt);
+		battLow = (TextView) findViewById(R.id.text_low_batt);
 
 		// *******************************
 		// Button Listeners
@@ -285,6 +293,8 @@ public class ControlSimpleActivity extends BaseActivity {
 		pingForward.setText(String.valueOf(rover.getPingFront()));
 		leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
 		rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
+		battLow.setText(String.valueOf(rover.getBattLow()));
+		battHigh.setText(String.valueOf(rover.getBattHigh()));
 	}
 
 	@Override

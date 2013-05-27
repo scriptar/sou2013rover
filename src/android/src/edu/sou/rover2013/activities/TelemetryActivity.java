@@ -9,7 +9,6 @@ import edu.sou.rover2013.R;
  * 
  * @author Ryan Dempsey
  */
-// TODO replace with preference-style popup, rather than whole activity
 public class TelemetryActivity extends BaseActivity {
 
 	@Override
@@ -17,5 +16,4 @@ public class TelemetryActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.telemetry);
 	}
-	
 }

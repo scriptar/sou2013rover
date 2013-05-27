@@ -16,62 +16,15 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageView1"
+        android:layout_below="@+id/include1"
         android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/Button01"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="44dp"
-            android:layout_weight="1"
-            android:text="Stats, Numbers, Addresses" />
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="44dp"
-            android:layout_weight="1"
-            android:text="Raw Rover Output" />
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="376dp"
+            android:layout_height="138dp"
+            android:src="@drawable/rover" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/imageView1"
-        android:layout_marginRight="22dp"
-        android:layout_marginTop="36dp"
-        android:text="left IR" />
-
-    <TextView
-        android:id="@+id/TextView02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/TextView01"
-        android:layout_below="@+id/TextView01"
-        android:layout_marginTop="62dp"
-        android:text="Ping" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView1"
-        android:layout_alignRight="@+id/TextView02"
-        android:layout_marginBottom="28dp"
-        android:text="right IR" />
-
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/include1"
-        android:layout_toLeftOf="@+id/textView2"
-        android:src="@drawable/arrow_button_metal_silver_blanktransie" />
 
 </RelativeLayout>

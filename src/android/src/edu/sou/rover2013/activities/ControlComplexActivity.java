@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
@@ -54,6 +53,8 @@ public class ControlComplexActivity extends BaseActivity {
 	private static TextView pingForward;
 	private static TextView leftWheel;
 	private static TextView rightWheel;
+	private static TextView battHigh;
+	private static TextView battLow;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +83,15 @@ public class ControlComplexActivity extends BaseActivity {
 		pingForward = (TextView) findViewById(R.id.text_forward_ping);
 		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
 		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
+		battHigh = (TextView) findViewById(R.id.text_high_batt);
+		battLow = (TextView) findViewById(R.id.text_low_batt);
 
 		// *******************************
 		// Button Listeners
 		// *******************************
 		buttonLaser.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
+				
 			}
 		});
 		buttonLogic.setOnClickListener(new View.OnClickListener() {
@@ -469,6 +472,8 @@ public class ControlComplexActivity extends BaseActivity {
 		pingForward.setText(String.valueOf(rover.getPingFront()));
 		leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
 		rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
+		battLow.setText(String.valueOf(rover.getBattLow()));
+		battHigh.setText(String.valueOf(rover.getBattHigh()));
 	}
 
 	@Override

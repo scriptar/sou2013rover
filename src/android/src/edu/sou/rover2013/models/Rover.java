@@ -25,8 +25,10 @@ public class Rover {
 	private int pingF;
 	private int irFR;
 	private int irFL;
+	private double battLow; // Board, Sensor Power Supply -- Shown in Voltage
+	private double battHigh; // Servo/Bluetooth/Laser Power Supply -- Shown in
+								// Voltage
 	private int laserAngle = 0;
-
 
 	/**
 	 * Rover Constructor
@@ -46,8 +48,8 @@ public class Rover {
 	 *            constructed.
 	 */
 	public boolean sendDataToRover(String scriptArg) {
-		//exit if not connected
-		if(!connection.isConnected()){
+		// exit if not connected
+		if (!connection.isConnected()) {
 			return false;
 		}
 		try {
@@ -126,7 +128,7 @@ public class Rover {
 	 * Data Packet Parser... Entries to be searched for go in here.
 	 */
 	private void consumeDataPacket() {
-		if (dataPacket == null){
+		if (dataPacket == null) {
 			return;
 		}
 		Iterator<String> iterator = dataPacket.iterator();
@@ -134,15 +136,18 @@ public class Rover {
 		while (iterator.hasNext()) {
 			string = iterator.next();
 			if (string.equals("pingF")) {
-				pingF =((int) Double.parseDouble(iterator.next()));
+				pingF = ((int) Double.parseDouble(iterator.next()));
 			} else if (string.equals("irFL")) {
-				irFL =((int) Double.parseDouble(iterator.next()));
+				irFL = ((int) Double.parseDouble(iterator.next()));
 			} else if (string.equals("irFR")) {
 				irFR = ((int) Double.parseDouble(iterator.next()));
+			} else if (string.equals("battLow")) {
+				battLow = (Double.parseDouble(iterator.next()));
+			} else if (string.equals("battHigh")) {
+				battHigh = (Double.parseDouble(iterator.next()));
 			}
 		}
 
-		
 	}
 
 	public int getInfaredFrontLeft() {
@@ -158,11 +163,19 @@ public class Rover {
 	}
 
 	public int getLaserAngle() {
-		return laserAngle ;
+		return laserAngle;
+	}
+	
+	public double getBattLow(){
+		return battLow;
+	}
+	
+	public double getBattHigh(){
+		return battHigh;
 	}
 
 	public void setLaserAngle(int laserAngleArg) {
 		laserAngle = laserAngleArg;
 	}
-	
+
 }

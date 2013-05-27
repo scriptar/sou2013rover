@@ -4,7 +4,6 @@ import edu.sou.rover2013.activities.ConnectionActivity;
 import edu.sou.rover2013.activities.ControlComplexActivity;
 import edu.sou.rover2013.activities.ControlSimpleActivity;
 import edu.sou.rover2013.activities.ControlWebActivity;
-import edu.sou.rover2013.activities.TelemetryActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
