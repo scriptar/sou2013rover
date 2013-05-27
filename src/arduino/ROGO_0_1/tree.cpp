@@ -40,6 +40,7 @@ PRIMTYPE prims[] = {
 };
 
 double rogo_vars[NUM_ROGOVARS + 1];
+extern ROVERSTATE rover;
 
 TNODE *makeFlatTree(TEXTNODE *list)
 {
@@ -61,6 +62,19 @@ TNODE *makeFlatTree(TEXTNODE *list)
       Serial.print(listnode->text);
       Serial.print(" ");
       Serial.println(dispPrimType(listnode->type));
+    }
+    if (listnode->type == ID)
+    {
+      if (strcmp(listnode->text, "TRUE") == 0)
+      {
+        listnode->text = "1";
+        listnode->type = NUM;
+      }
+      if (strcmp(listnode->text, "FALSE") == 0)
+      {
+        listnode->text = "0";
+        listnode->type = NUM;
+      }
     }
     if (tree == NIL)
     {
@@ -212,6 +226,7 @@ TNODE *makeParseTree(TNODE *tree)
           break;
         case NT_NUM:
         case NT_VAR:
+        case NT_SENSOR:
 
           break;
         default:
@@ -256,6 +271,11 @@ void printTree(TNODE *tree, int depth)
       break;
     case NT_VAR:
       Serial.print("V[");
+      Serial.print(current->varIdx);
+      Serial.print("]");
+      break;
+    case NT_SENSOR:
+      Serial.print("S[");
       Serial.print(current->varIdx);
       Serial.print("]");
       break;
@@ -324,6 +344,8 @@ const char *dispNodeType(const NodeType type)
     return "NUM";
   case NT_VAR: 
     return "VAR";
+  case NT_SENSOR:
+    return "SENSOR";
   case NT_FUNC: 
     return "FUNC";
   case NT_LIST_START: 
@@ -348,7 +370,7 @@ TNODE *newTreeNode(const TEXTNODE *node)
   PRIMTYPE *search = NULL;
   NodeType ntype = NT_UNKNOWN;
   DataType dtype = DT_INT;
-  int primIdx = -1, i, isVar, nInt = 0;
+  int primIdx = -1, i, isVar, isSensor, nInt = 0;
   int varIdx = -1;
   double nDbl = 0.0;
 
@@ -382,15 +404,27 @@ TNODE *newTreeNode(const TEXTNODE *node)
     else
     {
       isVar = 0;
+      isSensor = 0;
       if (strlen(node->text) == 2)
+      {
         isVar = (node->text[0] == 'V' && isdigit1(node->text[1]));
+        isSensor = (node->text[0] == 'S' && isdigit1(node->text[1]));
+      }
       else if (strlen(node->text) == 3)
+      {
         isVar = (node->text[0] == 'V' && isdigit1(node->text[1]) && isdigit1(node->text[2]));
+        isSensor = (node->text[0] == 'S' && isdigit1(node->text[1]) && isdigit1(node->text[2]));
+      }
       if (isVar)
       {
         varIdx = atoi(node->text + 1);
         //printf("\tVariable v%d found.\n", varIdx);
         ntype = NT_VAR;
+      }
+      if (isSensor)
+      {
+        varIdx = atoi(node->text + 1);
+        ntype = NT_SENSOR;
       }
       //else
       //printf("\tNot found: %s\n", node->text);
@@ -488,6 +522,11 @@ void execTree(TNODE *tree)
       Serial.print(current->varIdx);
       Serial.print("]");
       break;
+    case NT_SENSOR:
+      Serial.print("S[");
+      Serial.print(current->varIdx);
+      Serial.print("]");
+      break;
     case NT_LIST_START:
       execTree(current->left);
       if (current->left != NULL)
@@ -521,7 +560,38 @@ TNODE *loadVar(TNODE *current)
 {
   if (current->varIdx != -1 && current->varIdx <= NUM_ROGOVARS)
   {
-    current->nRational = rogo_vars[current->varIdx];
+    switch (current->ntype)
+    {
+    case NT_VAR:
+      current->nRational = rogo_vars[current->varIdx];
+      break;
+    case NT_SENSOR:
+      switch (current->varIdx)
+      {
+      case SENSOR_X:
+        current->nRational = rover.x;
+        break;
+      case SENSOR_Y:
+        current->nRational = rover.y;
+        break;
+      case SENSOR_HEADING:
+        current->nRational = rover.heading;
+        break;
+      case SENSOR_PING_FRONT:
+        current->nRational = (double)rover.pingRangeF;
+        break;
+      case SENSOR_PING_REAR:
+        current->nRational = (double)rover.pingRangeR;
+        break;
+      default:
+        current->nRational = 0.0;
+        break;
+      }
+      break;
+    default:
+      current->nRational = 0.0;
+      break;
+    }
     current->nInteger = (int)round(current->nRational);
     current->dtype = DT_DBL;
     if ((int)ceil(current->nRational) == (int)floor(current->nRational))
