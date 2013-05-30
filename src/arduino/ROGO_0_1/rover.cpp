@@ -23,8 +23,8 @@ ROVERSTATE rover = {0};
 // ***************************************
 void forward(int countF)
 {
-  int countF4 = countF * 4;
-  for(int i=0;i<=countF4;i++){
+  //int countF4 = countF * 4;
+  for(int i = 0; i < countF; i++){
     if(Serial.available()){
       pause(0);
       return;
@@ -36,10 +36,13 @@ void forward(int countF)
     if(safetyFlagUltra && safetyFlagIR){
         servoR.write(setR); //feed servos speed setting
         servoL.write(setL); 
-        delay(UNIT_CALIBRATION);
+        delay(FD_UNIT_CALIBRATION);
+        rover.x += sin((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+        rover.y += cos((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
       }
     else {
         pause(0);
+        /*
         tone(PIN_BUZZER, NOTE_C6, 250);
         digitalWrite(PIN_LED_INDICATOR, HIGH);
         delay(350);
@@ -48,6 +51,7 @@ void forward(int countF)
         digitalWrite(PIN_LED_INDICATOR, LOW);
         delay(350);
         noTone(PIN_BUZZER); 
+        */
         Serial.println("sensorTrip");
       }
   }
@@ -56,7 +60,7 @@ void forward(int countF)
 
 void reverse(int countR)
 {
-    for(int i=0;i<=countR;i++){
+    for(int i = 0; i < countR; i++){
       if(Serial.available()){
         pause(0);
         return;
@@ -65,7 +69,9 @@ void reverse(int countR)
       setL = 180; //servo2 full reverse
       servoR.write(setR); //feed servos speed setting
       servoL.write(setL); 
-      delay(UNIT_CALIBRATION + 150); // added 150ms to make up 
+      delay(BK_UNIT_CALIBRATION);
+      rover.x -= sin((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+      rover.y -= cos((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
     }
     pause(250);
 }
@@ -74,7 +80,7 @@ void left(int degreeL)
 {
   setR = 180;
   setL = 180;
-  for(int i=0;i<=degreeL;i++){
+  for(int i = 0; i < degreeL; i++){
     if(Serial.available()){
       pause(0);
       return;
@@ -82,6 +88,7 @@ void left(int degreeL)
     servoR.write(setR); 
     servoL.write(setL);
     delay(6);
+	rover.heading = (rover.heading - 1) % 360;
   }
   pause(250);
 }
@@ -90,7 +97,7 @@ void right(int degreeR)
 {
   setR = 0;
   setL = 0;
-  for(int i=0;i<=degreeR;i++){
+  for(int i = 0; i < degreeR; i++){
     if(Serial.available()){
       pause(0);
       return;
@@ -98,6 +105,7 @@ void right(int degreeR)
     servoR.write(setR);
     servoL.write(setL);
     delay(6);
+	rover.heading = (rover.heading + 1) % 360;
   }
   pause(250);
 }
@@ -156,10 +164,9 @@ void sensorCheck()
 
 void sensorSend()
 {
-  
-  if(millis() >= currentSend)
+  if (millis() >= currentSend)
   {
-    currentSend += sendThresh;
+    currentSend = millis() + sendThresh;
     Serial.println(F("start"));
     Serial.println(F("pingF"));
     Serial.println(rover.pingRangeF);
@@ -173,10 +180,18 @@ void sensorSend()
     Serial.println((rover.bLevelHigh * 2));
     Serial.println(F("freeMem"));
     Serial.println(rover.freeRam);
+	Serial.println(F("loc"));
+	Serial.print(F("("));
+    Serial.print(rover.x);
+	Serial.print(F(","));
+	Serial.print(rover.y);
+	Serial.print(F(","));
+	Serial.print(rover.heading);
+	Serial.println(F(")"));
     Serial.println(F("end"));
-    
   }
 }
+
 void pingCheck()
 {
   unsigned int uS =   sonar.ping();  // Send ping.

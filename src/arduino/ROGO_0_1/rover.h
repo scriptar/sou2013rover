@@ -51,14 +51,15 @@
 #define SERVO_MAX 2000 // Servo Maximum Pulse Width. Maybe need to adjust/test this more. 1500 = stopped
 #define SERVO_MIN 1000 // Servo Minimum Pulse Width. Maybe need to adjust/test this more
 #define SENSOR_CHECK_SPEED 500 // How frequently are we going to send out sensor data (in milliseconds). 50ms would be 20 times a second.
-#define UNIT_CALIBRATION 50 // Adjust this value to calibrate the movement units
+#define FD_UNIT_CALIBRATION 50 // Adjust this value to calibrate the movement units
+#define BK_UNIT_CALIBRATION 69 // Adjust this value to calibrate the movement units
 
 /*** type definitions ***/
 typedef struct rover_state {
-	double x, y, heading, irFL, irFR, irBL, irBR, bLevelLow, bLevelHigh;
-        unsigned int pingRangeF, pingRangeR, freeRam;
-        
-}ROVERSTATE;
+	double x, y, irFL, irFR, irBL, irBR, bLevelLow, bLevelHigh;
+	int heading;
+	unsigned int pingRangeF, pingRangeR, freeRam;
+} ROVERSTATE;
 
 /*** variables ***/
 extern Servo servoR; //create servo objects
