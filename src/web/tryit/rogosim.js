@@ -589,155 +589,172 @@ ROGO.executor = function (spec) {
 
 /* virtual ROGO rover state */
 ROGO.rover = function (spec) {
-	var objRef = {},
-		domRef = null,
-		parser = ROGO.parser(),
-		tree = null,
-		executor = ROGO.executor({rover: objRef}),
-		list = [],
-		transformStyleProperty = "transform",
-		initial = {x: 150, y: 100},
-		current = {x: 0, y: 0, heading: 0, time: 0, increment: 0, travelling: false, rotating: false},
-		destination = {time: 0, heading: 0},
-		vel = 0,
-	draw = function () {
-		domRef.style.left = (parseInt(initial.x + current.x, 10) || 0) + "px";
-		domRef.style.top = 200 - (parseInt(initial.y + current.y, 10) || 0) + "px";
-		domRef.style[transformStyleProperty] = "rotate(" + current.heading + "deg)";
+	var objRef = {
+		domRef: null,
+		tree: null,
+		list: [],
+		initial: {x: 0, y: 0},
+		current: {x: 0, y: 0, heading: 0, time: 0, increment: 0, travelling: false, rotating: false},
+		destination: {time: 0, heading: 0},
+		vel: 0
 	},
-	destinationReached = function () {
+	parser = ROGO.parser(),
+	transformStyleProperty = "transform",
+	draw = function (ref) {
+		ref.domRef.style.left = (parseInt(ref.initial.x + ref.current.x, 10) || 0) + "px";
+		ref.domRef.style.top = (-1 * parseInt(ref.initial.y + ref.current.y, 10) || 0) + "px";
+		ref.domRef.style[transformStyleProperty] = "rotate(" + ref.current.heading + "deg)";
+	},
+	destinationReached = function (ref) {
 		var reached = true;
-		if (current.travelling)
-			reached = (destination.time <= current.time);
-		else if (current.rotating)
-			reached = (destination.heading == current.heading);
+		if (ref.current.travelling)
+			reached = (ref.destination.time <= ref.current.time);
+		else if (ref.current.rotating)
+			reached = (ref.destination.heading == ref.current.heading);
 		return reached;
 	},
-	move = function () {
-		var reached = destinationReached(), theta;
+	move = function (ref) {
+		var reached = destinationReached(ref), theta;
 		if (!reached) {
-			current.time += 0.5;
-			if (current.travelling) {
-				theta = (current.heading - (current.increment > 0 ? 0 : 180)) * Math.PI / 180.0;
-				current.x = (vel * Math.sin(theta) * current.time);
-				current.y = (vel * Math.cos(theta) * current.time);
+			ref.current.time += 0.5;
+			if (ref.current.travelling) {
+				theta = (ref.current.heading - (ref.current.increment > 0 ? 0 : 180)) * Math.PI / 180.0;
+				ref.current.x = (ref.vel * Math.sin(theta) * ref.current.time);
+				ref.current.y = (ref.vel * Math.cos(theta) * ref.current.time);
 			}
-			if (current.rotating) {
-				current.heading += current.increment;
+			if (ref.current.rotating) {
+				ref.current.heading += ref.current.increment;
 			}
-			setTimeout(move, 10);
+			setTimeout((function () {
+				move(ref);
+			}), 10);
 		} else {
 			vel = 0;
-			current.increment = 0;
-			current.travelling = false;
-			current.rotating = false;
-			current.time = 0;
-			destination.time = 0;
+			ref.current.increment = 0;
+			ref.current.travelling = false;
+			ref.current.rotating = false;
+			ref.current.time = 0;
+			ref.destination.time = 0;
 		}
-		draw();
+		draw(ref);
 		return reached;
 	},
-	go = function (cmd, units, degrees) {
-		initial.x += current.x;
-		initial.y += current.y;
-		current.x = 0;
-		current.y = 0;
+	go = function (ref, cmd, units, degrees) {
+		ref.initial.x += ref.current.x;
+		ref.initial.y += ref.current.y;
+		ref.current.x = 0;
+		ref.current.y = 0;
 		switch (cmd) {
 			case "FD":
-				destination.time = units;
-				current.travelling = true;
-				current.increment = 1;
+				ref.destination.time = units;
+				ref.current.travelling = true;
+				ref.current.increment = 1;
 				break;
 			case "BK":
-				destination.time = units;
-				current.travelling = true;
-				current.increment = -1;
+				ref.destination.time = units;
+				ref.current.travelling = true;
+				ref.current.increment = -1;
 				break;
 			case "RT":
-				destination.heading = current.heading + degrees;
-				current.rotating = true;
-				current.increment = 1;
+				ref.destination.heading = ref.current.heading + degrees;
+				ref.current.rotating = true;
+				ref.current.increment = 1;
 				break;
 			case "LT":
-				destination.heading = current.heading - degrees;
-				current.rotating = true;
-				current.increment = -1;
+				ref.destination.heading = ref.current.heading - degrees;
+				ref.current.rotating = true;
+				ref.current.increment = -1;
 				break;
 		}
-		vel = 10;
-		move();
+		ref.vel = 10;
+		move(ref);
 	},
-	fd = function (arr) {
+	fd = function (ref, arr) {
 		if (!isNaN(parseInt(arr[0], 10)))
-			go("FD", parseInt(arr[0], 10), 0);
+			go(ref, "FD", parseInt(arr[0], 10), 0);
 	},
-	bk = function (arr) {
+	bk = function (ref, arr) {
 		if (!isNaN(parseInt(arr[0], 10)))
-			go("BK", parseInt(arr[0], 10), 0);
+			go(ref, "BK", parseInt(arr[0], 10), 0);
 	},
-	lt = function (arr) {
+	lt = function (ref, arr) {
 		if (!isNaN(parseInt(arr[0], 10)))
-			go("LT", 0, parseInt(arr[0], 10) % 360);
+			go(ref, "LT", 0, parseInt(arr[0], 10) % 360);
 	},
-	rt = function (arr) {
+	rt = function (ref, arr) {
 		if (!isNaN(parseInt(arr[0], 10)))
-			go("RT", 0, parseInt(arr[0], 10) % 360);
+			go(ref, "RT", 0, parseInt(arr[0], 10) % 360);
 	},
-	run = function () {
+	run = function (ref) {
 		var instruction;
-		if (current.travelling || current.rotating) {
-			setTimeout(run, 100);
+		if (ref.current.travelling || ref.current.rotating) {
+			setTimeout((function () {
+				run(ref);
+			}), 100);
 			//console.log("Waiting...");
-		} else if (list.length > 0) {
-			instruction = list.pop();
+		} else if (ref.list.length > 0) {
+			instruction = ref.list.pop();
 			//console.log("Running: " + instruction.cmd + " " + instruction.params[0]);
 			switch (instruction.cmd) {
-				case "fd": fd(instruction.params); break;
-				case "bk": bk(instruction.params); break;
-				case "rt": rt(instruction.params); break;
-				case "lt": lt(instruction.params); break;
+				case "fd": fd(ref, instruction.params); break;
+				case "bk": bk(ref, instruction.params); break;
+				case "rt": rt(ref, instruction.params); break;
+				case "lt": lt(ref, instruction.params); break;
 			}
-			run();
+			run(ref);
 		}
 	};
 	objRef.addQueue = function (instruction) {
-		list.push(instruction);
+		objRef.list.push(instruction);
+		return objRef;
 	};
 	objRef.exec = function (src) {
-		if (tree)
-			parser.destroyTree(tree);
-		tree = parser.parse(src);
-		executor.exec(tree);
-		list.reverse();
-		run();
+		if (objRef.tree)
+			parser.destroyTree(objRef.tree);
+		objRef.tree = parser.parse(src);
+		var executor = ROGO.executor({rover: objRef});
+		executor.exec(objRef.tree);
+		objRef.list.reverse();
+		run(objRef);
+		return objRef;
 	};
-	objRef.setID = function (id) {
+	objRef.setID = function (id, x, y) {
 		var i,
 			props = ["transform", "-ms-transform", "-moz-transform", "-webkit-transform", "-o-transform"];
-		domRef = document.getElementById(id);
-		domRef.style.display = "inline";
-		domRef.style.position = "relative";
+		objRef.domRef = document.getElementById(id);
+		objRef.domRef.style.display = "inline";
+		objRef.domRef.style.position = "absolute";
 		for (i = 0; i < props.length; i++) {
-			if (typeof domRef.style[props[i]] !== "undefined") {
+			if (typeof objRef.domRef.style[props[i]] !== "undefined") {
 				transformStyleProperty = props[i];
 				break;
 			}
 		}
+		return objRef;
+	};
+	objRef.setInitialXY = function(x, y) {
+		objRef.initial.x = x;
+		objRef.initial.y = y;
+		return objRef;
 	};
 	objRef.forward = function (units) {
-		fd([units]);
+		fd(objRef, [units]);
+		return objRef;
 	};
 	objRef.back = function (units) {
-		bk([units]);
+		bk(objRef, [units]);
+		return objRef;
 	};
 	objRef.left = function (degrees) {
-		lt([degrees]);
+		lt(objRef, [degrees]);
+		return objRef;
 	};
 	objRef.right = function (degrees) {
-		rt([degrees]);
+		rt(objRef, [degrees]);
+		return objRef;
 	}
 	objRef.isMoving = function () {
-		return current.travelling || current.rotating;
+		return objRef.current.travelling || objRef.current.rotating;
 	};
 	return objRef;
 };

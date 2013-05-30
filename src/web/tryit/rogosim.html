@@ -17,66 +17,28 @@ body {
   <textarea name="source" rows="2" cols="60">forward 10 right 90 back 10 left 180 bk 10 rt 90 bk 10
 V0=2 V1=8 V2=45 repeat V0 [repeat V1 [fd 5 rt V2] lt 180]</textarea>
   <div><input type="submit" value="Go" /> <input type="reset" value="Reset" /></div>
-  <div><img class="up" style="display: inline; position: relative; left: 150px; top: 100px;" id="rogo" src="../_assets/images/rogo.png" alt="ROGO"></div>
-  <textarea id="tree" style="display: none;" name="tree" rows="4" cols="50"></textarea>
+  <div><img class="up" style="display: inline; position: absolute; left: 150px; top: 150px;" id="rogo0" src="../_assets/images/rogo.png" alt="ROGO"></div>
+  <div><img class="up" style="display: inline; position: absolute; left: 300px; top: 300px;" id="rogo1" src="../_assets/images/rogo.png" alt="ROGO"></div>
+  <div><img class="up" style="display: inline; position: absolute; left: 450px; top: 150px;" id="rogo2" src="../_assets/images/rogo.png" alt="ROGO"></div>
 </form>
-
-
 
 <script type="text/javascript" src="rogosim.js"></script>
 <script type="text/javascript">
-//var tree, parser = ROGO.parser();
-var rover = ROGO.rover();
-rover.setID("rogo");
-//rover.right(180);
-//rover.forward(20);
-//rover
+var rovers = [
+	ROGO.rover().setID("rogo0").setInitialXY(150, -150),
+	ROGO.rover().setID("rogo1").setInitialXY(300, -300),
+	ROGO.rover().setID("rogo2").setInitialXY(450, -150)
+];
+//rovers[0].right(180).forward(20);
 parseCmds = function (f) {
-	/*parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
-	if (f.source.value.length == 0)
-		f.source.value = parser.source;
-	tree = parser.parse(f.source.value);
-	f.tree.value = parser.printTree(tree);
-	document.getElementById("tree").style.display = "block";
-	ROGO.executor().exec(tree);
-	parser.destroyTree(tree);
-	*/
-	if (f.source.value.length > 0)
-		rover.exec(f.source.value);
+	var i;
+	if (f.source.value.length > 0) {
+		for (i = 0; i < rovers.length; i++) {
+			rovers[i].exec(f.source.value);
+		}
+	}
 	return false;
 };
-/*
-var goRogo = function () {
-	var r = document.getElementById("rogo"),
-	x = 0, y = 0, max_x = 400, max_y = 125,
-	v = [
-		{x:0,y:0,cl:""},
-		{x:1,y:0,cl:"right"},
-		{x:0,y:-1,cl:"up"},
-		{x:-1,y:0,cl:"left"},
-		{x:0,y:1,cl:"down"}
-	],
-	vDir = {stop:0,right:1,up:2,left:3,down:4},
-	speed = 5,
-	dir = vDir.right,
-	move = function () {
-		x += speed * v[dir].x;
-		y += speed * v[dir].y;
-		if (x > max_x)	{dir = vDir.down; x = max_x;}
-		if (x < 0) {dir = vDir.up; x = 0;}
-		if (y > max_y) {dir = vDir.left; y = max_y;}
-		if (y < 0) {dir = vDir.right; y = 0;}
-		r.className = v[dir].cl;
-		r.style.left = x + "px";
-		r.style.top = y + "px";
-	};
-	r.style.display = "inline";
-	r.style.position = "relative";
-	setInterval(move, 50);
-};
-
-window.onload = goRogo;
-*/
 </script>
 </body>
 </html>
