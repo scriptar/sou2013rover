@@ -23,9 +23,11 @@ ROVERSTATE rover = {0};
 // ***************************************
 void forward(int countF)
 {
-  //int countF4 = countF * 4;
-  for(int i = 0; i < countF; i++){
-    if(Serial.available()){
+  countF *= CHECK_RATE;
+  for (int i = 0; i < countF; i++)
+  {
+    if (Serial.available())
+    {
       pause(0);
       return;
     }
@@ -33,62 +35,66 @@ void forward(int countF)
     setL = 0; //servo2 full forward
     sensorCheck();
     sensorSend();
-    if(safetyFlagUltra && safetyFlagIR){
-        servoR.write(setR); //feed servos speed setting
-        servoL.write(setL); 
-        delay(FD_UNIT_CALIBRATION);
-        rover.x += sin((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
-        rover.y += cos((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
-      }
-    else {
-        pause(0);
-        /*
-        tone(PIN_BUZZER, NOTE_C6, 250);
-        digitalWrite(PIN_LED_INDICATOR, HIGH);
-        delay(350);
-        noTone(PIN_BUZZER);
-        tone(PIN_BUZZER, NOTE_C4, 250);
-        digitalWrite(PIN_LED_INDICATOR, LOW);
-        delay(350);
-        noTone(PIN_BUZZER); 
-        */
-        Serial.println("sensorTrip");
-      }
+    if (safetyFlagUltra && safetyFlagIR)
+    {
+      servoR.write(setR); //feed servos speed setting
+      servoL.write(setL); 
+      delay(UNIT_CALIBRATION);
+      rover.x += (1.0 / (double)CHECK_RATE) * sin((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+      rover.y += (1.0 / (double)CHECK_RATE) * cos((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+    }
+    else
+    {
+      pause(0);
+      tone(PIN_BUZZER, NOTE_C6, 250);
+      digitalWrite(PIN_LED_INDICATOR, HIGH);
+      delay(350);
+      noTone(PIN_BUZZER);
+      tone(PIN_BUZZER, NOTE_C4, 250);
+      digitalWrite(PIN_LED_INDICATOR, LOW);
+      delay(350);
+      noTone(PIN_BUZZER);
+      Serial.println("sensorTrip");
+    }
   }
   pause(250);
 }
 
 void reverse(int countR)
 {
-    for(int i = 0; i < countR; i++){
-      if(Serial.available()){
-        pause(0);
-        return;
-      }      
-      setR = 0; //servo1 full reverse
-      setL = 180; //servo2 full reverse
-      servoR.write(setR); //feed servos speed setting
-      servoL.write(setL); 
-      delay(BK_UNIT_CALIBRATION);
-      rover.x -= sin((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
-      rover.y -= cos((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+  for (int i = 0; i < countR; i++)
+  {
+    if (Serial.available())
+    {
+      pause(0);
+      return;
     }
-    pause(250);
+    setR = 0; //servo1 full reverse
+    setL = 180; //servo2 full reverse
+    servoR.write(setR); //feed servos speed setting
+    servoL.write(setL); 
+    delay(UNIT_CALIBRATION * CHECK_RATE);
+    rover.x -= sin((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+    rover.y -= cos((double)rover.heading * PI / 180.0); // sin & cos switched because heading is clockwise from vertical
+  }
+  pause(250);
 }
 
 void left(int degreeL)
 {
   setR = 180;
   setL = 180;
-  for(int i = 0; i < degreeL; i++){
-    if(Serial.available()){
+  for(int i = 0; i < degreeL; i++)
+  {
+    if (Serial.available())
+    {
       pause(0);
       return;
     }
     servoR.write(setR); 
     servoL.write(setL);
     delay(6);
-	rover.heading = (rover.heading - 1) % 360;
+    rover.heading = (rover.heading - 1) % 360;
   }
   pause(250);
 }
@@ -97,15 +103,17 @@ void right(int degreeR)
 {
   setR = 0;
   setL = 0;
-  for(int i = 0; i < degreeR; i++){
-    if(Serial.available()){
+  for (int i = 0; i < degreeR; i++)
+  {
+    if (Serial.available())
+    {
       pause(0);
       return;
     }
     servoR.write(setR);
     servoL.write(setL);
     delay(6);
-	rover.heading = (rover.heading + 1) % 360;
+    rover.heading = (rover.heading + 1) % 360;
   }
   pause(250);
 }
@@ -127,7 +135,7 @@ void LZAim(int degreeLZ)
 
 void LZFire(int state)
 {
-  if(state == 1)
+  if (state == 1)
   {
     digitalWrite(PIN_LZ_FIRE, HIGH);
   }
@@ -144,7 +152,7 @@ void battCheck()
   rover.bLevelHigh = analogRead(PIN_BATT_SENSE_HIGH);
   rover.bLevelLow *= .0049; //convert to corresponding input voltage value
   rover.bLevelHigh *= .0049;
-  if(rover.bLevelLow < 2.5 || rover.bLevelHigh < 2.5) //check if below 2.5 input volts(5v), warning led on
+  if (rover.bLevelLow < 2.5 || rover.bLevelHigh < 2.5) //check if below 2.5 input volts(5v), warning led on
   {
     digitalWrite(PIN_LED_INDICATOR, HIGH); 
   }
@@ -180,30 +188,30 @@ void sensorSend()
     Serial.println((rover.bLevelHigh * 2));
     Serial.println(F("freeMem"));
     Serial.println(rover.freeRam);
-	Serial.println(F("loc"));
-	Serial.print(F("("));
+    Serial.println(F("loc"));
+    Serial.print(F("("));
     Serial.print(rover.x);
-	Serial.print(F(","));
-	Serial.print(rover.y);
-	Serial.print(F(","));
-	Serial.print(rover.heading);
-	Serial.println(F(")"));
+    Serial.print(F(","));
+    Serial.print(rover.y);
+    Serial.print(F(","));
+    Serial.print(rover.heading);
+    Serial.println(F(")"));
     Serial.println(F("end"));
   }
 }
 
 void pingCheck()
 {
-  unsigned int uS =   sonar.ping();  // Send ping.
+  unsigned int uS = sonar.ping();  // Send ping.
   rover.pingRangeF = uS / US_ROUNDTRIP_CM; // Convert ping time to distance in cm and print result (0 = outside set distance range)
-  if(rover.pingRangeF == 0)
+  if (rover.pingRangeF == 0)
   {
 //    Serial.println("Out of Range");
     rover.pingRangeF = 9999;
     safetyFlagUltra = true;
   } 
 
-  else if(rover.pingRangeF <= 10) 
+  else if (rover.pingRangeF <= 10) 
   {
 //    Serial.print("Ping: ");
 //    Serial.print(rover.pingRangeF); // Ping returned, uS result in ping_result, convert to cm with US_ROUNDTRIP_CM.
@@ -235,7 +243,7 @@ void irCheck()
 //  Serial.print(rover.irFL); //Print the state of the tcrt5000
 //  Serial.print(", ");
 //  Serial.println(rover.irFR);
-  if(rover.irFL > 650 | rover.irFR > 650)
+  if (rover.irFL > 650 | rover.irFR > 650)
   {
     safetyFlagIR = false;
   }
