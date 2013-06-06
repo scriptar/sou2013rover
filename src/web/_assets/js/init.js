@@ -7,7 +7,7 @@ jQuery(function( $ ){
 	
 	// The default axis is 'y', but in this demo, I want to scroll both
 	// You can modify any default like this
-	$.localScroll.defaults.axis = 'xy';
+	$.localScroll.defaults.axis = 'x';
 	
 	// Scroll initially if there's a hash (#something) in the url 
 	$.localScroll.hash({
