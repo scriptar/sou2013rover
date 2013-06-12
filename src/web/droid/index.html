@@ -8,18 +8,20 @@
 /*<![CDATA[*/
 body {
 	font-family: 'Courier New', Courier, monospace;
+	margin: 0;
+	padding: 0;
 }
 #cmds1 {
-	width: 190px;
+	width: 130px;
 	float: left;
-	margin-right: 40px;
+	margin-right: 30px;
 }
 #cmds2 {
 	float: left;
-	width: 200px;
+	width: 180px;
 }
 #source, #tree {
-	width: 450px;
+	width: 400px;
 }
 #cmds1 fieldset, #cmds2 fieldset {
 	width: 100%;
@@ -29,11 +31,14 @@ body {
 #cmds1 fieldset legend, #cmds2 fieldset legend {
 	font-weight: bold;
 }
-input, select {
-	font-size: 15pt;
+input {
+	font-size: 10pt;
+}
+select {
+	font-size: 9pt;
 }
 #cmds1 input {
-	width: 90px;
+	width: 60px;
 }
 #programflow {
 }
@@ -44,25 +49,28 @@ input, select {
 #numpad {
 }
 #numpad input {
-	width: 40px;
-	height: 40px;
-	font-size: 15pt;
-}
-#numpad input#numPlus {
-	height: 80px;
+	width: 35px;
+	height: 35px;
+	font-size: 13pt;
 }
 #numpad input#space {
-	height: 200px;
+	height: 175px;
 }
 #numpad input#numE {
-	height: 80px;
-	font-size: 18pt;
+	height: 70px;
+	font-size: 14pt;
 }
 #numpad input#num0 {
-	width: 80px;
+	width: 70px;
+}
+#srcLoader {
+	display: none;
 }
 .clear {
 	clear: both;
+}
+.srctxt {
+	white-space: pre-wrap;
 }
 /*]]>*/
 </style>
@@ -124,21 +132,22 @@ input, select {
       <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td><input type="button" value="V" onclick="addCmd(this.form, 'V');" /></td>
+		  <td><input type="button" value="S" onclick="addCmd(this.form, 'S');" /></td>
           <td><input type="button" value="/" onclick="addCmd(this.form, '/');" /></td>
           <td><input type="button" value="*" onclick="addCmd(this.form, '*');" /></td>
-          <td><input type="button" value="-" onclick="addCmd(this.form, '-');" /></td>
-		  <td rowspan="5"><input id="space" type="button" value=" " onclick="addCmd(this.form, '');" /></td>
+		  <td rowspan="5"><input id="space" type="button" value=" " onclick="addCmd(this.form, ' ');" /></td>
         </tr>
         <tr>
           <td><input type="button" value="7" onclick="addCmd(this.form, '7');" /></td>
           <td><input type="button" value="8" onclick="addCmd(this.form, '8');" /></td>
           <td><input type="button" value="9" onclick="addCmd(this.form, '9');" /></td>
-          <td rowspan="2"><input id="numPlus" type="button" value="+" onclick="addCmd(this.form, '+');" /></td>
+          <td><input type="button" value="-" onclick="addCmd(this.form, '-');" /></td>
         </tr>
         <tr>
           <td><input type="button" value="4" onclick="addCmd(this.form, '4');" /></td>
           <td><input type="button" value="5" onclick="addCmd(this.form, '5');" /></td>
           <td><input type="button" value="6" onclick="addCmd(this.form, '6');" /></td>
+		  <td><input type="button" value="+" onclick="addCmd(this.form, '+');" /></td>
         </tr>
         <tr>
           <td><input type="button" value="1" onclick="addCmd(this.form, '1');" /></td>
@@ -153,11 +162,11 @@ input, select {
       </table>
     </fieldset>
     <fieldset>
-      <legend>Variables</legend>
+      <legend>Variables/Sensors</legend>
       <div>
         <select name="vars" onchange="addCmd(this.form, this[this.selectedIndex].value);this.selectedIndex = 0;">
-          <option value="" selected="selected">Select Variable</option>
-          <option value="V0">Variable 0</option>
+          <option value="" selected="selected">Variable/Sensor</option>
+		  <option value="V0">Variable 0</option>
           <option value="V1">Variable 1</option>
           <option value="V2">Variable 2</option>
           <option value="V3">Variable 3</option>
@@ -167,6 +176,12 @@ input, select {
           <option value="V7">Variable 7</option>
           <option value="V8">Variable 8</option>
           <option value="V9">Variable 9</option>
+		  <option value="S0">Sensor 0 - UNKNOWN</option>
+		  <option value="S1">Sensor 1 - Loc.X</option>
+		  <option value="S2">Sensor 2 - Loc.Y</option>
+		  <option value="S3">Sensor 3 - Heading (deg)</option>
+		  <option value="S4">Sensor 4 - PING_FRONT</option>
+		  <option value="S5">Sensor 5 - PING_REAR</option>
         </select>
       </div>
 	  <div><input type="button" value="Assign" onclick="addCmd(this.form, '=');" /></div>
@@ -180,31 +195,90 @@ input, select {
     </fieldset>
   </div>
   <div class="clear"></div>
-  <textarea id="source" name="source" rows="5" cols="40"></textarea>
+  <fieldset id="srcLoader"></fieldset>
+  <textarea id="source" name="source" rows="5" cols="40" onchange="manualUpdate(this);" onclick="setCursorLocation(this);" onfocus="setCursorLocation(this);" onkeyup="setCursorLocation(this);"></textarea>
+  <input type="hidden" name="tags" value="" />
   <div>
     <input type="submit" value="Run ROGO Program" />
     <input type="reset" value="Reset" onclick="clearCode();" />
+	<input type="button" value="Save" onclick="saveCode(this.form);" />
+	<input type="button" value="Load" onclick="loadCode(this.form);" />
+	<input type="text" name="loc" value="" size="3" />
   </div>
   <textarea id="tree" name="tree" rows="20" cols="40"></textarea>
 </form>
 <script type="text/javascript" src="rogosim.js"></script>
+<script type="text/javascript" src="json2min.js"></script>
 <script type="text/javascript">
 //<![CDATA[
-var code = [], tree, parser = ROGO.parser();
+var code = [], tree, parser = ROGO.parser(), cursorLocation = 0,
+getAjaxObject = function () {
+	var oXh = null, i, xmlHTTPversions = ["Msxml2.XMLHTTP.7.0", "Msxml2.XMLHTTP.6.0", "Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
+	if (typeof XMLHttpRequest === "function") {
+		oXh = new XMLHttpRequest();
+	} else if (typeof ActiveXObject === "function") {
+		for (i = 0; i < xmlHTTPversions.length; i += 1) {
+			try {
+				oXh = new ActiveXObject(xmlHTTPversions[i]);
+				if (oXh) break;
+			} catch (e) { /* check for next version */ }
+		}
+	}
+	return oXh;
+},
 clearCode = function () {
 	code = [];
-};
+	cursorLocation = 0;
+},
+setCursorLocation = function (el) {
+	cursorLocation = (function () {
+		if (el.selectionStart) {
+			return el.selectionStart;
+		} else if (document.selection) {
+			el.focus();
+			var r = document.selection.createRange();
+			if (r == null) {
+				return 0;
+			}
+			var re = el.createTextRange(),
+				rc = re.duplicate();
+			re.moveToBookmark(r.getBookmark());
+			rc.setEndPoint('EndToStart', re);
+			return rc.text.length;
+		}
+		return 0; 
+	})();
+	el.form.loc.value = cursorLocation;
+}
+manualUpdate = function (src) {
+	code = [];
+	code = src.value.split(" ");
+},
+insertAt = function (src, index, str) {
+	if (index > 0)
+		return src.substring(0, index) + str + src.substring(index, src.length);
+	else
+		return str + src;
+},
 addCmd = function (f, cmd) {
 	var last = "";
-	if (code.length > 0)
-		last = code[code.length - 1];
-	if (/[\-0-9\.]/.test(cmd) && (/^(\-){0,1}(\d+)?(\.){0,1}(\d+)?$/.test(last) || last == "V")) {
-		code[code.length - 1] += cmd;
+	if (cursorLocation > 0 && cursorLocation != f.source.value.length) {
+		f.source.value = insertAt(f.source.value, cursorLocation, cmd);
+		cursorLocation += cmd.length;
+		manualUpdate(f.source);
 	} else {
-		code.push(cmd);
+		if (code.length > 0)
+			last = code[code.length - 1];
+		if (/^[\-0-9\.]$/.test(cmd) && (/^(\-){0,1}(\d+)?(\.){0,1}(\d+)?$/.test(last) || last == "V" || last == "S")) {
+			code[code.length - 1] += cmd;
+		} else {
+			code.push(cmd);
+		}
+		f.source.value = code.join(" ").replace(/\n /, "\n");
+		cursorLocation = f.source.value.length;
 	}
-    f.source.value = code.join(" ").replace(/\n /, "\n");
-};
+	f.loc.value = cursorLocation;
+},
 parseCmds = function (f) {
     parser.source = "V0 = 10 REPEAT 5 [FD V0 RT 90]";
     if (f.source.value.length == 0)
@@ -217,12 +291,145 @@ parseCmds = function (f) {
         if (typeof Android === "object") {
             //Android.showAlert("This is a \"Web Mode\" message...");
             //Android.sendSourceToAdvancedMode(parser.source);
-            Android.sendSourceToRover(parser.source);
+            Android.sendSourceToRover(f.source.value);
         }
     } catch (err) {
-        alert("Android Error:\n" + err.message);
+        f.tree.value += "\nAndroid Error:\n" + err.message + "\n" + err.fileName + ":" + err.lineNumber;
     }
     return false;
+},
+saveCode = function (f) {
+	var url = "../rogosrc.php",
+		data = "src=" + encodeURIComponent(f.source.value.toUpperCase()),
+		oXht = getAjaxObject(),
+		tags = prompt("Please enter some tags to associate with this program (space separated):", f.tags.value);
+	f.tags.value = tags;
+	data += "&tags=" + encodeURIComponent(tags);
+	if (typeof oXht === "object") {
+		oXht.open("POST", url, true);
+		oXht.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		oXht.setRequestHeader("Content-length", data.length);
+		oXht.onreadystatechange = function () {
+			if (oXht.readyState === 4) {
+				if (oXht.status === 200) {
+					f.tree.value += oXht.responseText + "\n";
+				} else {
+					f.tree.value += "Could not access " + url + "\n";
+					f.tree.value += oXht.responseText + "\n";
+				}
+			}
+		};
+		oXht.send(data);
+	}
+	return false;
+},
+setSrc = function (f, srctxt) {
+	f.source.value = srctxt;
+	document.getElementById("srcLoader").style.display = "none";
+},
+loadCode = function (f) {
+	var url = "../rogosrc.php",
+		tags = prompt("Enter some tags to search for:", ""),
+		data = "tags=" + encodeURIComponent(tags),
+		oXht = getAjaxObject(),
+		results = null,
+		loader = document.getElementById("srcLoader"),
+		_legend = document.createElement("legend"),
+		_a = document.createElement("a"),
+		_dl = document.createElement("dl"),
+		_dt = document.createElement("dt"),
+		_dd = document.createElement("dd"),
+		link = null,
+		tmp = null;
+	if (tags == null || tags.length == 0) {
+		data = "list";
+		tags = "All";
+	}
+	_a.setAttribute("onclick", "loadServerCode(document.forms[0], this.href); return false;");
+	_dd.className = "srctxt";
+	_dd.setAttribute("onclick", "setSrc(document.forms[0], this.innerHTML)");
+	loader.innerHTML = "";
+	_legend.appendChild(document.createTextNode("Search results for \"" + tags + "\":"));
+	loader.appendChild(_legend);
+	loader.style.display = "block";
+	if (typeof oXht === "object") {
+		oXht.open("GET", url + "?" + data, true);
+		oXht.onreadystatechange = function () {
+			if (oXht.readyState === 4) {
+				if (oXht.status === 200) {
+					results = JSON.parse(oXht.responseText);
+					if (results !== null && typeof results === "object") {
+						for (result in results) {
+							if (results.hasOwnProperty(result)) {
+								if (result.length === 32 && results[result].tags) {
+									if (loader) {
+										link = _a.cloneNode(true);
+										link.appendChild(document.createTextNode(results[result].savetime));
+										link.href = url + "?hash=" + result;
+										tmp = _dt.cloneNode(true);
+										tmp.appendChild(link);
+										_dl.appendChild(tmp);
+										tmp = _dd.cloneNode(false);
+										tmp.appendChild(document.createTextNode("Tags: " + results[result].tags.join(", ")));
+										_dl.appendChild(tmp);
+									} else {
+										f.tree.value += "Hash: " + result + " SaveTime: " + results[result].savetime + "\n";
+									}
+								} else {
+									for (i = 0; i < results[result].length; i++) {
+										if (loader) {
+											link = _a.cloneNode(true);
+											link.appendChild(document.createTextNode(results[result][i].savetime));
+											link.href = url + "?hash=" + results[result][i].hash;
+											tmp = _dt.cloneNode(true);
+											tmp.appendChild(link);
+											_dl.appendChild(tmp);
+											tmp = _dd.cloneNode(true);
+											tmp.appendChild(document.createTextNode(results[result][i].src));
+											_dl.appendChild(tmp);
+										} else {
+											f.tree.value += "Src: " + results[result][i].src + " SaveTime: " + results[result][i].savetime + "\n";
+										}
+									}
+								}
+							}
+						}
+						loader.appendChild(_dl);
+						loader.innerHTML = loader.innerHTML;
+					}
+					//f.tree.value += oXht.responseText + "\n";
+				} else {
+					f.tree.value += "Could not access " + url + "\n";
+					f.tree.value += oXht.responseText + "\n";
+				}
+			}
+		};
+		oXht.send(data);
+	}
+	return false;
+}
+loadServerCode = function (f, url) {
+	var oXht = getAjaxObject(),
+		results = null;
+	if (typeof oXht === "object") {
+		oXht.open("GET", url, true);
+		oXht.onreadystatechange = function () {
+			if (oXht.readyState === 4) {
+				if (oXht.status === 200) {
+					results = JSON.parse(oXht.responseText);
+					if (results !== null && typeof results === "object") {
+						setSrc(f, results.src);
+					}
+					//f.tree.value += oXht.responseText + "\n";
+				} else {
+					f.tree.value += "Could not access " + url + "\n";
+					f.tree.value += oXht.responseText + "\n";
+				}
+			}
+		};
+		oXht.send(null);
+	}
+	return false;
 };
 //]]>
 </script>

@@ -222,6 +222,12 @@ ROGO.parser = function (spec) {
 							if (ROGO.primitives[opcmd.primkey].args != 1) // (don't swap if op is is a "NOT")
 							{
 								left = current.prev;
+								if (left == null) {
+									/* unexpected missing argument, create one */
+									left = ROGO.treeNode();
+									left.next = current;
+									current.prev = left;
+								}
 								opcmd.prev = left.prev;
 								if (opcmd.prev != null)
 									opcmd.prev.next = opcmd;
@@ -384,7 +390,7 @@ ROGO.parser = function (spec) {
 ROGO.executor = function (spec) {
 	var p = ROGO.primitives,
 	rogo_vars = [],
-	rover = spec.rover || null,
+	rover = (spec ? spec.rover || null : null),
 	_current = null,
 	execTree = function (current) {
 		while (current) {
@@ -494,24 +500,32 @@ ROGO.executor = function (spec) {
 			default:
 				break;
 		}
+		if (typeof nval === "boolean") {
+			nval = (nval ? 1 : 0);
+		}
 		console.log(fcn + " " + String(nleft) + ", " + String(nright) + " => " + nval);
 		current.nval = nval;
 		return current;
 	},
 	evalNodeValue = function (current) {
-		var node;
-		if (current.ntype == ROGO.c.nodeType.NT_LIST_START && current.left != null)
-			current = evalNodeValue(current.left);
-		if (current.primkey.length > 0)
-			node = ROGO.primitives[current.primkey].func(current);
-		else if (current.varidx != -1)
-			node = loadVar(current);
-		else
-			node = current;
+		var node = null;
+		if (current != null) {
+			if (current.ntype == ROGO.c.nodeType.NT_LIST_START && current.left != null)
+				current = evalNodeValue(current.left);
+			if (current.primkey.length > 0)
+				node = ROGO.primitives[current.primkey].func(current);
+			else if (current.varidx != -1)
+				node = loadVar(current);
+			else
+				node = current;
+		}
 		return node;
 	},
 	evalNodeValueInt = function (current) {
-		return parseInt(current.nval, 10);
+		if (current != null)
+			return parseInt(current.nval, 10);
+		else
+			return 0;
 	};
 	/* primitive functions */
 	/* operators */
@@ -553,28 +567,28 @@ ROGO.executor = function (spec) {
 	p["FORWARD"].func = p["FD"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("FD " + i);
-		if (typeof rover === "object")
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
 			rover.addQueue({cmd: "fd", params: [i]});
 		return current;
 	};
 	p["BACK"].func = p["BK"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("BK " + i);
-		if (typeof rover === "object")
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
 			rover.addQueue({cmd: "bk", params: [i]})
 		return current;
 	};
 	p["LEFT"].func = p["LT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("LT " + i);
-		if (typeof rover === "object")
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
 			rover.addQueue({cmd: "lt", params: [i]})
 		return current;
 	};
 	p["RIGHT"].func = p["RT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("RT " + i);
-		if (typeof rover === "object")
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
 			rover.addQueue({cmd: "rt", params: [i]})
 		return current;
 	};

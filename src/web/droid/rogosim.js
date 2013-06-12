@@ -1,16 +1,16 @@
 var ROGO = {};
 
 if (typeof console !== "object") {
-	var console = function () {
-		var msg = [];
-		return {
-			log: function () {
-				var i;
-				for (i = 0; i < arguments.length; i += 1) {
-					msg.push(String(arguments[i]));
-				}
-			}
-		};
+	var console = {
+		msg: []
+	};
+}
+if (typeof console.log !== "function") {
+	console.log = function () {
+		var i;
+		for (i = 0; i < arguments.length; i += 1) {
+			console.msg.push(String(arguments[i]));
+		}
 	};
 }
 
@@ -104,6 +104,7 @@ ROGO.parser = function (spec) {
 		tree = null;
 		src = src.toUpperCase().replace(/[^A-Z0-9\.\+\-\*\/=<>\[\]]/g, ' '); //filter out unexpected chars
 		src = src.replace(/([A-Z0-9\.\-]+)/g, function(match, group1, offset, original) { return ' ' + group1 + ' '; }); //pad words with spaces
+		src = src.replace(/[\[]/g, ' [ ').replace(/[\]]/g, ' ] '); //pad brackets with spaces
 		src = src.replace(/--/g, ' - -'); //fix minus/negative case
 		src = src.replace(/\s+/g, ' '); //convert all whitespace into single space
 		wordList = src.split(' ');
@@ -221,6 +222,12 @@ ROGO.parser = function (spec) {
 							if (ROGO.primitives[opcmd.primkey].args != 1) // (don't swap if op is is a "NOT")
 							{
 								left = current.prev;
+								if (left == null) {
+									/* unexpected missing argument, create one */
+									left = ROGO.treeNode();
+									left.next = current;
+									current.prev = left;
+								}
 								opcmd.prev = left.prev;
 								if (opcmd.prev != null)
 									opcmd.prev.next = opcmd;
@@ -383,6 +390,8 @@ ROGO.parser = function (spec) {
 ROGO.executor = function (spec) {
 	var p = ROGO.primitives,
 	rogo_vars = [],
+	rover = (spec ? spec.rover || null : null),
+	_current = null,
 	execTree = function (current) {
 		while (current) {
 			switch (current.ntype) {
@@ -491,25 +500,32 @@ ROGO.executor = function (spec) {
 			default:
 				break;
 		}
+		if (typeof nval === "boolean") {
+			nval = (nval ? 1 : 0);
+		}
 		console.log(fcn + " " + String(nleft) + ", " + String(nright) + " => " + nval);
 		current.nval = nval;
 		return current;
 	},
-	
 	evalNodeValue = function (current) {
-		var node;
-		if (current.ntype == ROGO.c.nodeType.NT_LIST_START && current.left != null)
-			current = evalNodeValue(current.left);
-		if (current.primkey.length > 0)
-			node = ROGO.primitives[current.primkey].func(current);
-		else if (current.varidx != -1)
-			node = loadVar(current);
-		else
-			node = current;
+		var node = null;
+		if (current != null) {
+			if (current.ntype == ROGO.c.nodeType.NT_LIST_START && current.left != null)
+				current = evalNodeValue(current.left);
+			if (current.primkey.length > 0)
+				node = ROGO.primitives[current.primkey].func(current);
+			else if (current.varidx != -1)
+				node = loadVar(current);
+			else
+				node = current;
+		}
 		return node;
 	},
 	evalNodeValueInt = function (current) {
-		return parseInt(current.nval, 10);
+		if (current != null)
+			return parseInt(current.nval, 10);
+		else
+			return 0;
 	};
 	/* primitive functions */
 	/* operators */
@@ -551,21 +567,29 @@ ROGO.executor = function (spec) {
 	p["FORWARD"].func = p["FD"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("FD " + i);
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
+			rover.addQueue({cmd: "fd", params: [i]});
 		return current;
 	};
 	p["BACK"].func = p["BK"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("BK " + i);
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
+			rover.addQueue({cmd: "bk", params: [i]})
 		return current;
 	};
 	p["LEFT"].func = p["LT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("LT " + i);
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
+			rover.addQueue({cmd: "lt", params: [i]})
 		return current;
 	};
 	p["RIGHT"].func = p["RT"].func = function (current) {
 		var i = evalNodeValueInt(evalNodeValue(current.left));
 		console.log("RT " + i);
+		if (rover != null && typeof rover === "object" && typeof rover.addQueue === "function")
+			rover.addQueue({cmd: "rt", params: [i]})
 		return current;
 	};
 	p["LZAIM"].func = function (current) { return current; };
@@ -575,6 +599,178 @@ ROGO.executor = function (spec) {
 			execTree(tree);
 		}
 	};
+};
+
+/* virtual ROGO rover state */
+ROGO.rover = function (spec) {
+	var objRef = {
+		domRef: null,
+		tree: null,
+		list: [],
+		initial: {x: 0, y: 0},
+		current: {x: 0, y: 0, heading: 0, time: 0, increment: 0, travelling: false, rotating: false},
+		destination: {time: 0, heading: 0},
+		vel: 0
+	},
+	parser = ROGO.parser(),
+	transformStyleProperty = "transform",
+	draw = function (ref) {
+		ref.domRef.style.left = (parseInt(ref.initial.x + ref.current.x, 10) || 0) + "px";
+		ref.domRef.style.top = (-1 * parseInt(ref.initial.y + ref.current.y, 10) || 0) + "px";
+		ref.domRef.style[transformStyleProperty] = "rotate(" + ref.current.heading + "deg)";
+	},
+	destinationReached = function (ref) {
+		var reached = true;
+		if (ref.current.travelling)
+			reached = (ref.destination.time <= ref.current.time);
+		else if (ref.current.rotating)
+			reached = (ref.destination.heading == ref.current.heading);
+		return reached;
+	},
+	move = function (ref) {
+		var reached = destinationReached(ref), theta;
+		if (!reached) {
+			ref.current.time += 0.5;
+			if (ref.current.travelling) {
+				theta = (ref.current.heading - (ref.current.increment > 0 ? 0 : 180)) * Math.PI / 180.0;
+				ref.current.x = (ref.vel * Math.sin(theta) * ref.current.time);
+				ref.current.y = (ref.vel * Math.cos(theta) * ref.current.time);
+			}
+			if (ref.current.rotating) {
+				ref.current.heading += ref.current.increment;
+			}
+			setTimeout((function () {
+				move(ref);
+			}), 10);
+		} else {
+			vel = 0;
+			ref.current.increment = 0;
+			ref.current.travelling = false;
+			ref.current.rotating = false;
+			ref.current.time = 0;
+			ref.destination.time = 0;
+		}
+		draw(ref);
+		return reached;
+	},
+	go = function (ref, cmd, units, degrees) {
+		ref.initial.x += ref.current.x;
+		ref.initial.y += ref.current.y;
+		ref.current.x = 0;
+		ref.current.y = 0;
+		switch (cmd) {
+			case "FD":
+				ref.destination.time = units;
+				ref.current.travelling = true;
+				ref.current.increment = 1;
+				break;
+			case "BK":
+				ref.destination.time = units;
+				ref.current.travelling = true;
+				ref.current.increment = -1;
+				break;
+			case "RT":
+				ref.destination.heading = ref.current.heading + degrees;
+				ref.current.rotating = true;
+				ref.current.increment = 1;
+				break;
+			case "LT":
+				ref.destination.heading = ref.current.heading - degrees;
+				ref.current.rotating = true;
+				ref.current.increment = -1;
+				break;
+		}
+		ref.vel = 10;
+		move(ref);
+	},
+	fd = function (ref, arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go(ref, "FD", parseInt(arr[0], 10), 0);
+	},
+	bk = function (ref, arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go(ref, "BK", parseInt(arr[0], 10), 0);
+	},
+	lt = function (ref, arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go(ref, "LT", 0, parseInt(arr[0], 10) % 360);
+	},
+	rt = function (ref, arr) {
+		if (!isNaN(parseInt(arr[0], 10)))
+			go(ref, "RT", 0, parseInt(arr[0], 10) % 360);
+	},
+	run = function (ref) {
+		var instruction;
+		if (ref.current.travelling || ref.current.rotating) {
+			setTimeout((function () {
+				run(ref);
+			}), 100);
+			//console.log("Waiting...");
+		} else if (ref.list.length > 0) {
+			instruction = ref.list.pop();
+			//console.log("Running: " + instruction.cmd + " " + instruction.params[0]);
+			switch (instruction.cmd) {
+				case "fd": fd(ref, instruction.params); break;
+				case "bk": bk(ref, instruction.params); break;
+				case "rt": rt(ref, instruction.params); break;
+				case "lt": lt(ref, instruction.params); break;
+			}
+			run(ref);
+		}
+	};
+	objRef.addQueue = function (instruction) {
+		objRef.list.push(instruction);
+		return objRef;
+	};
+	objRef.exec = function (src) {
+		if (objRef.tree)
+			parser.destroyTree(objRef.tree);
+		objRef.tree = parser.parse(src);
+		var executor = ROGO.executor({rover: objRef});
+		executor.exec(objRef.tree);
+		objRef.list.reverse();
+		run(objRef);
+		return objRef;
+	};
+	objRef.setID = function (id, x, y) {
+		var i,
+			props = ["transform", "-ms-transform", "-moz-transform", "-webkit-transform", "-o-transform"];
+		objRef.domRef = document.getElementById(id);
+		objRef.domRef.style.display = "inline";
+		objRef.domRef.style.position = "absolute";
+		for (i = 0; i < props.length; i++) {
+			if (typeof objRef.domRef.style[props[i]] !== "undefined") {
+				transformStyleProperty = props[i];
+				break;
+			}
+		}
+		return objRef;
+	};
+	objRef.setInitialXY = function(x, y) {
+		objRef.initial.x = x;
+		objRef.initial.y = y;
+		return objRef;
+	};
+	objRef.forward = function (units) {
+		fd(objRef, [units]);
+		return objRef;
+	};
+	objRef.back = function (units) {
+		bk(objRef, [units]);
+		return objRef;
+	};
+	objRef.left = function (degrees) {
+		lt(objRef, [degrees]);
+		return objRef;
+	};
+	objRef.right = function (degrees) {
+		rt(objRef, [degrees]);
+		return objRef;
+	}
+	objRef.isMoving = function () {
+		return objRef.current.travelling || objRef.current.rotating;
+	};
+	return objRef;
 };
 
 /* main */

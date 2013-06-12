@@ -33,7 +33,7 @@ PRIMTYPE prims[] = {
   { "LZFIRE", 1, PREFIX_PRIORITY, execLzFireNode  },
   { "NOT", 1, INFIX_PRIORITY + 3, execNotNode  },
   { "OR", 2, INFIX_PRIORITY + 2, execOrNode  },
-  { "PAUSE", 0, PREFIX_PRIORITY, execPauseNode  },
+  { "PAUSE", 1, PREFIX_PRIORITY, execPauseNode  },
   { "REPEAT", 2, CONTROL_PRIORITY, execRepeatNode  },
   { "RIGHT", 1, PREFIX_PRIORITY, execRightNode  },
   { "RT", 1, PREFIX_PRIORITY, execRightNode  }
@@ -918,7 +918,7 @@ TNODE *execBackNode(TNODE *current)
     Serial.print("BK ");
     Serial.println(i);
   }
-  reverse(i);
+  reverse(i); //from rover.cpp
   return current;
 }
 
@@ -930,7 +930,7 @@ TNODE *execForwardNode(TNODE *current)
     Serial.print("FD ");
     Serial.println(i);
   }
-  forward(i);
+  forward(i); //from rover.cpp
   return current;
 }
 
@@ -964,7 +964,7 @@ TNODE *execLeftNode(TNODE *current)
     Serial.print("LT ");
     Serial.println(degrees);
   }
-  left(degrees);
+  left(degrees); //from rover.cpp
   return current;
 }
 
@@ -976,7 +976,7 @@ TNODE *execLzAimNode(TNODE *current)
     Serial.print("LZAIM ");
     Serial.println(degrees);
   }
-  LZAim(degrees);
+  LZAim(degrees); //from rover.cpp
   return current;
 }
 
@@ -985,7 +985,7 @@ TNODE *execLzFireNode(TNODE *current)
   int state = evalNodeValueInt(evalNodeValue(current->left));
   if (DEBUG)
     printf("\nLZFIRE");
-  LZFire(state);
+  LZFire(state); //from rover.cpp
   return current;
 }
 
@@ -1001,9 +1001,14 @@ TNODE *execOrNode(TNODE *current)
 
 TNODE *execPauseNode(TNODE *current)
 {
+  int time = evalNodeValueInt(evalNodeValue(current->left));
   if (DEBUG)
-    printf("\nPAUSE");
-  return exec(current, 'P');
+  {
+    Serial.print("PAUSE");
+    Serial.println(time);
+  }
+  pause(time); //from rover.cpp
+  return current;
 }
 
 TNODE *execRepeatNode(TNODE *current)
@@ -1028,7 +1033,7 @@ TNODE *execRightNode(TNODE *current)
     Serial.print("RT ");
     Serial.println(degrees);
   }
-  right(degrees);
+  right(degrees); //from rover.cpp
   return current;
 }
 
