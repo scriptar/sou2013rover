@@ -121,11 +121,11 @@ public abstract class BaseActivity extends Activity {
 			AlertDialog alert = chooserBox.create();
 			alert.show();
 			return true;
-		case R.id.telemetry_settings:
-			intent = new Intent(this, TelemetryActivity.class);
-			startActivity(intent);
-			finish();
-			return true;
+//		case R.id.telemetry_settings:
+//			intent = new Intent(this, TelemetryActivity.class);
+//			startActivity(intent);
+//			finish();
+//			return true;
 		case R.id.exit:
 			// Exited Dialog
 			this.finish();

@@ -19,7 +19,6 @@ public class ControlWebActivity extends BaseActivity {
 	// UI Element Variables
 	// *******************************
 	private static WebView webView;
-	private static Button refreshPage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +29,11 @@ public class ControlWebActivity extends BaseActivity {
 		// Assigning UI Elements
 		// *******************************
 		webView = (WebView) findViewById(R.id.webView1);
-		refreshPage = (Button) findViewById(R.id.refresh_page);
 
 		// *******************************
 		// Button Listeners
 		// *******************************
-		refreshPage.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				webView.loadUrl("http://rogo.sou.edu/droid/");
-			}
-		});
+
 
 		// *******************************
 		// Activity Setup
