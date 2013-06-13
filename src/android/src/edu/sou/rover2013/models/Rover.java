@@ -3,6 +3,7 @@ package edu.sou.rover2013.models;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import edu.sou.rover2013.utility.BluetoothService;
 
@@ -20,6 +21,8 @@ public class Rover {
 	private ArrayList<String> roverOutput;
 	private boolean inDataPacket = false;
 	private ArrayList<String> dataPacket;
+	
+	private StringTokenizer st;
 
 	// Rover Values
 	private int pingF;
@@ -28,6 +31,9 @@ public class Rover {
 	private double battLow; // Board, Sensor Power Supply -- Shown in Voltage
 	private double battHigh; // Servo/Bluetooth/Laser Power Supply -- Shown in
 	private int freeRam;
+	private double xCoord;
+	private double yCoord;
+	private int roverHeading;
 
 	private int laserAngle = 0;
 
@@ -66,7 +72,7 @@ public class Rover {
 
 	/**
 	 * Returns the arraylist containing communication received from the rover.
-	 * 
+	 * 87
 	 * @return the arraylist containing communication received from the rover.
 	 */
 	public ArrayList<String> getRoverData() {
@@ -113,6 +119,11 @@ public class Rover {
 			dataPacket.add(data);
 		}
 
+		//Check for Sensor Trip Outside of Packet
+		if (data.equals("sensorTrip")) {
+			//TODO Sensor Tripped, Show Alert.
+		}
+		
 		// Check for start or stop of data packet.
 		if (data.equals("start")) {
 			inDataPacket = true;
@@ -148,10 +159,13 @@ public class Rover {
 				battHigh = (Double.parseDouble(iterator.next()));
 			} else if (string.equals("freeRam")) {
 				freeRam = ((int) Double.parseDouble(iterator.next()));
+			} else if (string.equals("loc")) {
+			     st = new StringTokenizer(iterator.next(), ",()");
+			     xCoord = Double.parseDouble(st.nextToken());
+			     yCoord = Double.parseDouble(st.nextToken());
+			     roverHeading =  Integer.parseInt(st.nextToken());
 			}
-
 		}
-
 	}
 
 	public int getInfaredFrontLeft() {
@@ -181,7 +195,19 @@ public class Rover {
 	public int getFreeRam() {
 		return freeRam;
 	}
+	
+	public double getXCoord() {
+		return xCoord;
+	}
 
+	public double getYCoord() {
+		return yCoord;
+	}
+	
+	public int getHeading() {
+		return roverHeading;
+	}
+	
 	public void setLaserAngle(int laserAngleArg) {
 		laserAngle = laserAngleArg;
 	}
