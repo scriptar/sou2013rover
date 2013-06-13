@@ -37,7 +37,7 @@ public class ControlWebActivity extends BaseActivity {
 		// *******************************
 		refreshPage.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				webView.loadUrl("http://webpages.sou.edu/~rogo/droid/");
+				webView.loadUrl("http://rogo.sou.edu/droid/");
 			}
 		});
 
@@ -52,9 +52,11 @@ public class ControlWebActivity extends BaseActivity {
 		}
 		// prepare Web View
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.addJavascriptInterface(new WebAppInterface(this, rover),
-				"Android");
+		webView.getSettings().setSupportZoom(true);
+		webView.getSettings().setBuiltInZoomControls(true);
+		webView.addJavascriptInterface(new WebAppInterface(this, rover), "Android");
+
 		// Load Web View
-		webView.loadUrl("http://webpages.sou.edu/~rogo/droid/");
+		webView.loadUrl("http://rogo.sou.edu/droid/");
 	}
 }
