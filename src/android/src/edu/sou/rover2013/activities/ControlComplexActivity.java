@@ -1,10 +1,17 @@
 package edu.sou.rover2013.activities;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import edu.sou.rover2013.BaseActivity;
 import edu.sou.rover2013.R;
 import edu.sou.rover2013.models.Rover;
 import edu.sou.rover2013.utility.BluetoothService;
 import edu.sou.rover2013.utility.TextStorage;
+import edu.sou.rover2013.widgets.DigitalTextBox;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,11 +57,16 @@ public class ControlComplexActivity extends BaseActivity {
 	private static Button buttonLoad;
 	private static Button buttonClear;
 	private static Button buttonSend;
+
 	private static TextView pingForward;
 	private static TextView leftWheel;
 	private static TextView rightWheel;
 	private static TextView battHigh;
 	private static TextView battLow;
+	private static TextView freeRam;
+	private static TextView xCoord;
+	private static TextView yCoord;
+	private static TextView heading;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +92,17 @@ public class ControlComplexActivity extends BaseActivity {
 		buttonLoad = (Button) findViewById(R.id.complex_load);
 		buttonClear = (Button) findViewById(R.id.complex_clear);
 		buttonSend = (Button) findViewById(R.id.complex_transmit);
+
 		pingForward = (TextView) findViewById(R.id.text_forward_ping);
 		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
 		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
 		battHigh = (TextView) findViewById(R.id.text_high_batt);
 		battLow = (TextView) findViewById(R.id.text_low_batt);
-
+		freeRam = (TextView) findViewById(R.id.text_free_mem);
+		xCoord = (TextView) findViewById(R.id.text_x_loc);
+		yCoord = (TextView) findViewById(R.id.text_y_loc);
+		heading = (TextView) findViewById(R.id.text_heading);
+		
 		// *******************************
 		// Button Listeners
 		// *******************************
@@ -375,7 +392,22 @@ public class ControlComplexActivity extends BaseActivity {
 					toast("Application Storage Not Writeable");
 					return;
 				}
-				toast("Save Code Goes Here");
+				String FILENAME = "hello_file";
+				
+				try {
+					FileOutputStream fos;
+					fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+					fos.write(scriptTextBox.getText().toString().getBytes());
+					fos.close();
+					toast("Saved!");
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					toast("File I/O Error");
+				} catch (IOException e) {
+					toast("File I/O Error");
+					e.printStackTrace();
+				}
+
 			}
 		});
 		buttonLoad.setOnClickListener(new View.OnClickListener() {
@@ -384,7 +416,28 @@ public class ControlComplexActivity extends BaseActivity {
 					toast("Application Storage Not Readable");
 					return;
 				}
-				toast("Load Code Goes Here");
+				String FILENAME = "hello_file";
+				FileInputStream fis;
+				final StringBuffer storedString = new StringBuffer();
+				scriptTextBox.getText().clear();
+				 String strLine = null;
+				try {
+				    fis = openFileInput(FILENAME);
+				    DataInputStream dataIO = new DataInputStream(fis);
+				   
+
+				    if ((strLine = dataIO.readLine()) != null) {
+				        storedString.append(strLine);
+				    }
+
+				    dataIO.close();
+				    fis.close();
+				    toast("Script Loaded");
+				}
+				catch  (Exception e) {  
+				}
+
+				scriptTextBox.setText(strLine);
 			}
 		});
 		buttonClear.setOnClickListener(new View.OnClickListener() {
@@ -468,12 +521,21 @@ public class ControlComplexActivity extends BaseActivity {
 
 	// GUI Updater
 	public void updateGUI() {
-		pingForward.setText(String.valueOf(rover.getPingFront()));
+		int ping = rover.getPingFront();
+		if (ping > 200) {
+			ping = 0;
+		}
+		pingForward.setText(String.valueOf(ping));
 		leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
 		rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
 		battLow.setText(String.valueOf(rover.getBattLow()));
 		battHigh.setText(String.valueOf(rover.getBattHigh()));
+		freeRam.setText(String.valueOf(rover.getFreeRam()));
+		xCoord.setText(String.valueOf(rover.getXCoord()));
+		yCoord.setText(String.valueOf(rover.getYCoord()));
+		heading.setText(String.valueOf(rover.getHeading()));
 	}
+	
 
 	@Override
 	protected void onResume() {

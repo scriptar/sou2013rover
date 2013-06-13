@@ -39,14 +39,19 @@ public class ControlSimpleActivity extends BaseActivity {
 	private ImageButton buttonLaserFire;
 	private ImageButton buttonLaserUp;
 	private ImageButton buttonLaserDown;
-	private static TextView battHigh;
-	private static TextView battLow;
-	
 
-	private UIUpdater mUIUpdater;
 	private static TextView pingForward;
 	private static TextView leftWheel;
 	private static TextView rightWheel;
+	private static TextView battHigh;
+	private static TextView battLow;
+	private static TextView freeRam;
+	private static TextView xCoord;
+	private static TextView yCoord;
+	private static TextView heading;
+
+	private UIUpdater mUIUpdater;
+
 	private static DigitalTextBox textLaserAngle;
 
 	@Override
@@ -64,12 +69,17 @@ public class ControlSimpleActivity extends BaseActivity {
 		buttonLaserUp = (ImageButton) findViewById(R.id.button_laserup);
 		buttonLaserDown = (ImageButton) findViewById(R.id.button_laserdown);
 		buttonRight = (ImageButton) findViewById(R.id.button_right);
+		
 		pingForward = (TextView) findViewById(R.id.text_forward_ping);
 		leftWheel = (TextView) findViewById(R.id.text_fl_infrared);
 		rightWheel = (TextView) findViewById(R.id.text_fr_infrared);
 		textLaserAngle = (DigitalTextBox) findViewById(R.id.text_laser_angle);
 		battHigh = (TextView) findViewById(R.id.text_high_batt);
 		battLow = (TextView) findViewById(R.id.text_low_batt);
+		freeRam = (TextView) findViewById(R.id.text_free_mem);
+		xCoord = (TextView) findViewById(R.id.text_x_loc);
+		yCoord = (TextView) findViewById(R.id.text_y_loc);
+		heading = (TextView) findViewById(R.id.text_heading);
 
 		// *******************************
 		// Button Listeners
@@ -217,12 +227,12 @@ public class ControlSimpleActivity extends BaseActivity {
 		}
 		// Begin updating
 		mUIUpdater = new UIUpdater(new Runnable() {
-	         @Override 
-	         public void run() {
-	        	 updateGUI();
-	         }
-	    }, 90);
-	        
+			@Override
+			public void run() {
+				updateGUI();
+			}
+		}, 90);
+
 		// Fill Laser Field
 		textLaserAngle.setText(String.valueOf(rover.getLaserAngle()));
 	}
@@ -290,11 +300,19 @@ public class ControlSimpleActivity extends BaseActivity {
 
 	// GUI Updater
 	public void updateGUI() {
-		pingForward.setText(String.valueOf(rover.getPingFront()));
+		int ping = rover.getPingFront();
+		if (ping > 200) {
+			ping = 0;
+		}
+		pingForward.setText(String.valueOf(ping));
 		leftWheel.setText(String.valueOf(rover.getInfaredFrontLeft()));
 		rightWheel.setText(String.valueOf(rover.getInfaredFrontRight()));
 		battLow.setText(String.valueOf(rover.getBattLow()));
 		battHigh.setText(String.valueOf(rover.getBattHigh()));
+		freeRam.setText(String.valueOf(rover.getFreeRam()));
+		xCoord.setText(String.valueOf(rover.getXCoord()));
+		yCoord.setText(String.valueOf(rover.getYCoord()));
+		heading.setText(String.valueOf(rover.getHeading()));
 	}
 
 	@Override
@@ -302,7 +320,7 @@ public class ControlSimpleActivity extends BaseActivity {
 		super.onResume();
 		mUIUpdater.startUpdates();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
