@@ -161,8 +161,8 @@ public abstract class BaseActivity extends Activity {
 	/**
 	 * Throws a short toast message onto the users screen
 	 * 
-	 * @param The
-	 *            message to display
+	 * @param The message to display
+	 *
 	 */
 	protected void toast(String string_arg) {
 		Toast toast = Toast.makeText(getApplicationContext(), string_arg,

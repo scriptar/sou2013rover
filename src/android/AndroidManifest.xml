@@ -36,11 +36,13 @@
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.TelemetryActivity"
-            android:label="@string/title_activity_screen_telemetry" >
+            android:label="@string/title_activity_screen_telemetry"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.ControlSimpleActivity"
-            android:label="@string/title_activity_control_simple" >
+            android:label="@string/title_activity_control_simple"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.WiFiServerActivity"
@@ -48,7 +50,8 @@
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.ControlComplexActivity"
-            android:label="@string/title_activity_control_complex" >
+            android:label="@string/title_activity_control_complex" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="edu.sou.rover2013.activities.ControlWebActivity"

@@ -1,8 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="80dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/data_bar"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingBottom="10dp" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -15,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="Fore Ping: " />
+            android:text="Ping: " />
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,6 +29,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="Right Wheel: " />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Free Mem:" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -54,6 +62,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Value" />
+
+        <TextView
+            android:id="@+id/text_free_mem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -62,12 +77,6 @@
         android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Aft Ping: " />
 
         <TextView
             android:layout_width="wrap_content"
@@ -80,6 +89,24 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="Low Batt: " />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="X Loc: " />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Y Loc: " />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Heading: " />
     </LinearLayout>
 
     <LinearLayout
@@ -88,12 +115,6 @@
         android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/TextView01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value" />
 
         <TextView
             android:id="@+id/text_high_batt"
@@ -106,6 +127,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Value" />
+
+        <TextView
+            android:id="@+id/text_x_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
+
+        <TextView
+            android:id="@+id/text_y_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
+
+        <TextView
+            android:id="@+id/text_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value" />
+
     </LinearLayout>
 
 </LinearLayout>
